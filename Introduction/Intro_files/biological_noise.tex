@@ -6,12 +6,12 @@
 \section{Biology of expression noise} 
 
 Biological noise is defined as measurable differences in mRNA (transcriptional noise) or protein abundance across homogeneous cell populations (see \textbf{Box 1}).  Predominantly, scRNAseq technologies, single molecule fluorescence in situ hybridization (smFISH) or fluorescence reporter assays were used to measure the variation in mRNA or protein abundance. \\
-All cellular systems are exposed to varying levels of noise and employ strategies to make use of or cope with this source of variation. The sources and consequences of biological noise have been studied in an array of viral, prokaryotic and eukaryotic systems while its functional role is controversially discussed depending on the system \citep{Raj2010, Balazsi2011, Eldar2010}. It is crucial to differentiate between unicellular organisms (prokaryotes, viruses, and yeast) in which mainly positive effects of biological noise are described and higher, multicellular eukaryotic systems where biological noise either benefits or obstructs cellular function depending on the tissue type and health state.\\\\
+All cellular systems are exposed to varying levels of noise and employ strategies to make use of or cope with this source of variation. The sources and consequences of biological noise have been studied in an array of viral, prokaryotic and eukaryotic systems while its functional role is controversially discussed depending on the system \citep{Raj2010, Balazsi2011, Eldar2010}. It is crucial to differentiate between unicellular organisms (prokaryotes, viruses, and yeast) in which mainly positive effects of biological noise are described and higher, multicellular eukaryotic systems where biological noise either benefits or obstructs cellular function depending on the tissue type and health state.\\
 
 \begin{Comment}
+\small
 \textbf{Box 1: Defining biological noise}\\
-Biological noise in cell populations arises from stochastic effects on transcription and translation that propagates to form cell-to-cell phenotypic differences. To define noise, one needs to distinguish between different sources of cell-to-cell variability in multiple measurable factors. \\
-On the broadest level, differences between single cells in a population can arise from structured (also termed “deterministic” in \citep{Marusyk2012}) and unstructured sources (similar as in \citep{Singer2014a}). Previously, biological samples were prepared to capture a variety of discrete cell-states and/or cell-types \todo{[refs]}.  In this case, measuring cell-specific features results in the detection of correlated (structured) differences between individual cells and is therefore not connected to the stochastic source of biological noise. In cell populations where correlated features do not allow the detection of groups (unstructured variation), continuous processes (\emph{e.g.} differentiation) can be the dominating source of cell-to-cell phenotypic variability \todo{[refs]}. Computational approaches allow the detection of these trajectories (\emph{e.g.} via principal component analysis or pseudotime inference \citep{Trapnell2014, Angerer2015}). I therefore define biological noise as unstructured, phenotypic cell-to-cell differences independent of measurement errors. 
+Biological noise in cell populations arises from stochastic effects on transcription and translation that propagates to form cell-to-cell phenotypic differences. To define noise, one needs to distinguish between different sources of cell-to-cell variability in multiple measurable factors. On the broadest level, differences between single cells in a population can arise from structured (also termed “deterministic” in \citep{Marusyk2012}) and unstructured sources (similar as in \citep{Singer2014a}). Previously, biological samples were prepared to capture a variety of discrete cell-states and/or cell-types \todo{[refs]}.  In this case, measuring cell-specific features results in the detection of correlated (structured) differences between individual cells and is therefore not connected to the stochastic source of biological noise. In cell populations where correlated features do not allow the detection of groups (unstructured variation), continuous processes (\emph{e.g.} differentiation) can be the dominating source of cell-to-cell phenotypic variability \todo{[refs]}. Computational approaches allow the detection of these trajectories (\emph{e.g.} via principal component analysis or pseudotime inference \citep{Trapnell2014, Angerer2015}). I therefore define biological noise as unstructured, phenotypic cell-to-cell differences independent of measurement errors. 
 As previously defined \citep{Elowitz2002}, biological noise can broadly arise from intrinsic and extrinsic sources. Intrinsic noise originates from stochastic biochemical effects within one cell that directly influences individual gene expression \citep{Swain2002} (\emph{e.g.} transcription factor binding dynamics). Extrinsic noise on the other hand influences multiple genes (also in a pathway specific manner \citep{Raser2010}) due to differences in cell-specific factors such as stress response, mitochondrial maintenance, amino-acid synthesis \citep{Stewart-Ornstein2012} or cell-cycle \citep{Zopf2013}. Intrinsic noise can therefore be measured as expression differences between co-regulated genes in one cell while extrinsic noise is measured as co-regulated variance in gene sets across all cells.\\
 \end{Comment}
 
@@ -58,5 +58,36 @@ Combinatorial therapies have been proposed to reduce variability and fractional 
 
 \subsection{Ageing}
 
-Similarly to the onset of cancer, destructive roles of biological noise have been reported during organismal ageing. Previously, it has been debated whether expression noise changes during the lifespan of animals\cite{Bahar2006, Warren2007}. While these initial studies only used small panels of genes, transcriptional profiling of single cells lead to the discovery of a destabilization of the immune activation program in CD4$^+$ T cells due to increased expression noise \cite{Martinez-Jimenez2017a}. Similarly, transcriptional noise increases with age in human pancreas coupled to an increased stress signature and atypical hormone expression \citep{Enge2017}.
+Similarly to the onset of cancer, destructive roles of biological noise have been reported during organismal ageing. Previously, it has been debated whether expression noise changes during the lifespan of animals\cite{Bahar2006, Warren2007}. While these initial studies only used small panels of genes, transcriptional profiling of single cells lead to the discovery of a destabilization of the immune activation program in CD4$^+$ T cells due to increased expression noise \cite{Martinez-Jimenez2017a}. Similarly, transcriptional noise increases with age in human pancreas coupled to an increased stress signature and atypical hormone expression \citep{Enge2017}.\\
 
+
+\begin{table}[hb	]
+\centering
+\caption{Positive and negative effects of biological noise on cellular systems}
+\label{table:effects_noise}
+\begin{tabular}{l l l}
+\toprule
+System & Friend & Foe \\ 
+\midrule
+Unicellular organism & Bet-hedging & \\
+\midrule
+Development and & Probabilistic induction  & \\
+differentiation & of cell differentiation & \\
+\midrule
+Immune response & Plasticity in immune response & \\
+ & Control of response strength &   \\
+\midrule
+Tissue development  & Low cell differentiation rate & Non-uniform development \\ 
+and homeostasis &  & Uncontrolled tissue response \\
+\midrule
+Evolution & Adjustment to  & Non-uniform, stabilizing expression \\ 
+& fluctuating environment & Uncontrolled tissue responses \\
+\midrule
+Cancer &  & Phenotypic adaption to cancer state \\
+& & Fractional killing of cancer cells \\
+\midrule
+Aging &  & Unsynchronized immune response \\
+& & Increased stress signatures \\ 
+\bottomrule
+\end{tabular}
+\end{table}
