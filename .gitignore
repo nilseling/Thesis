@@ -1,5 +1,6 @@
 *.tdo*
 .DS_Store*
+*.pdf*
 *.aux*
 *.log*
 *.lof*
