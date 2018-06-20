@@ -105,6 +105,10 @@
 
 %\usepackage[perpage]{footmisc} %Range of footnote options
 
+% Nicer heading
+\renewcommand{\chaptername}{}
+\usepackage[Lenny]{fncychap}
+
 
 % *****************************************************************************
 % *************************** Bibliography  and References ********************
@@ -193,3 +197,85 @@
 % *****************************************************************************
 % ******************* Better enumeration my MB*************
 \usepackage{enumitem}
+
+% **********************************
+% Additional packages
+\usepackage{xcolor}
+\definecolor{green}{RGB}{32,157,148}
+\usepackage{amsmath,amsfonts,amssymb,amsthm} % For math equations, theorems, symbols, etc
+
+%----------------------------------------------------------------------------------------
+%	THEOREM STYLES
+%----------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% dedicated to boxed/framed environements %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheoremstyle{greennumbox}% % Theorem style name
+{0pt}% Space above
+{0pt}% Space below
+{\small}% % Body font
+{}% Indent amount
+{\small\bf\sffamily\color{green}}% % Theorem head font
+{\;}% Punctuation after theorem head
+{0.25em}% Space after theorem head
+{\small\sffamily\color{green}\thmname{}\nobreakspace} 
+\renewcommand{\qedsymbol}{$\blacksquare$}% Optional qed square
+
+\newtheoremstyle{blacknumbox} % Theorem style name
+{0pt}% Space above
+{0pt}% Space below
+{\normalfont}% Body font
+{}% Indent amount
+{\small\bf\sffamily}% Theorem head font
+{}% Punctuation after theorem head
+{0.25em}% Space after theorem head
+{\small\sffamily\thmname{}\nobreakspace}
+
+% Defines the theorem text style for each type of theorem to one of the three styles above
+\theoremstyle{greennumbox}
+\newtheorem{abstractT}{}
+\theoremstyle{blacknumbox}
+\newtheorem{commentT}{}
+
+
+% Package to create coloured boxes
+\RequirePackage[framemethod=default]{mdframed}
+
+% Exercise box	  
+\newmdenv[skipabove=7pt,
+skipbelow=7pt,
+rightline=false,
+leftline=true,
+topline=false,
+bottomline=false,
+backgroundcolor=green!10,
+linecolor=green,
+innerleftmargin=5pt,
+innerrightmargin=5pt,
+innertopmargin=5pt,
+innerbottommargin=5pt,
+leftmargin=0cm,
+rightmargin=0cm,
+linewidth=4pt]{eBox}	
+
+\newmdenv[skipabove=7pt,
+skipbelow=7pt,
+rightline=false,
+leftline=true,
+topline=false,
+bottomline=false,
+linecolor=gray,
+backgroundcolor=black!5,
+innerleftmargin=5pt,
+innerrightmargin=5pt,
+innertopmargin=5pt,
+leftmargin=0cm,
+rightmargin=0cm,
+linewidth=4pt,
+innerbottommargin=5pt]{cBox}
+
+% Creates an environment for each type of theorem and assigns it a theorem text style from the "Theorem Styles" section above and a colored box from above
+\newenvironment{Abstract}{\begin{eBox}\begin{abstractT}}{\hfill{\color{green}\tiny\ensuremath{\blacksquare}}\end{abstractT}\end{eBox}}				  		
+\newenvironment{Comment}{\begin{cBox}\begin{commentT}}{\end{commentT}\end{cBox}}	
