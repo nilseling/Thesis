@@ -42,6 +42,11 @@
   %  {libertine}
   %  % load font from system font
   %  \newfontfamily\libertinesystemfont{Linux Libertine O}
+  
+  % Use helvetica
+  \renewcommand{\familydefault}{\sfdefault}
+  \usepackage{helvet}
+  \usepackage{sansmathfonts}
 \fi
 
 % *****************************************************************************
@@ -55,9 +60,9 @@
 % ********************Captions and Hyperreferencing / URL **********************
 
 % Captions: This makes captions of figures use a boldfaced small font.
-%\RequirePackage[small,bf]{caption}
+\usepackage[font=small,labelfont=bf]{caption}
 
-\RequirePackage[labelsep=space,tableposition=top]{caption}
+%\RequirePackage[labelsep=space,tableposition=top]{caption}
 \renewcommand{\figurename}{Fig.} %to support older versions of captions.sty
 
 
