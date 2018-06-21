@@ -1,0 +1,66 @@
+---
+title: "All CD4 T cells"
+author: "Nils Eling"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read in all data
+
+```{r}
+library(openxlsx)
+library(scran)
+library(Rtsne)
+library(ggplot2)
+library(cowplot)
+load("../../../../Google Drive File Stream/My Drive/scMouse_Immun/Data/all_data_norm_20161204.RData")
+
+# Read in metadata
+meta <- read.xlsx("../../../../Google Drive File Stream/My Drive/scMouse_Immun/ArrayExpress/Revision/metadata_file.xlsx")
+rownames(meta) <- meta$X1
+meta <- meta[colnames(exp.data),]
+```
+
+# Visualize tSNE
+
+```{r}
+# Highly variable genes
+HVG <- trendVar(log2(exp.data + 1))
+HVgenes <- decomposeVar(log2(exp.data + 1), HVG)
+HVgenes <- HVgenes[order(HVgenes$bio, decreasing = TRUE),]
+HVgenes <- rownames(HVgenes)[1:1000]
+
+tsne <- Rtsne(log2(t(exp.data[HVgenes,]) + 1))
+
+cur_df <- data.frame(tsne1 = tsne$Y[,1],
+                     tsne2 = tsne$Y[,2],
+                     age = meta$Age,
+                     strain = meta$Strain,
+                     cell_type = meta$Celltype,
+                     stimulus = factor(ifelse(grepl("Acti", meta$Stimulus), 
+                                       "Activated", "Unstimulated")),
+                     individual = meta$Individuals)
+
+p.stim <- ggplot(cur_df) + geom_point(aes(tsne1, tsne2, colour = stimulus)) + 
+  scale_colour_manual(values = c("dark red", "coral"))
+p.strain <- ggplot(cur_df) + geom_point(aes(tsne1, tsne2, colour = strain)) + 
+  scale_colour_manual(values = c("goldenrod", "black"))
+p.cell <- ggplot(cur_df) + geom_point(aes(tsne1, tsne2, colour = cell_type)) + 
+  scale_colour_manual(values = c("steelblue", "dark blue", "light blue"))
+p.age <- ggplot(cur_df) + geom_point(aes(tsne1, tsne2, colour = age)) + 
+  scale_colour_manual(values = c("grey80", "grey30"))
+```
+
+# Save figure
+
+```{r}
+final <- plot_grid(p.stim, p.strain, p.cell, p.age, ncol = 2, nrow = 2)
+ggsave("../../Chapter1/Figures/all_cells_tsne.pdf", final, width = 10, height = 10)
+```
