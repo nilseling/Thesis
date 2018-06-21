@@ -1,0 +1,24 @@
+%!TEX root = ../chapter1.tex
+%******************************
+%	 Results 
+%*****************************
+
+\section{scRNAseq of murine CD4$^+$ T cells}
+\subsection*{Single-cell RNA sequencing of CD4$^+$ T cells during activation, ageing and across two mouse species}
+
+To assess the conservation of immune activation programmes, we isolated CD4$^+$ T cells from healthy individuals of two inbred mouse sub-species separated by 1 million years of divergence: the reference C57BL/6J, Mus musculus domesticus (B6); CAST/EiJ, Mus musculus castaneus (CAST)). We characterized their gene expression programmes by single-cell RNA-sequencing (scRNAseq) during ageing in young (~3 months) and old (~21 months) individuals of each strain (Fig. \ref{}). These two sub-species have similar lifespans (23, 24), and CAST mice showed the hallmarks of normal organismal aging observed in B6 mice (25). All mice were healthy at the time of experiments. 
+
+\subsubsection*{Unstimualted CD4$^+$ T cells}
+
+\subsubsection{Naive and effector memory CD4$^+$ T cells}
+
+\subsubsection*{Computational quality control and filtering}
+
+from spleens and characterized their gene expression programs by single-cell RNA-sequencing (scRNA-seq) during aging in young (~3 months) and old (~21 months) individuals of each strain (Fig. 1A, Material and Methods).  
+
+Purified naive CD4+ T cells were either loaded directly into the Fluidigm C1 system, or were loaded three hours after stimulation in vitro with plate-bound anti-CD3$\epsilon$/anti-CD28 antibodies (see Material and Methods). Hereafter, for simplification and clarity, purified unstimulated naive CD4+ T cells will be named naive, and stimulated cells will be named activated. For each species/condition, scRNA-seq experiments were performed using cells isolated from two individual mice. We visually inspected the vast majority of cell-capture sites in each C1 small-integrated fluidic circuit (IFCs, 5-10$\mu$m) using 40x magnification lensing to ensure precise capture of single cells (Fig. S1A and S1B and Material and Methods). We removed low-quality C1 captured cells by evaluating (i) the sequencing depth, (ii) the number of genes detected, (iii) the proportion of sequencing reads mapping to exons and ERCC controls, and (iv) the mitochondrial fraction of reads (Fig. S1C-F). The resulting data showed minimal batch effects (Fig. S1G). Using RNA-sequencing to identify cell-specific marker genes, we removed residual B-cells, CD8+ T cells, and (in activating conditions) non-activated T cells from our analysis (Fig. S1H and S1I, Material and Methods). \\
+
+In contrast to haematopoeitic cells (15), even when activated, virtually all CD4+ T cells are in G1 phase of cell cycle as expected (Fig. S2A). Aged CD4+ T cells showed no clonal expansions (Fig. S2B) or difference in cell size (Fig. S2C) that could impact analysis of gene expression variability (26). Using flow cytometry analysis, we confirmed that 96.4\% of the isolated CD4+ T cells were naive in young B6 (Fig. S2D). Naive CD4+ T cells formed a single, high-purity population in young animals. Old animals had a small population of CD4+ T cells with slightly elevated CD44 levels, reduced CD62L expression, and attenuated activation dynamics (Fig. S2E-G); their removal did not impact our results (Material and Methods) (see below). Upon T cell receptor (TCR) activation in the presence of particular cytokines, naive CD4+ T cells can differentiate into several lineages of functionally different T helper cells (mainly Th1, Th2, Th17, Treg, Tfh) (16, 27). In our data we do not detect any early differentiation in naive and activated CD4+ T cell subsets. In accordance with the literature we found Gata3 but not Th2 cytokines expressed in the majority of cells  (28). Interestingly, the Th1-related genes Tbx21 and Ifng were up-regulated, in an uncoordinated manner, in a small population of activated CD4+ T cells of old animals. This is consistent with a known Th1 bias in CD4+ T cell responses in old mice (29) and humans (30) (Fig. S2H). Furthermore, we did not detect any difference in TCR components/signaling and importantly detected no signs of T cell exhaustion (31), especially in cells isolated from old animals (Fig. S2I). We also ruled out species-specific differences in commitment towards T helper cell lineages (Fig. S2J). \\
+
+After the above analyses and the experimental validation (Material and Methods), a total of 1514 high-quality CD4+ T cell transcriptomes were analyzed across all conditions and species.
+
