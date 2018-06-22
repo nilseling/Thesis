@@ -52,6 +52,15 @@
 % *****************************************************************************
 % **************************** Custom Packages ********************************
 
+% define header 
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\renewcommand{\headrulewidth}{2pt}
+\newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
+\headrulecolor{Mahogany}
+\fancyheadoffset[RE,LO]{0pt}
+
+
 % ************************* Algorithms and Pseudocode **************************
 
 %\usepackage{algpseudocode}
