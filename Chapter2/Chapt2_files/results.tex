@@ -5,3 +5,273 @@
 
 \section{The extended BASiCS model}
 \subsection*{Addressing the mean confounding effect for differential variability testing}
+
+\todo{Expand this section with more images}
+
+Unlike bulk RNA sequencing, scRNAseq provides information about cell-to-cell expression heterogeneity within a population of cells. Past works have used a variety of measures to quantify this heterogeneity. Among others, this includes the coefficient of variation \citep[CV,][]{Brennecke2013} and entropy measures \citep{Richard2016}. The BASiCS model \citep{Vallejos2015, Vallejos2016a} which was introduced in section \ref{sec:BASiCSintro} focuses on biological {\it over-dispersion} as a proxy for transcriptional heterogeneity. This is defined by the excess of variability that is observed with respect to what would be predicted by Poisson sampling noise, after accounting for technical variation. \\ 
+
+Let $X_{ij}$ be a random variable representing the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$). 
+To control for technical noise, we employ reads from synthetic RNA spike-ins \citep[e.g.~those introduced by][]{Jiang2011}. Without loss of generality, we assume the first $q_0$ genes to be biological followed by the $q-q_0$ spike-in genes. As in the original BASiCS method introduced by \cite{Vallejos2015}, we assume a Poisson hierarchical formulation: 
+
+\begin{equation} \label{eq::PoissonBASiCS}
+ X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \ind
+ \left\lbrace
+  \begin{aligned}
+    &\textnormal{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
+    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+  \end{aligned}
+\right.
+\end{equation} 
+
+where, to account for technical and biological factors that affect the variance of the transcript counts, we incorporate two random effects: 
+
+\begin{equation} \label{eq::RandomEffectsBASiCS}
+\nu_j|s_j,\theta \ind \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right) \hspace{0.2cm} \rho_{ij}|\delta_i  \ind \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
+\end{equation} In this setup, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells. \\
+
+The aforementioned measures of variability can be used to identify genes whose transcriptional heterogeneity differs between groups of cells (defined by experimental conditions or cell types). However, the strong relationship that is typically observed between variability and mean estimates \citep{Brennecke2013} can hinder the interpretation of these results. \\
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.7\textwidth]{Fig_1.png}
+\caption[Avoiding the mean confounding effect in scRNAseq data]{\textbf{Avoiding the mean confounding effect when quantifying expression variability in scRNAseq data (full legend on next page).}\\}
+\label{fig2:Schematic_model}
+\end{figure}
+
+\newpage
+
+\captionsetup[figure]{list=no}
+\addtocounter{figure}{-1}   
+\captionof{figure}{\textbf{Avoiding the mean confounding effect when quantifying expression variability in scRNAseq data (continued).}\\
+\textbf{(A and B)} Illustration of changes in expression variability for a single gene between two cell populations without (A) and with (B) changes in mean expression. \textbf{(C and D)} Our extended BASiCS model infers a regression trend between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression $\mu_i$. Residual over-dispersion parameters $\epsilon_i$ are defined by departures from the regression trend. For a single gene, this is illustrated using a red arrow. The colour code within the scatterplots is used to represent areas with high (yellow/red) and low (blue) concentration of genes. For illustration purposes, the data introduced by \cite{Antolovic2017} has been used. \textbf{(C)} Gene-specific estimates of over-dispersion parameters $\delta_i$ were plotted against mean expression parameters $\mu_i$. The red line shows the regression trend. This illustrates the typical confounding effect that is observed between variability and mean expression measures. Genes that are not detected in at least 2 cells are indicated by purple points.\textbf{(D)} Gene-specific estimates of residual over-dispersion parameters $\epsilon_i$ were plotted against mean expression parameters $\mu_i$. This illustrates the lack of correlation between these parameters. \textbf{(E)} Illustration of how posterior uncertainty is used to highlight changes in residual over-dispersion. Two example genes with (upper panels) and without (lower panels) differential residual over-dispersion are shown. Left panels illustrate the posterior density associated to residual over-dispersion parameters $\epsilon_i$ for a gene in two groups of cells (group A: light blue, group B: dark blue). The coloured area in the right panels represents the posterior probability of observing an absolute difference $|\epsilon^A_{i} - \epsilon^B_{i}|$ that is larger than the minimum tolerance threshold $\psi_0$.\\}
+\captionsetup[figure]{list=yes}
+
+A simple solution to avoid this confounding is to restrict the assessment of differential variability to those genes with equal mean expression across populations \textbf{(Fig.~\ref{fig2:Schematic_model}A and Box 2)}.  
+However, this is sub-optimal, particularly when a large number of genes are differentially expressed between the populations as seen when comparing naive and activated CD4$^+$ T cells. For example, reactive genes that change in mean expression upon changing conditions (e.g.~transcription factors) are excluded from differential variability testing. An alternative approach is to directly adjust variability measures to remove this confounding. For example, \cite{Kolodziejczyk2015a} computed the empirical distance between the squared CV to a rolling median along expression levels --- referred to as the DM method.  \\
+
+In line with this idea, our method extends the statistical model implemented in BASiCS \citep{Vallejos2015, Vallejos2016a}. We define a measure of \textit{residual over-dispersion} --- which is not correlated with mean expression --- to meaningfully assess changes in transcriptional heterogeneity when genes exhibit shifts in mean expression \textbf{(Fig.~\ref{fig2:Schematic_model}B)}. More concretely, we infer a regression trend between over-dispersion ($\delta_i$) and gene-specific mean parameters ($\mu_i$), by introducing a joint informative prior to capture the dependence between these parameters (see below). A latent gene-specific {\it residual over-dispersion} parameter $\epsilon_i$ describes departures from this trend \textbf{(Fig~\ref{fig2:Schematic_model}C)}. Positive values of $\epsilon_i$ indicate that a gene exhibits more variation than expected relative to genes with similar expression levels. Similarly, negative values of $\epsilon_i$ suggest less variation than expected and, as shown in \textbf{Fig.~\ref{fig2:Schematic_model}D}, these residual over-dispersion parameters are not confounded by mean expression. \\
+
+The hierarchical Bayes approach infers full posterior distributions for the gene-specific latent residual over-dispersion parameters $\epsilon_i$. As a result, we can directly use a probabilistic approach to identify genes with large absolute differences in residual over-dispersion between two groups of cells \textbf{(Figure~\ref{fig2:Schematic_model}E)}. In contrast, mean-corrected point estimates for residual noise parameters (such as those obtained by the DM method) cannot be directly used to perform gene-specific statistical testing between two conditions as no measure of the uncertainty in the estimate is readily available.
+
+When comparing two or more groups of cells (e.g.~experimental conditions or cell types), the notation above can be extended by assuming that gene-specific parameters are also group-specific \citep[as in][]{Vallejos2016a}. Comparisons of gene-specific parameters across populations can be used to identify statistically significant changes in gene expression at the mean and the variability level. However, the well known confounding effect between mean and variability that typically arises in scRNAseq datasets \citep{Brennecke2013} can preclude a meaningful interpretation of these results.  
+
+\subsection{Modelling the confounding between mean and dispersion} \label{sec2:extended_BASiCS}
+
+Here, we extend BASiCS to account for the confounding effect described above. For this purpose, we estimate the relationship between mean and over-dispersion parameters by introducing the following joint prior distribution for $(\mu_i, \delta_i)'$: 
+
+\begin{equation} \label{eq::jointprior} \mu_i \sim \mbox{log-normal}\left(0, s^2_{\mu}\right), \hspace{0.8cm}
+\delta_i | \mu_i \sim \mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right).
+\end{equation} 
+
+The latter is equivalent to the following non-linear regression model:
+
+\begin{equation} \label{eq::regression}
+\log(\delta_i) =\textnormal{f}(\mu_i)+\epsilon_i, \hspace{0.5cm} \epsilon_i \sim{}t_{\eta}(0,\sigma^2), 
+\end{equation} where $\textnormal{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) expressed at a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific {\it residual over-dispersion} parameter, capturing departures from the overall trend. If a gene exhibits a positive value for $\epsilon_i$, this indicates more variation than expected for genes with similar expression level. Accordingly, negative values of $\epsilon_i$ suggest less variation than expected for genes with similar expression level. \\ 
+
+A similar approach was introduced by DESeq2 \citep{Love2014a} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we opt for a Student-$t$ distribution as it leads to inference that is more robust to the presence of outlier genes. Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
+
+\begin{equation} \label{eq::trend}
+f(\mu_i) = \alpha_0 + \log(\mu_i)\alpha_1 + \sum_{l=1}^L g_l(\log(\mu_i))\beta_l,
+\end{equation} 
+
+where $g_1(\cdot), \ldots, g_L(\cdot)$ represent a set of Gaussian radial basis function (GRBF) kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. As in \cite{Kapourani2016}, these are defined as: 
+
+\begin{equation} \label{eq::GRBF}
+g_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
+\end{equation} 
+
+where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels. \\
+
+In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}.  Details about this choice are described below.\\
+
+\todo{Add figure on GRBFs} \\
+
+The remaining elements of the prior were chosen as follows: \begin{eqnarray}
+\beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim & \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid & \textnormal{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
+(\phi_1, \ldots, \phi_n)' & \sim & n \times \textnormal{Dirichlet}(a_\phi),\\
+\theta & \sim & \textnormal{Gamma}(a_\theta,b_\theta),
+\end{eqnarray} with all hyper-parameters fixed \emph{a priori}. Default values are chosen as: \begin{eqnarray}
+m_{\beta} & = & \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)},\\
+V_{\beta} & = & \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)},\\
+a_{\sigma^2} & = & 2,\\
+b_{\sigma^2} & = & 2,
+\end{eqnarray} with the remaining default hyper-parameter values as in \cite{Vallejos2016a}.\\
+
+In principle, the degrees of freedom parameter $\eta$ could also be estimated within a Bayesian framework. However, we observed that fixing this parameter \emph{a priori} led to more stable results. A default choice for this parameter is described below.
+
+\subsection{Implementation}
+
+Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by \cite{Vallejos2016a}. For this purpose, the log-Student-$t$ distribution in \ref{eq::jointprior} is represented via the same data augmentation scheme as in \cite{Vallejos2015a}. The latter introduces an auxiliary set of parameters $\lambda_i$ such that:
+
+\begin{equation}
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta \ind \textnormal{log-N}\left( f(\mu_i),\frac{\sigma^2}{\lambda_i} \right), \hspace{0.3cm} \lambda_i|\eta \ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right).
+\end{equation} 
+
+Moreover, the regression coefficients $\beta = (\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L)'$ are inferred by noting that \ref{eq::trend} can be rewritten as a linear regression model using 
+
+\begin{equation} \label{eq::trend2} f(\mu_i) = X \beta, \end{equation} 
+
+where $X$ is a $q_0 \times (L+2)$ matrix given by 
+
+\begin{equation} \label{eq::X} X = \left( \begin{array}{ccccc}
+1 & \log(\mu_1) & g_1(\log(\mu_1)) & \cdots & g_L(\log(\mu_1)) \\
+1 & \log(\mu_2) & g_1(\log(\mu_2)) & \cdots & g_L(\log(\mu_2)) \\
+\vdots & \vdots & \vdots & \ddots & \vdots  \\
+1 & \log(\mu_{q_0}) & g_1(\log(\mu_{q_0})) & \cdots & g_L(\log(\mu_{q_0}))
+\end{array}\right).\end{equation}
+
+In this setting, the full conditionals associated with $s_j$, $\phi_j$, $\nu_j$ and $\theta$ are not affected by the new prior specification of $(\mu_i, \delta_i)'$ and can be found in \cite{Vallejos2016a}. The full conditional for $\mu_i$, $\delta_i$, $\beta$, and $\sigma^2$ are derived below. As in \cite{Vallejos2015}, these are derived by integrating out the random effect $\rho_{ij}$ in \ref{eq::PoissonBASiCS}, leading to:
+
+\begin{equation} \label{eq::NegBinBASiCS}
+ X_{ij}|\mu_i,\delta_i,\phi_j,\nu_j \ind
+ \left\lbrace
+  \begin{aligned}
+    &\textnormal{Neg-Bin}\left(\frac{1}{\delta_i},\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right), && i=1,...,q_0,j=1,...n;  \\ 
+    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n        
+  \end{aligned}
+\right.
+\end{equation}
+
+Based on \ref{eq::NegBinBASiCS}, the likelihood function therefore takes the form
+
+\begin{align} \label{eq::loglik}
+& \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
+&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right].
+\end{align} 
+
+Let $f(\mu_i)$ be as in \ref{eq::trend}. The full conditionals associated to the mean expression parameters $\mu_i$ and over-dispersion parameters $\delta_i$ are respectively given by:
+
+\begin{footnotesize} \begin{eqnarray} \label{eq::FullCondMuDelta}
+\pi(\mu_i|\cdot) & \propto & \frac{\mu_i^{\sum_{j=1}^n{}x_{ij}}}{\prod_{j=1}^n{}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}} \exp\left\{-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2 / \lambda_i }\right\} \frac{1}{\mu_i}, \\
+\pi(\delta_i|\cdot) & \propto & \left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\frac{(\frac{1}{\delta_i})^{\frac{1}{\delta_i}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right] \exp\left\{-\frac{(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2 / \lambda_i}\right\} \frac{1}{\delta_i}.
+\end{eqnarray} \end{footnotesize}
+
+\todo{Add derivation of full conditionals} \\
+
+Moreover, the full conditionals associated to the remaining parameters $\lambda_i$, $\beta$ and $\sigma^2$ are given by 
+
+\begin{eqnarray}
+\lambda_i|\cdot & \ind & \text{Gamma}(a^*_{\lambda_i},b^*_{\lambda_i}), \hspace{0.2cm} i = 1, \ldots, q_0, \\
+\beta|\cdot & \sim & N(m^*_{\beta}, \sigma^2 V^*_{\beta}), \\
+\sigma^2|\cdot & \sim & \text{Inv-Gamma}(a^*_{\sigma^2},b^*_{\sigma^2}),
+\end{eqnarray} 
+
+with \begin{eqnarray}
+a^*_{\lambda_i} & = & \frac{\eta+1}{2} \\
+b^*_{\lambda_i} & = & \frac{1}{2}\left[\frac{1}{\sigma^2}(\log(\delta_i)-f(\mu_i))^2+\eta\right] \\
+V^*_{\beta} & = & (X' \Lambda X + V_\beta^{-1})^{-1} \\
+m^*_{\beta} & = & (X' \Lambda X+V_\beta^{-1})^{-1}(X' \Lambda Y + V_\beta^{-1}m_\beta{}) \\
+a^*_{\sigma^2} & = & \frac{q_0+L+2}{2}+a_{\sigma^2}\\
+b^*_{\sigma^2} & = & b_{\sigma^2}+\frac{1}{2}(Y'\Lambda Y+ m'_{\beta} V_\beta^{-1} m_\beta+ \nonumber \\
+&  &(\beta-m^*_{\beta})' (V^*_{\beta})^{-1} (\beta-m^*_{\beta}) - (m^*_{\beta})' (V^*_{\beta})^{-1} m^*_{\beta}),  \\
+& \equiv & b_{\sigma^2}+\frac{1}{2}(Y'\Lambda Y+ m'_{\beta} V_\beta^{-1} m_\beta + \beta' (V^*_{\beta})^{-1} \beta - 2 \beta' (V^*_{\beta})^{-1} m^*_{\beta} ),
+\end{eqnarray} where $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$. Finally, the full conditionals associated to the global technical noise parameter ($\theta$) and cell-specific parameters ($\phi_j$, $s_j$ and $\nu_j$) are defined as in \cite{Vallejos2016a}.
+
+\subsection{Probabilistic rule associated to the differential test} \label{sec:differentialtest}
+
+We use a probabilistic approach to identify changes in gene expression between groups of cells. Let $\delta_i^A$ and $\delta_i^B$ be the over-dispersion parameters associated to gene $i$ in groups $A$ and $B$. Following \ref{eq::regression}, the log$_2$ fold change in over-dispersion between these groups can be decomposed as: \begin{equation} \label{eq::dispersion_lfc}
+\log_2 \left( \frac{\delta_i^A}{\delta_i^B}\right) = \log_2(e) \times \left[\underbrace{f^A(\mu_i^A) - f^B(\mu_i^B) }_{\text{Mean contribution}} + \underbrace{\epsilon_i^A - \epsilon_i^B}_{\text{Residual change}} \right],
+\end{equation} where the first term captures the over-dispersion change that can be attributed to differences between $\mu_i^A$ and $\mu_i^B$. The second term in \ref{eq::dispersion_lfc} represents the change in residual over-dispersion that is not confounded by mean expression. Based on this observation, statistically significant differences in residual over-dispersion will be identified for those genes where the tail posterior probability of observing a large difference between $\epsilon_i^A$ and $\epsilon_i^B$ exceeds a certain threshold, i.e.~\begin{equation} \label{eq::decision_rule}
+\text{P}(\mid\epsilon_i^{A}-\epsilon_i^{B}\mid >\psi_0 \mid \text{Data} ) >\alpha_R,
+\end{equation} 
+where $\psi_0 > 0$ defines a minimum tolerance threshold. As a default choice, we assume $\psi_0 = \log_2(1.5) / \log_2(e) \approx 0.41$ which translates into a 50\% increase in over-dispersion. In the limiting case when $\psi_0 = 0$, the probability in \eqref{eq::decision_rule} is equal to 1 regardless of the information contained in the data. Therefore, as in \cite{Bochkina2007}, our decision rule is based on the maximum of the posterior probabilities associated to the one-sided hypotheses $\epsilon^A - \epsilon^B_i > 0$ and  $\epsilon^A - \epsilon^B_i < 0$, i.e. \begin{equation} \label{eq::decision_rule2} 2 \times \max\{\pi_i, 1-\pi_i\} - 1  >\alpha_R, \hspace{0.2cm} \text{with} \hspace{0.2cm} \pi_i = \text{P}(\epsilon_i^{A}-\epsilon_i^{B} > 0 \mid \text{Data})
+\end{equation}In both cases, the posterior probability threshold $\alpha_R$ is chosen to control the expected false discovery rate (EFDR) \citep{Newton2004}. The default value for EFDR is set to 10\%.
+As a default and to support interpretability of the results, we exclude genes that are not expressed in at least 2 cells per condition from differential variability testing.\\
+Changes in mean and over-dispersion are highlighted using the decision rule of \cite{Vallejos2016a}. \\
+
+To evaluate the performance of our differential test we generated synthetic data under a null model (without changes in variability) and an alternative model (with changes in variability). All datasets were generated following the BASiCS model, with parameter values used set by empirical estimates based on 98 microglia cells (see below). For this purpose, we use the \emph{BASiCS$\_$Sim} function. To simulate data under an alternative model, 1000 genes were randomly selected and their associated $\delta_i$'s were increased or decreased by a $\log_2$ fold change of 5. Differential testing was performed either between data simulated on the same set of parameters (null model) or between data simulated from the original parameters and the altered parameters (alternative model). We report the EFDR \citep{Newton2004} as well as the false positive rate (FPR) for simulations under the null model and the true positive rate (TPR) for simulations under the alternative model. Synthetic data was generated with different sample sizes, with 5 repetitions for each sample size \textbf{(Fig. \ref{fig2:EFDR})}.
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_3.png}
+\caption[EFDR, FPR and TPR estimation using simulated data.]{\textbf{EFDR, FPR and TPR estimation using simulated data.}\\
+Data was simulated using the BASiCS model with model parameters set by empirical estimates based on on 98 microglia cells (see \textbf{STAR Methods}).  \\
+Different samples sizes (40 - 200 cells) were simulated in replicates of 5. Differential testing was performed between 2 simulated datasets of equal size to calculate the false positive rate (FPR, number of detections divided by number of genes tested), the true positive rate (number of true positive divided by number of positives). Moreover, we report the expected false discovery rate \citep[EFDR,][]{Newton2004}. 
+For each test, the EFDR was controlled to 10\% and the default minimum tolerance thresholds were used ($\tau_0 = \log_2(1.5)$, $\omega_0 = \log_2(1.5)$ and $\psi_0 = 0.41$). \textbf{(A)-(C)} Synthetic datasets generated using the null model (without changes in variability). FPR and EFDR for (A) differential mean expression, (B) differential over-dispersion and (C) differential residual over-dispersion testing using datasets with increasing samples sizes. \textbf{(D)-(E)} Synthetic datasets generated using the alternative model where 1000 genes were randomly selected and their associated over-dispersion parameters were increased or decreased by a $\log_2$ fold change of 5 (see \textbf{STAR Methods}). TPR and EFDR for (D) differential over-dispersion testing and (E) differential residual over-dispersion testing using datasets with increasing samples sizes simulated.\\
+}\label{fig2:EFDR}
+\end{figure}
+
+\subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
+
+As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as the associated hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the BASiCS software. These were chosen to achieve a compromise between flexibility and shrinkage strength when applied to the datasets described in \textbf{Table S1}. \\ 
+
+Firstly, we observed that large values of $L$ can lead to over-fitting but that small values of $L$ can limit the flexibility to capture non-linear relations between $\log(\delta_i)$ and $\log(\mu_i)$. Thus, as a parsimonious choice, we selected $L = 10$. Moreover, as in \cite{Kapourani2016}, values for $m_l$ were chosen to be equally spaced across the range of $\log(\mu_i)$, i.e. 
+
+\begin{equation} m_l = a + (l-1)\frac{b - a }{L-1}, \hspace{0.2cm}  l=1,\ldots, L, \end{equation} 
+
+where $a=\min_{i\in\{1,\ldots,q_0\}}\{\log(\mu_i)\}$ and $b=\max_{i\in\{1,\ldots,q_0\}}\{\log(\mu_i)\}$. As $\mu_i$ values are unknown \emph{a priori}, $a$ and $b$ are updated every 50 MCMC iterations during burn-in (fixed thereafter). Additionally, the scale hyper-parameters $h_l$ control the width of the GRBFs and, consequently, the locality of the regression. As a default, we set these as $h_l = c \times \Delta m$, where $c$ is a fixed proportionality constant and $\Delta m$ is the distance between consecutive values of $m_l$. In practice, we observed that the choice of a particular value of $c$ is not critical, as long as narrow kernels ($c<0.5$) are avoided. As a default, $c = 1.2$ was chosen. \\
+
+The degrees of freedom $\eta$ controls the tails of the distribution for the residual term in \ref{eq::regression}. This influences the shrinkage towards the global trend and the robustness against outlying observations (here, these refer to genes whose mean and over-dispersion values are far from the trend).  If $\eta \geq 30$, $\epsilon_i$ approximately follows a normal distribution for which posterior inference for $\beta$ is known to be sensitive to outliers. Instead, small values of $\eta$ introduce heavy-tails for $\epsilon_i$, leading to more robust posterior inference. In principle, $\eta$ could be estimated within a Bayesian framework. However, this is problematic as the likelihood function associated to \ref{eq::regression} can be unbounded \citep{Fernandez1999}. Here, we opt for a pragmatic approach where the value of $\eta$ is fixed \emph{a priori}. To select a reasonable default value, we ran the regression BASiCS model for a grid of possible values of $\eta$ ($\eta \in \{ 1,2,3,4,5,6,7,8,9,15,20,25,30 \}$), using the datasets described in \textbf{Table S1} (with $L$, $m_l$ and $h_l$ fixed as described above). In all cases, we calculated a Monte Carlo estimates for the log-likelihood associated to \ref{eq::PoissonBASiCS} as a proxy for goodness-of-fit (data not shown). We observed that log-likelihood estimates were consistently the smallest for $\eta=1$ and that no substantial differences are observed across larger values of $\eta$ (provided that $\eta << 30$). \\ 
+
+\todo{Add figure on parameter choice} \\
+
+Based on these observations, default values implemented in the BASiCS software are set to $L=10, c=1.2, \eta=5$. Despite this, the model's implementation also allows flexible adjustment of $L$, $c$ and $\eta$ by the user. 
+
+\section{Datasets used in this chapter} \label{sec2:datasets}
+
+\subsection*{Quality filtering of single cell RNA sequencing data}
+We employed a range of different datasets to test the proposed methodology. These datasets were selected to cover different experimental techniques (with and without unique molecular identifiers, UMI) and to encompass a variety of cell populations. Moreover, key features of each dataset can be found in \textbf{Table S1}. 
+
+\subsection{Dictyostelium cells} \label{seq::data_dict}
+
+\cite{Antolovic2017} studied changes in expression variability between 0 hours (undifferentiated), 3 hours and 6 hours of \emph{Dictyostelium} differentiation. Raw data is available by direct download \citep[see Data S1 in][]{Antolovic2017}. Across all time-points, 5 cells were removed due to low quality. Technical spike-in genes that were not detected and biological genes with an average expression (across all cells) smaller than 1 count were removed. In total, 433 cells (131 cells and 3 batches at 0h, 157 cells and 3 batches at 3h, and 145 cells and 3 batches at 6h) and 10551 genes (88 technical and 10650 biological genes) passed filtering. We used data from the 0h time point to test the functionality of our model.
+
+\subsection{Mouse brain cells} \label{seq::data_micro}
+This dataset was composed of UMI scRNAseq data of cells isolated from the mouse somatosensory cortex and hippocampal CA1 region \citep{Zeisel2015}. Raw data is available from Gene Expression Omnibus under accession code GSE60361. 
+Prior to the analysis, we removed technical genes with 0 total counts and biological genes for which the average count across all 3007 cells was below 0.1. The groups comprising microglia cells and CA1 neurons were chosen to be analysed. For these groups, 98 cells (microglia), 939 cells (CA1 pyramidal neurons) and 10744 genes (10687 biological and 57 technical genes) were left to be analysed.
+
+\subsection{Pool-and-split RNAseq data} \label{seq::data_PaS}
+
+This UMI-based dataset provides a control experiment to assess changes in biological heterogeneity in a situation where mean expression remains unchanged across conditions. Pool-and-split samples were created by pooling 1 million mESCs grown in 2i or serum medium and splitting 20pg of RNA into aliquots. These libraries are compared against single-cell samples (mESCs) \citep{Grun2014}. Raw data is available from Gene Expression Omnibus under accession code GSE54695. \\
+
+As in \cite{Grun2014}, some cells were removed from the analysis due to low expression of the stem cell marker Oct4. Technical genes with 0 total counts were also removed from the analysis. Additionally, lowly expressed biological genes with fewer than 0.5 counts (on average, across all samples) were excluded. This left 258 libraries (74 single mESCs grown in 2i medium, 52 single mESCs grown in serum medium, 76 pool-and-split aliquots from cells grown in 2i medium and 56 pool-and-split aliquots from cells grown in serum medium) as well as 8924 genes (50 technical spike-ins and 8874 biological genes) for the analysis. Each condition contained 2 batches.\\
+
+Matched single molecule florescence \textit{in situ} hybridization (smFISH) data from mESCs grown in 2i and serum media were obtained from Dominic Gr\"un (Max Planck Institute of Immunobiology and Epigenetics, Freiburg, Germany) through personal communications. This smFISH experiment assayed 9 genes (\textit{Gli1}, \textit{Klf4}, \textit{Notch1}, \textit{Pcna}, \textit{Pou5f1}, \textit{Sohlh2}, \textit{Sox2}, \textit{Stag3}, \textit{Tpx2}) in more than 70 cells per condition. We excluded \textit{Notch1} from the analysis due to strong disagreement between smFISH and scRNAseq data of cells grown in serum medium.
+
+\subsection{CD4$^+$ T cells} \label{seq::data_cd4}
+
+Non-UMI scRNAseq data of CD4$^+$ T cells were taken from \cite{Martinez-jimenez2017}. Raw data is available from ArrayExpress under accession code E-MTAB-4888. To perform a variety of tests, naive and activated CD4$^+$ T cells from young \emph{Mus musculus} (B6) mice were selected. Biological genes with an average count $<~1$ and non-detected technical genes were removed from the analysis. In total, 146 cells (93 naive and 53 activated CD4$^+$ T cells) and 10553 genes (10495 biological and 58 technical genes) passed filtering. Each condition contains 2 replicates.
+
+\subsection{CD4$^+$ T cell differentiation} \label{seq::data_cd4diff}
+Non-UMI scRNAseq data were generated from CD4$^+$ T cells during differentiation towards Th1 and Tfh cell fates after \emph{Plasmodium} infection \citep{Lonnberg2017}. Raw reads were downloaded from ArrayExpress [E-MTAB-4388] and mapped against the \emph{Mus musculus} genome (mm10) using \emph{gsnap} \citep{Wu2010a} with default settings. Read counting was performed using \emph{HTSeq} \citep{Anders2014} with default settings. \\
+
+Quality control was performed by removing cells with fewer than 300,000 biological reads or fewer than 600,000 technical reads at day 2. At day 4 and 7, cells with fewer than 1,000,000 biological reads were excluded from downstream analysis. Additionally, we removed genes that did not show an average detection of more than 1 read at day 2, day 3, day 4 or day 7 after infection. After applying these criteria, 376 cells (Day 0: 16 cells, Day 2: 89, Day 3: 21, Day 4: 133, Day 7: 64, Day 7 non-infected: 53) and 7899 genes (7847 biological and 52 technical) remained for analysis. Note that, due to low sample sizes, we focused our analysis on data from day 2, day 4 and day 7 post-infection.
+
+\todo{Add Table S1}
+
+\section{The informative prior stabilizes parameter estimation}
+
+Our joint prior formulation has introduced a non-linear regression to capture the overall trend between gene-specific over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$. Thus, we also refer to the extended model induced by this prior as the \textit{regression} BASiCS model. Accordingly, the model induced by the original independent prior specification \citep{Vallejos2016a} is referred to as the \textit{non-regression} BASiCS model.\\ 
+
+To study the performance of the regression BASiCS model, we applied it to a variety of scRNAseq datasets. Each dataset is unique in its composition, covering a range of different cell types and experimental protocols (see section \ref{sec2:datasets} and \textbf{Table \ref{tab2:datatsets}}). Qualitatively, we observe that the inferred regression trend varies substantially across different datasets \textbf{(Fig.~\ref{fig2:datasets}}, justifying the choice of a flexible semi-parametric approach (see section \ref{sec2:extended_BASiCS} and section \ref{sec2:hyper-parameters}). Moreover, as expected, we observe that residual over-dispersion parameters $\epsilon_i$ are not confounded by mean expression, nor by the percentage of zero counts per gene \textbf{(Fig.~\ref{fig2:datasets}}. \\
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.95\textwidth]{Fig_5.png}
+\caption{\textbf{Parameter estimation using a variety of scRNAseq datasets.}\\
+Model parameters were estimated using the regression and non-regression BASiCS models on \textbf{(A)} naive CD4$^+$ T cells \citep{Martinez-jimenez2017}, \textbf{(B)} \textit{Dictyostelium} cells prior to differentiation (day 0) \citep{Antolovic2017}, \textbf{(C)} microglia cells \citep{Zeisel2015} and \textbf{(D)} pool-and-split RNA \citep{Grun2014}. These datasets were selected to highlight two situations with different levels of sparsity (i.e.~the proportion of zero counts, see fourth column). The colour code within the scatterplots is used to represent areas with high (yellow/red) and low (blue) concentration of genes. \textbf{First column:} gene-specific over-dispersion $\delta_i$ versus mean expression $\mu_i$ as estimated by the non-regression BASiCS model.\textbf{Second column:} gene-specific over-dispersion $\delta_i$ versus mean expression $\mu_i$ as estimated by the regression BASiCS model. The red line indicates the estimated regression trend. Purple dots indicate genes detected (i.e. with at least one count) in less than 2 cells. \textbf{Third column:} gene-specific residual over-dispersion $\epsilon_i$ versus mean expression $\mu_i$ as estimated by the regression BASiCS model. \textbf{Forth column:} gene-specific posterior estimates for residual over-dispersion $\epsilon_i$ parameters versus percentage of zero counts for each gene.\\}
+\label{fig2:datasets}
+\end{figure}
+
+\newpage
+
+The regression BASiCS model introduces a joint prior specification for $(\mu_i, \delta_i)'$, shrinking the posterior estimates for $\mu_i$ and $\delta_i$ towards the regression trend [this is in line with the shrinkage observed in Love et al. \citep{Love2014a}]. The strength of this shrinkage is dataset-specific, being more prominent in sparser datasets with a higher frequency of zero counts \textbf{(Fig.~\ref{fig2:datasets}A)} and for lowly-expressed genes where measurement error is greatest. \\
+
+Subsequently, we asked whether or not the shrinkage introduced by the regression BASiCS model improves posterior inference. To assess this, we compared estimates for gene-specific parameters across: (i) different sample sizes and (ii) different gene expression levels. More concretely, we used a large dataset containing 939 CA1 pyramidal neurons \citep{Zeisel2015} to artificially generate smaller datasets by randomly sub-sampling 50-500 cells. For each sample size, parameter estimates were then obtained using both the regression and non-regression BASiCS models. The distribution of these estimates is summarised in \textbf{Fig.~\ref{fig2:parameter_stabilization}}. \\
+
+Firstly, we observe that both the regression and non-regression BASiCS models led to comparable and largely stable mean expression estimates across different sample sizes and expression levels (see \textbf{Figure~\ref{fig::parameter_stabilization}A}). Secondly, in line with the results in \textbf{Figure~\ref{fig::datasets}}, the main differences between the methods arise when estimating the over-dispersion parameters $\delta_i$ (see \textbf{Figure~\ref{fig::parameter_stabilization}B} and \textbf{Figure~S3A-C}). In particular, we observe that the non-regression BASiCS model appears to underestimate $\delta_i$ for lowly expressed genes when the sample size is small (with respect to the parameter estimates obtained based on the full dataset of 939 cells). In contrast, the shrinkage introduced by our regression BASiCS model aids parameter estimation, leading to robust estimates even for the smallest sample size. This is particularly important for rare cell populations where large sample sizes are difficult to obtain. A similar effect is observed for genes with medium and high expression levels, where the non-regression BASiCS model appears to overestimate $\delta_i$. We also observe that estimates of residual over-dispersion parameters $\epsilon_i$ are stable across sample sizes and expression levels. 
+These findings are replicated across multiple sub-sampling experiments (see \textbf{Figure~S3D-F}).  \\
+
+As an external validation, we compared our posterior estimates of gene-specific model parameters obtained from scRNAseq data to empirical estimates from matched smFISH data of mouse embryonic stem cells grown in 2i and serum media \citep[see \textbf{STAR Methods} and][]{Grun2014}. Firstly, posterior estimates of mean-expression parameters $\mu_i$ exhibit high correlation to smFISH mean transcript counts (see \textbf{Figure S3G}). Secondly, we also observe a strong correlation between posterior estimates for over-dispersion parameters $\delta_i$ and the empirical CV$^2$ values obtained from smFISH data (see \textbf{Figure S3H}). Finally, a similar behaviour is observed when comparing posterior estimates of residual over-dispersion parameters $\epsilon_i$ to a residual CV$^2$ (see \textbf{Figure S3I} and \textbf{STAR Methods}).
+
+
+To compare parameter estimates of the regression and non-regression model across different sample sizes, we used the CA1 pyramidal neuron population from \cite{Zeisel2015}. The regression BASiCS model was first run on the full population of 939 cells to generate \textit{pseudo} ground truth parameter estimates. Subsequently, 50, 100, 150, 200, 250, 300 and 500 cells were randomly sub-sampled from the full population prior to parameter estimation. This procedure was repeated 10 times for each sample size. Based on parameter estimates using the non-regression model, we split the genes into three sets: lowly expressed ($\mu_i<1.89$), medium expressed ($1.89<\mu_i<5.37$) and highly expressed ($\mu_i>5.37$). These cut-off values were chosen such that a third of genes classifies into each category. We dissected the results of this experiment in three ways. First, we visualize boxplots showing all estimates of gene-specific parameters for a single one sub-sampling experiment (\textbf{Figure~3}). Second, we computed the $\log_2$ fold change for estimates of gene-specific over-dispersion parameters $\delta_i$ between the regression and non-regression BASiCS models (\textbf{Figure S3A-C}). Third, for each sub-sampling experiment, sample size and gene set, we computed the median $\log_2$ fold change in $\mu_i$ and $\delta_i$ and the median difference for $\epsilon_i$ between estimates and the \emph{pseudo} ground truth. The median and the range of these values across 10 sub-sampling experiment is used for visualization purposes (see \textbf{Figure S3D-F}).\\
+
+External validation for posterior estimates of gene-specific model parameters using matched scRNAseq and smFISH data of mouse embryonic stem cells grown in 2i and serum media \citep[see \textbf{Table S1} and][]{Grun2014}. As in \cite{Brennecke2013}, residual CV$^2$ values for the smFISH data, we defined by the residuals obtained after fitting a gamma generalized linear model with identity link (\textit{glmgam.fit} of the \textit{statmod} package in R) between the CV$^2$ and the reciprocal log-transformed mean transcript counts.
