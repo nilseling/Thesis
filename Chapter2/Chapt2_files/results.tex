@@ -81,11 +81,17 @@ where $g_1(\cdot), \ldots, g_L(\cdot)$ represent a set of Gaussian radial basis 
 g_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
 \end{equation} 
 
-where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels. \\
+where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels. 
 
-In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}.  Details about this choice are described below.\\
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_2.png}
+\caption[Schematic representation of the regression approach using GRBFs]{\textbf{Schematic representation of the semi-parametric regresion approach using Gaussian Radial Basis Functions.}\\
+Point estimates of the log-transformed mean expression and log-transformed coefficient of variation (CV$^2$) computed on the Dictyostelium data at day 0 \citep{Antolovic2017} were used to fit a least-squares regression based on Gaussian Radial Basis Functions (GRBFs). The model matrix $X$ contains an intercept term (green line), a linear component (orange line) and 10 GRBFs (blue lines). For visualization purposes, a linear regression was fit using least-square estimates (red line) based on the given model matrix $X$.}
+\label{fig2:GRBFs}
+\end{figure}
 
-\todo{Add figure on GRBFs} \\
+In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}.  Details about this choice are described below. A schematic representation of this regression approach can be seen in \textbf{Fig. \ref{fig2:GRBFs}}.\\
 
 The remaining elements of the prior were chosen as follows: \begin{eqnarray}
 \beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
@@ -184,17 +190,17 @@ Changes in mean and over-dispersion are highlighted using the decision rule of \
 
 To evaluate the performance of our differential test we generated synthetic data under a null model (without changes in variability) and an alternative model (with changes in variability). All datasets were generated following the BASiCS model, with parameter values used set by empirical estimates based on 98 microglia cells (see below). For this purpose, we use the \emph{BASiCS$\_$Sim} function. To simulate data under an alternative model, 1000 genes were randomly selected and their associated $\delta_i$'s were increased or decreased by a $\log_2$ fold change of 5. Differential testing was performed either between data simulated on the same set of parameters (null model) or between data simulated from the original parameters and the altered parameters (alternative model). We report the EFDR \citep{Newton2004} as well as the false positive rate (FPR) for simulations under the null model and the true positive rate (TPR) for simulations under the alternative model. Synthetic data was generated with different sample sizes, with 5 repetitions for each sample size \textbf{(Fig. \ref{fig2:EFDR})}.
 
-\newpage
-
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_3.png}
+\includegraphics[width=0.9\textwidth]{Fig_3.png}
 \caption[EFDR, FPR and TPR estimation using simulated data.]{\textbf{EFDR, FPR and TPR estimation using simulated data.}\\
 Data was simulated using the BASiCS model with model parameters set by empirical estimates based on on 98 microglia cells (see \textbf{STAR Methods}).  \\
 Different samples sizes (40 - 200 cells) were simulated in replicates of 5. Differential testing was performed between 2 simulated datasets of equal size to calculate the false positive rate (FPR, number of detections divided by number of genes tested), the true positive rate (number of true positive divided by number of positives). Moreover, we report the expected false discovery rate \citep[EFDR,][]{Newton2004}. 
 For each test, the EFDR was controlled to 10\% and the default minimum tolerance thresholds were used ($\tau_0 = \log_2(1.5)$, $\omega_0 = \log_2(1.5)$ and $\psi_0 = 0.41$). \textbf{(A)-(C)} Synthetic datasets generated using the null model (without changes in variability). FPR and EFDR for (A) differential mean expression, (B) differential over-dispersion and (C) differential residual over-dispersion testing using datasets with increasing samples sizes. \textbf{(D)-(E)} Synthetic datasets generated using the alternative model where 1000 genes were randomly selected and their associated over-dispersion parameters were increased or decreased by a $\log_2$ fold change of 5 (see \textbf{STAR Methods}). TPR and EFDR for (D) differential over-dispersion testing and (E) differential residual over-dispersion testing using datasets with increasing samples sizes simulated.\\
 }\label{fig2:EFDR}
 \end{figure}
+
+\newpage
 
 \subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
 
