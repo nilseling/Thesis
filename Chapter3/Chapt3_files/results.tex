@@ -82,5 +82,24 @@ On a broad level and by visualizing the expression of detected marker genes, we 
 \label{fig3:cell_types}
 \end{figure}
 
+\section{Developmental staging of mouse spermatogenesis}
+\subsection*{Staged developmental mapping of the first wave of spermatogenesis defines germ cell identity}
+
+Historically, sub-staging of the major cell types within the testis was based on changes in nuclear or cellular morphology \citep{Oakberg1956,  Oakberg1956a}. Previous attempts to complement morphology with molecular signatures have been limited to FACS-based and sedimentation assays, where the resolution was unable to differentiate between sub-cell-types \citep{Bastos2005, Gaysinskaya2014, Getun2011, Lam1970, Meistrich1977, Romrell1976, Soumillon2013}. While a mixture of all spermatogenic cell types co-exists in the adult, the first wave of spermatogenesis during juvenile development is more synchronised. Starting around mouse postnatal day P4, spermatogonia begin to differentiate, forming the first generation of spermatocytes as early as P10, round spermatids by P20, and completing the first wave of spermatogenesis with the production of mature spermatozoa between P30 and P35 \textbf{(Fig.~\ref{fig3:1st_wave}A)} \citep{Bellve1977, Janca1986, Nebel1961}.\\
+ 
+We exploited this first spermatogenic wave to generate thousands of high-resolution single-cell transcriptional profiles of morphologically well-defined cell populations. For this, we sampled multiple time points during the first wave to identify the most mature (differentiated) cell types. Based on known sperm developmental transitions, we chose six time points between P10 and P35 from which to generate single-cell RNA-Seq libraries \textbf{(Fig.~\ref{fig3:1st_wave}A)}. For each juvenile experiment, we found that the population of developing germ cells was strongly enriched at the expected developmental stage, as quantified by the percentage of cells in each cell-type cluster \textbf{(Fig.~\ref{fig3:1st_wave}B and C)}. By associating these cell types with the corresponding cell types in the adult trajectory, we unambiguously assigned molecular and histological signatures to cells during adult spermatogenesis.\\
+
+For instance, at P15 the majority of cells are spermatogonia and spermatocytes progressing through the mid-pachytene stage, in accord with the appearance of the sex body \citep{Turner2004}. Interestingly, less mature cell types are also present at this time point (and later time points), supporting recent reports that the first wave of spermatogenesis is less synchronized than previously anticipated \citep{Snyder2010}. At P20, we detect an enrichment for spermatocytes, cells undergoing meiotic cell division, and a small group of early round spermatids. This population structure is in line with matched histology, which shows a large number of tubules in late stages IX-XII and the first occurrence of early round spermatids \citep{Bellve1977}.\\
+Spermatids first reach the elongating state between P24 and P26 \citep{Janca1986}. At P25, we observed cells matched to our first ten clusters of spermatids, which we then labelled according to morphologically-defined spermatid substages S1 – S10 \textbf{(Fig.~\ref{fig3:1st_wave}C)}. At P30 and P35, we observed a relatively even distribution of cells across all groups, closely resembling the adult distribution up to S14, indicating that the first wave of spermatogenesis is complete. \\
+
+To further validate the identity of the cell clusters, we used bulk RNA-Seq from testis collected during the first wave of spermatogenesis every two days between P6 and P34 \textbf{(Fig.~\ref{fig3:1st_wave}A)}. 
+
+
+
+We matched the bulk and single-cell RNA-Seq data by using a probabilistic classification of the bulk samples based on the cluster-specific marker genes in the adult data (Methods; Fig. 2D). This confirmed that between P6 – P14 spermatogonia and somatic cells show the highest contribution to the transcriptomic profile. Between P16 and P20 we observed the emergence of spermatocyte-specific gene expression signatures, after which spermatids become the transcriptionally dominant cell type. By P26, spermatids reach the elongating state where transcription is uniformly shut-down due to the beginning of the histone-to-protamine transition (Steger, 1999); following this, changes in RNA content are mostly due to degradation. Bulk transcriptional profiles can therefore only be classified up to S10, because transcription is largely inactive thereafter.
+In sum, by combining transcriptional and histological analyses at specific stages during the first wave of spermatogenesis, we assigned transcriptional profiles to specific, morphologically defined germ cell types.
+
+
+
 
 
