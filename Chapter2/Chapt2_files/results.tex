@@ -348,7 +348,7 @@ For each test, the EFDR was controlled to 10\% and the default minimum tolerance
 
 \subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
 
-As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as the associated hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the BASiCS software. These were chosen to achieve a compromise between flexibility and shrinkage strength when applied to the datasets described in \textbf{Table S1}. \\ 
+As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as the associated hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the BASiCS software. These were chosen to achieve a compromise between flexibility and shrinkage strength when applied to the datasets described in \textbf{Table \ref{tab2:datatsets}}. \\ 
 
 Firstly, we observed that large values of $L$ can lead to over-fitting but that small values of $L$ can limit the flexibility to capture non-linear relations between $\log(\delta_i)$ and $\log(\mu_i)$. Thus, as a parsimonious choice, we selected $L = 10$. Moreover, as in \cite{Kapourani2016}, values for $m_l$ were chosen to be equally spaced across the range of $\log(\mu_i)$, i.e. 
 
@@ -371,7 +371,7 @@ Based on these observations, default values implemented in the BASiCS software a
 \section{Datasets used in this chapter} \label{sec2:datasets}
 
 \subsection*{Quality filtering of single cell RNA sequencing data}
-We employed a range of different datasets to test the proposed methodology. These datasets were selected to cover different experimental techniques (with and without unique molecular identifiers, UMI) and to encompass a variety of cell populations. Moreover, key features of each dataset can be found in \textbf{Table S1}. 
+We employed a range of different datasets to test the proposed methodology. These datasets were selected to cover different experimental techniques (with and without unique molecular identifiers, UMI) and to encompass a variety of cell populations. Moreover, key features of each dataset can be found in \textbf{Table \ref{tab2:datatsets}}. 
 
 \subsection{Dictyostelium cells} \label{seq::data_dict}
 
@@ -404,7 +404,7 @@ Quality control was performed by removing cells with fewer than 300,000 biologic
 \centering
 \caption[Datasets used for model testing and novel analysis]{\textbf{Datasets used for model testing and novel analysis.} \\
 For each of the datasets analysed in this study: number of cells (2$^{nd}$ column), number of genes (biological + technical spike-ins, 3$^{rd}$ column), number of batches (4$^{th}$ column), type of data acquisition system (5$^{th}$ column), information of whether the data was generated using unique molecular identifiers (UMIs, 6$^{th}$ column) and the reference to the original study (7$^{th}$ column) are provided.}
-\label{table:effects_noise}
+\label{tab2:datasets}
 \begin{tabular}{lllllll}
 \toprule
 \textbf{Dataset} & \textbf{\# cells} & \textbf{\# genes} & \textbf{\# batches} & \textbf{Protocol} & \textbf{UMIs} & \textbf{Ref.}                       \\
