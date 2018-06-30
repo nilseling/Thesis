@@ -111,6 +111,51 @@ To further validate the identity of the cell clusters, we used bulk RNA-Seq from
 
 In sum, by combining transcriptional and histological analyses at specific stages during the first wave of spermatogenesis, we assigned transcriptional profiles to specific, morphologically defined germ cell types.
 
+\section{Under-represented cell types in spermatogenesis}
+\subsection*{Identification of under-represented and transcriptionally silent cell types in adolescent testes}
+
+In addition to assigning the dominant cell types in germ cell development, we further exploited the juvenile samples to analyse the highly enriched cell types that are rare in adult testes, including somatic support cells, spermatogonia and the earliest spermatocytes.  Through the first wave of spermatogenesis, the ratio between germ cells and somatic cells increases; therefore, to study heterogeneity within the somatic cell population, we focused on the P10 stage, where somatic cells are relatively more frequent. As expected, we readily identified substantial numbers of Sertoli and Leydig cells, which are the main somatic cell types in adult \citep{Griswold1998, Haider2004}.  In addition, we newly identified a large population of immature Leydig cells, based on \textit{Dlk1} expression \citep{Lottrup2014}. Furthermore, we detected the cells that form the basal lamina such as peritubular myoid cells (PTM, \textit{Acta2}, \citep{Cool2008}), vascular endothelial cells (\textit{Tm4sf1}, \citep{Shih2009}), and testicular macrophages (\textit{Cd14}, \citep{Kitchens2000}) \textbf{(Fig.~\ref{fig3:somatic_cells}A and B)}. By performing differential expression analysis, we identified novel markers for these cell populations that are relatively under-represented in adult testes.\\
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_5.png}
+\caption[Enrichment of under-represented somatic cell types in juvenile samples]{\textbf{Enrichment of underrepresented somatic cell types in juvenile samples.} \\
+\textbf{(A)} tSNE representation of cells isolated from P10 animals that were mapped to cells from adult mice. Cell types were identified by unbiased, graph-based clustering and annotated after marker gene extraction. SG: Spermatogonia, SC: Spermatocytes, IL: Immature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Macrophages. \textbf{(B)} Heatmap representation of cell type-specifc marker genes. Bolded genes indicate previously described markers for the following cell types: Sertoli cells (\textit{Cst12}), early spermatocytes (\textit{Sycp1}), spermatogonia (\textit{Dmrt1}), immature leydig cells (\textit{Dlk1}), endothelial cells (\textit{Acta2}), peritubular myoid cells (\textit{Tm4sf1}), Leydig cells (Insl3), testicular macrophages (\textit{Cd14}). \textbf{(C)} PCA of spermatogonia (SG) and early spermatocytes (SC 1) from P10 and P15 animals. 
+}
+\label{fig3:somatic_cells}
+\end{figure}
+
+Identifying spermatogonial sub-populations in adult testes is greatly complicated by their rarity relative to other germ cell types \citep{Lukassen2018}. However, during early juvenile development spermatogonia are relatively enriched, which we exploited to further characterize their heterogeneity \textbf{(Fig. \ref{fig3:somatic_cells}A)}. By combining cells from P10 and P15, we obtained 1,186 transcriptional profiles that capture sub-populations during spermatogonial differentiation \textbf{(Fig. \ref{fig3:somatic_cells}B)}. To analyse transcriptomes of P10 and P15 samples, we performed batch correction between these samples as described above. We detected two clusters corresponding to undifferentiated spermatogonia (A$_\textnormal{undiff}$) based on their expression of \textit{Nanos3} and \textit{Zbtb16} \textbf{(Fig. \ref{fig3:somatic_cells}B and C)} \citep{Buaas2004, Lolicato2008}). These cells comprise A$_\textnormal{s}$, A$_\textnormal{paired}$, and A$_\textnormal{aligned}$ spermatogonia that decrease in stemness as they divide and gain competency to differentiate \citep{Suzuki2012}. Additionally, these cells express a number of marker genes also detected in undifferentiated human spermatogonial stem cells, such as \textit{Gfra1}, \textit{Bcl6} and \textit{Id4} \citep{Guo2017}. Based on the expression of \textit{Stra8} (Stimulated by retinoic acid 8), we can map the point at which spermatogonial differentiation is induced (A$_\textnormal{aligned}$-to-A$_\textnormal{1}$ transition), thus marking the beginning of differentiating spermatogonia (A$_\textnormal{diff}$) \citep{Endo2015}. A$_\textnormal{diff}$ are marked by the expression of \textit{Sohlh1} \citep{Ballow2006} and are highly proliferative, generating A$_\textnormal{1-4}$, Intermediate and B spermatogonia. Late differentiating spermatocytes express \textit{Dmrtb1} (also referred to as \textit{Dmrt6}), which mediates the mitosis-to-meiosis transition and quickly disappears in preleptotene spermatocytes. This latter population shows a second increase in Stra8 expression levels, which is necessary for initiation of meiosis \textbf{(Fig. \ref{fig3:somatic_cells}B and C)} \citep{Anderson2008, Endo2015, Zhang2014}. 
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.85\textwidth]{Fig_6.png}
+\caption[Cellular heterogeneity during spermatogonial differentiation]{\textbf{Cellular heterogeneity during spermatogonial differentiation.} \\
+\textbf{(A)} Schematic representation of spermatogonial differentiation including sub-stages of undifferentiated (A$_\textnormal{s}$, A$_\textnormal{paired}$, A$_\textnormal{aligned}$) and differentiating spermatogonia (A$_\textnormal{1}$, A$_\textnormal{2}$, A$_\textnormal{3}$, A$_\textnormal{4}$, In, B) (SGs) as well as Preleptotene (Pl). \textbf{(B)} Sub-structure detection in spermatogonia isolated from P10 and P15 animals. PCA was computed on transcriptomes after batch correction between P10 and P15 samples. The first three panels represent expression of known marker genes for undifferentiated (Undiff, \textit{Nanos3}) and differentiating (Diff, \textit{Stra8} and \textit{Dmrtb1}) spermatogonia. The colour scale shows log$_2$-transformed, normalized counts. The last panel overlays cluster identity by sub-clustering batch-corrected transcriptomes of spermatogonia. \textbf{(C)} Scaled, normalized expression counts of the top 15 marker genes per cell cluster. Column and row labels represent the cell clusters identified in the last panel of (B). The lower bar indicates the gradual differentiation from undifferentiated spermatogonia to preleptotene cells driven by two retinoic acid (RA) signals. }
+\label{fig3:somatic_cells}
+\end{figure}
+
+The transition between differentiating spermatogonia and spermatocytes is a gradual process that occurs in stage VIII tubules when B spermatogonia divide and form preleptotene spermatocytes \citep{Anderson2008, Baltus2006}. We were therefore surprised not to observe a continuous differentiation trajectory bridging spermatogonia to spermatocytes textbf{(Fig. \ref{fig3:somatic_cells}C)}. One possible explanation is that leptotene and zygotene spermatocytes have decreased transcriptional activity \citep{Kierszenbaum1974, Monesi1965}, and are thus likely to be classified as empty droplets by the 10X CellRanger pipeline. 
+To capture these transcriptionally quiescent cells, we applied a newly developed computational method that distinguishes between droplets capturing genuine cells containing small amounts of mRNA versus empty droplets containing only ambient mRNA \citep{Lun2018}. Applying this approach increased the number of early spermatocytes in all samples and, in particular, identified a population of cells connecting spermatogonia and spermatocytes at the predicted position in the cell trajectory \textbf{(Fig.~\ref{fig3:emptyDrops}A-C)}. As expected for leptotene and zygotene spermatocytes, these cells show high mRNA levels for genes involved in synaptonemal complex formation, chromosome synapsis and DNA double-strand break (DSB) formation such as \textit{Sycp1}, \textit{H2afx} and \textit{Hormad1} \textbf{(Fig.~\ref{fig3:emptyDrops}D)} \citep{Daniel2011, Mahadevaiah2001, Vries2005}.\\
+In addition to early spermatocytes, droplets with lower transcriptional complexity also captured late condensing spermatids; as mentioned above, these late stages of spermiogenesis are characterized by continuous degradation of RNA after transcriptional shutdown at the round-to-elongating transition \citep{Steger1999} \textbf{(Fig.~\ref{fig3:emptyDrops}E)}.\\
+ 
+By profiling carefully chosen developmental time points and applying new methods to incorporate single cells with lower transcriptional complexity, our results elucidate a more complete view of testicular cell type composition that includes previously under-represented cell types.
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.85\textwidth]{Fig_7.png}
+\caption[Transcriptionally silent cell types in spermatogenesis.]{\textbf{Detection of transcriptionally silent cell types in scRNA-Seq data.} \\
+\textbf{(A)} tSNE representation of cells selected by the emptyDrops filtering strategy. Coloured dots represent annotated cell types detected using the default CellRanger filtering pipeline while black dots represent cells detected by the emptyDrops filtering. SG: Spermatogonia, SC: Spermatocytes, IL: Immature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Macrophages. \textbf{(B)} tSNE representation of emptyDrops filtered cells from the P15 sample. Cell colouring corresponds to clustering performed on this sample. Undiff SG: undifferentiated spermatogonia, Diff SG: differentiating spermatogonia. \textbf{(C)} PCA representation of spermatogonia and spermatocytes detected in the P15 sample after emptyDrops filtering. Labelling corresponds to the clusters shown in (B). \textbf{(D)} Leptotene and zygotene spermatocyte marker gene expression. The colour scale represents log$_2$-transformed, normalized counts. \textbf{(E)} Visualization of the number of genes expressed (> 0 counts) per cell.
+}
+\label{fig3:emptyDrops}
+\end{figure}
+
+\newpage
+
 
 
 
