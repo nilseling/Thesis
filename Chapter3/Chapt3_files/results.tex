@@ -137,7 +137,7 @@ Identifying spermatogonial sub-populations in adult testes is greatly complicate
 \label{fig3:spermatogonia}
 \end{figure}
 
-The transition between differentiating spermatogonia and spermatocytes is a gradual process that occurs in stage VIII tubules when B spermatogonia divide and form preleptotene spermatocytes \citep{Anderson2008, Baltus2006}. We were therefore surprised not to observe a continuous differentiation trajectory bridging spermatogonia to spermatocytes textbf{(Fig. \ref{fig3:somatic_cells}C)}. One possible explanation is that leptotene and zygotene spermatocytes have decreased transcriptional activity \citep{Kierszenbaum1974, Monesi1965}, and are thus likely to be classified as empty droplets by the 10X CellRanger pipeline. 
+The transition between differentiating spermatogonia and spermatocytes is a gradual process that occurs in stage VIII tubules when B spermatogonia divide and form preleptotene spermatocytes \citep{Anderson2008, Baltus2006}. We were therefore surprised not to observe a continuous differentiation trajectory bridging spermatogonia to spermatocytes \textbf{(Fig. \ref{fig3:somatic_cells}C)}. One possible explanation is that leptotene and zygotene spermatocytes have decreased transcriptional activity \citep{Kierszenbaum1974, Monesi1965}, and are thus likely to be classified as empty droplets by the 10X CellRanger pipeline. 
 To capture these transcriptionally quiescent cells, we applied a newly developed computational method that distinguishes between droplets capturing genuine cells containing small amounts of mRNA versus empty droplets containing only ambient mRNA \citep{Lun2018}. Applying this approach increased the number of early spermatocytes in all samples and, in particular, identified a population of cells connecting spermatogonia and spermatocytes at the predicted position in the cell trajectory \textbf{(Fig.~\ref{fig3:emptyDrops}A-C)}. As expected for leptotene and zygotene spermatocytes, these cells show high mRNA levels for genes involved in synaptonemal complex formation, chromosome synapsis and DNA double-strand break (DSB) formation such as \textit{Sycp1}, \textit{H2afx} and \textit{Hormad1} \textbf{(Fig.~\ref{fig3:emptyDrops}D)} \citep{Daniel2011, Mahadevaiah2001, Vries2005}.\\
 In addition to early spermatocytes, droplets with lower transcriptional complexity also captured late condensing spermatids; as mentioned above, these late stages of spermiogenesis are characterized by continuous degradation of RNA after transcriptional shutdown at the round-to-elongating transition \citep{Steger1999} \textbf{(Fig.~\ref{fig3:emptyDrops}E)}.\\
  
@@ -147,7 +147,7 @@ By profiling carefully chosen developmental time points and applying new methods
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.85\textwidth]{Fig_7.png}
+\includegraphics[width=0.8\textwidth]{Fig_7.png}
 \caption[Transcriptionally silent cell types in spermatogenesis.]{\textbf{Detection of transcriptionally silent cell types in scRNA-Seq data.} \\
 \textbf{(A)} tSNE representation of cells selected by the emptyDrops filtering strategy. Coloured dots represent annotated cell types detected using the default CellRanger filtering pipeline while black dots represent cells detected by the emptyDrops filtering. SG: Spermatogonia, SC: Spermatocytes, IL: Immature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Macrophages. \textbf{(B)} tSNE representation of emptyDrops filtered cells from the P15 sample. Cell colouring corresponds to clustering performed on this sample. Undiff SG: undifferentiated spermatogonia, Diff SG: differentiating spermatogonia. \textbf{(C)} PCA representation of spermatogonia and spermatocytes detected in the P15 sample after emptyDrops filtering. Labelling corresponds to the clusters shown in (B). \textbf{(D)} Leptotene and zygotene spermatocyte marker gene expression. The colour scale represents log$_2$-transformed, normalized counts. \textbf{(E)} Visualization of the number of genes expressed (> 0 counts) per cell.
 }
@@ -155,6 +155,30 @@ By profiling carefully chosen developmental time points and applying new methods
 \end{figure}
 
 \newpage
+
+
+\section{Characterization of male meiosis}
+
+The mitotic expansion of spermatogonia produces large numbers of spermatocytes, which then undergo male meiosis where two consecutive cell divisions give rise to four haploid spermatids. In contrast to mitotic cell divisions, prophase of meiosis I is extremely prolonged, lasting up to 10 days in male mice \citep{Soh2017}. This process has been histologically described, but a full transcriptional characterization of spermatocytes undergoing meiosis is lacking. \\
+
+To address this, we ordered spermatocytes along their differentiation trajectory. For this, we fitted a principal curve \citep{Hastie1989} to the first 3 principal components (computed on the top 1000 highly variable genes) using the \emph{principal.curve} function implemented in the \emph{princurve} R package. This approach allows us to order cells along the principal curve. The directionality of the curve was inferred using prior information based on the cluster annotation. Here, the differentiation trajectory starts at the first group of spermatocytes and ends at the meiotic cell divisions. \\
+We first identified a strong increase in the number of genes expressed as spermatocytes progress through prophase, with the highest number being expressed immediately before the cells divide \textbf{(Fig.~\ref{fig3:meiosis}A)}. Using this as a proxy for active transcription, we identified diplotene spermatocytes, which are the latest cell type in prophase I in which RNA synthesis is occurring \citep{Monesi1964}. To profile increasing or decreasing transcription throughout meiotic prophase, we correlated each gene’s normalised expression level to the number of genes expressed. For this, we used the \emph{correlatedPairs} function implemented in \emph{scran} \citep{Lun2016}. We first constructed an empirical null distribution using the \emph{correlateNull} function implemented in scran. Next, we tested the observed Spearman’s $\rho$ for each gene against this null distribution.  We consider genes with $\rho$ < -0.3 and a Benjamini-Hochberg corrected empirical p-value < 0.1 as negatively correlated and genes with $\rho$ > 0.3 and a Benjamini-Hochberg corrected empirical p-value < 0.1 as positively correlated. As expected, previously known marker genes for early meiotic processes such as \textit{Hormad1} and \textit{Sycp3} decreased in expression during Prophase I, whereas \textit{Pou5f2} and \textit{Tcte2}, a male-meiosis specific gene \citep{Braidotti1997} increased in expression \textbf{(Fig.~\ref{fig3:meiosis}B)}. Supporting our identification of diplotene spermatocytes, \textit{Pou5f2} has previously been shown to be specifically expressed during a 36- to 48-hour period preceding the meiotic cell division \citep{Andersen1993}. \\
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{Fig_8.png}
+\caption[Gene expression dynamics during male meiosis]{\textbf{Gene expression dynamics during male meiosis.} \\
+\textbf{(A)} Number of genes expressed per spermatocyte. Cells are ordered by their developmental progression during meiotic prophase until metaphase. \textbf{(B)} Expression of genes that are negatively or positively correlated with the number of genes expressed during meiotic prophase (negatively correlated: $\rho$ < -0.3, Benjamini-Hochberg corrected empirical p-value < 0.1; positively correlated: $\rho$ > 0.3, Benjamini-Hochberg corrected empirical p-value < 0.1). Per category, two genes are visualized. The colour gradient represents log$_2$-transformed, normalized counts. \textbf{(C)} Heatmap visualizing the scaled expression of the top 15 marker genes per cell type. Row and column labels correspond to the different populations of spermatocytes (SC). M: Metaphase. Genes are labelled based on their fertility phenotype: pink – infertile or sub-fertile in females, light blue - infertile or sub-fertile in males, dark green - infertile or sub-fertile in both males and females.}
+\label{fig3:meiosis}
+\end{figure}
+
+Despite the overall increase in transcription, we observed distinct temporal expression patterns when visualizing specific marker genes for individual spermatocyte populations. Even within pachytene spermatocytes at different stages in their developmental progression, there exists substantial heterogeneity \textbf{(Fig.~\ref{fig3:meiosis}C)}. As expected, early spermatocyte markers (SC 1 and SC 2) were enriched for genes with known functions in male or female fertility, reflecting a history of intensive investigation \citep{Deng2002, Spruck2003, Vries2005}. In contrast, our datasets reveal genes present in previously-unknown transcriptional programs that functionally orchestrate the later stages of spermatocyte development.
+
+\section{Transcriptional dynamics during spermiogenesis}
+
+
 
 
 
