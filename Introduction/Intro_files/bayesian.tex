@@ -21,14 +21,36 @@ Zero-inflated negative binomial [Love 2014, Grun 2014, ZinBAWave]
 The transcript count of gene $g$ in cell $n$ is modelled as zero-inflated negative binomial distributed:
 
 \begin{align*}
-x_{n,g} = 
+x_{n,g} & = 
  \left\lbrace
   \begin{aligned}
-    &\textnormal{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
-    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+    & y_{n,g} && \textnormal{if} \; h_{n,g} = 0,  \\ 
+    & 0 && \textnormal{otherwise}    	    
   \end{aligned}
-\right.
+\right.\\
+h_{n,g} & = \textnormal{Bernoulli}(f_h^g(z_n,s_n))\\
+y_{n,g} & = \textnormal{Poisson}(l_nw_{n.g})\\
+w_{n,g} & = \textnormal{Gamma}(\rho^g_n, \theta)\\
+\rho_n & = f_w(z_n,s_n)\\
+l_n & = \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
+z_n & = \textnormal{Normal}(0,I)
 \end{align*}
+
+\todo{add graphical model}
+
+In this model, $\rho_n^g$ describes the frequency of expression. $l_n$ is a scaler proportional to the library size. 
+
+scRNA-Seq data is better fitted with a ZINB than log-Normal or zero-inflated log-Normal [Lopez2018]. 
+
+scVI accounts for batch effects, normalizes data, provides low-dimensional representation, takes 5 hours for > 1 million cells and 750 genes and 10 hours for > 1 million cells and 10,000 genes.
+
+Differential mean expression testing via Bayes factor:
+
+\todo{Write model for differential testing}
+
+
+Summary: Zero-inflation is not needed and zeros in dataset can be explained by NB distribution [Lopez2018]
+
 
 \subsection{Neural networks for modelling scRNA-Seq data}
  
