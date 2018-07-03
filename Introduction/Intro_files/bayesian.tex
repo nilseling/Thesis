@@ -5,12 +5,37 @@
 
 \section{Bayesian approaches to model scRNAseq data}
 
-As described above, expression counts in single-cell RNA-Seq data can be modelled as negative binomial distributed [ZINBABWE] while other approaches model these counts as log-normal distributed [BISCUIT, ZIFA]. This approach estimates cell and gene-specific parameters that can be used downstream for several tasks as normlization [Catas Nat Methods], clustering [ref], visualization [some latent space...] and imputation [MAGIC?], differential expression [e.g. MAST].   
+In the last decade, an array of tools to process and analyse scRNA-Seq data has been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been done in details depending on the type of analysis that need to be performed \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters to quantify certain features of scRNA-Seq datasets. \\
 
+\subsection{The basics of Bayesian inference}
+
+\todo{Explain Bayes theorem}\\
+
+
+\subsection{Posterior inference}
+
+\todo{Explain posterior inference}\\
+
+\todo{MCMC, Metropolis Hastings, Gibbs sampling}\\
+
+In Markov chain Monte Carlo (MCMC) sampling, an ergodic Markov chain on the latent variable is generated with a stationary distribution that represents the posterior $p(\mathbb{z}|\mathbb{x})$  
+
+\todo{Variational Bayes}
+
+
+
+
+\subsection{Modelling scRNa-Seq data}
+
+As described above, expression counts in single-cell RNA-Seq data can be modelled as negative binomial distributed [ZINBABWE] while other approaches model these counts as log-normal distributed [BISCUIT, ZIFA]. This approach estimates cell and gene-specific parameters that can be used downstream for several tasks as normlization [Catas Nat Methods], clustering [ref], visualization [some latent space...] and imputation [MAGIC?], differential expression [e.g. MAST].  
+
+\subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 
 \subsection{Scalability of Bayesian inference}
 
-With the development of dropblet based approaches [Klein, Macosko] and multiplexed sequencing [Seqwell], scalability is important. 
+With the development of dropblet based approaches [Klein, Macosko] and multiplexed sequencing [Seqwell], scalability is important.
+
+Stochastic optimization as principle to scale models.
 
 Single-cell Variational Inference (scVI) 
 
@@ -18,7 +43,7 @@ scVI: transcriptomes of each cell are encoded through a non-linear transformatio
 
 Zero-inflated negative binomial [Love 2014, Grun 2014, ZinBAWave]
 
-The transcript count of gene $g$ in cell $n$ is modelled as zero-inflated negative binomial distributed:
+The transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as zero-inflated negative binomial distributed:
 
 \begin{align*}
 x_{n,g} & = 
@@ -28,17 +53,30 @@ x_{n,g} & =
     & 0 && \textnormal{otherwise}    	    
   \end{aligned}
 \right.\\
-h_{n,g} & = \textnormal{Bernoulli}(f_h^g(z_n,s_n))\\
-y_{n,g} & = \textnormal{Poisson}(l_nw_{n.g})\\
-w_{n,g} & = \textnormal{Gamma}(\rho^g_n, \theta)\\
+h_{n,g} & \sim \textnormal{Bernoulli}(f_h^g(z_n,s_n))\\
+y_{n,g} & \sim \textnormal{Poisson}(l_nw_{n.g})\\
+w_{n,g} & \sim \textnormal{Gamma}(\rho^g_n, \theta)\\
 \rho_n & = f_w(z_n,s_n)\\
-l_n & = \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
-z_n & = \textnormal{Normal}(0,I)
+l_n & \sim \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
+z_n & \sim \textnormal{Normal}(0,I)
 \end{align*}
 
 \todo{add graphical model}
 
-In this model, $\rho_n^g$ describes the frequency of expression. $l_n$ is a scaler proportional to the library size. 
+In this model, the negative binomial distribution is realized as a hierarchical formulation of $y_{n,g}$ being Poisson distributed around the latent random variable $l_n$ with an additional random effect $w_{n,g}$. Additionally, the zero-inflation of the model is controlled by the latent variable $h_{n,g}$. $l_n$ is a random variable that represents nuisance variation due to differences in capture efficiency and sequencing depth and which correlates with log-library size. $l_n$ is log-normal distributed parameterized by $l_\mu,l_\sigma\in\mathbb{R}^B_+$ which are empirical mean and variance estimates of the log-library size per batch in $B$ and which are therefore constants in the model \textbf{(Fig.~\ref{fig0:scVI}A)}.\\
+
+$w_{n,g}$ is Gamma distributed with the shape parameter $\rho_n^g$ and the scale parameter $\theta$. $\rho_g$ represents an intermediate matrix that relates the observations $x_{n,g}$ to the latent variables $z_n$. It provides a batch-corrected, normalized estimate of the percentage of transcripts in each cell $n$ from each gene $g$. $\theta$ is a global inverse-dispersion variable shared across all genes and all cells. The latent variable $z_n$ captures a latent representation of the data reflecting biological variation between the cells. $f_w$ and $f_h$ are neural networks mapping the latent space and batch annotation back to the full dimension of all genes: $\mathbb{R}^d\times{}\left\lbrace0,1\right\rbrace^B\rightarrow\mathbb{R}^G$.\\
+
+Fast inference of this model is implemented via stochastic optimization. First, the latent variables $w_{n,g}$, $h_{n,g}$ and $y_{n,g}$ are integrated out by controlling that $p(x_{n,g}|z_n,l_n,s_n)$ has a closed form density and is zero-inflated negative binomial (see Appendix A in \citep{Lopez2018}). In this formulation, the distribution of $x_{n,g}$ is only conditioned on the latent variables $z_n$ and $l_n$. The posterior distributions has therefore the following form: $p(z_n,l_n|x_{n,g},s_n)$. Mean-field variational inference is used to parameterized the posterior as:
+
+\begin{equation}
+p(z_n,l_n|x_{n,g},s_n)=p(z_n|x_{n,g},s_n)p(l_n|x_{n,g},s_n)
+\end{equation} 
+
+
+
+
+
 
 scRNA-Seq data is better fitted with a ZINB than log-Normal or zero-inflated log-Normal [Lopez2018]. 
 
@@ -49,9 +87,11 @@ Differential mean expression testing via Bayes factor:
 \todo{Write model for differential testing}
 
 
-Summary: Zero-inflation is not needed and zeros in dataset can be explained by NB distribution [Lopez2018]
+Summary: Zero-inflation is not needed and zeros in dataset can be explained by NB distribution [Lopez2018]. And when number of cells is smaller than number of genes, model underfits. Strength: representation of data in latent space
 
 
 \subsection{Neural networks for modelling scRNA-Seq data}
+
+\subsection{Other applications for Bayesian model using scRNA-Seq data}
  
 
