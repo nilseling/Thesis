@@ -18,14 +18,28 @@ In the last decade, an array of tools to process and analyse scRNA-Seq data has 
 
 \todo{MCMC, Metropolis Hastings, Gibbs sampling}\\
 
-In Markov chain Monte Carlo (MCMC) sampling, an ergodic Markov chain on the latent variable is generated with a stationary distribution that represents the posterior $p(\mathbb{z}|\mathbb{x})$  
+Metropolis Hastings \citep{Metropolis1953, Hastings1970}
+
+Gibbs sampling \citep{Geman1984}
+
+Application to Bayesian statistics \citep{Gelfand1990}
+
+In Markov chain Monte Carlo (MCMC) sampling, an ergodic Markov chain on the latent variable is generated with a stationary distribution that represents the posterior $p(\mathbf{z}|\mathbf{x})$  
 
 \todo{Variational Bayes}
 
+When datasets are large and models are complex, it is not always feasible to use the above described MCMC sampling methods to derive posterior distributions. Variational inference derives an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence:
 
+\begin{equation}
+q^\ast(\mathbf{z})=\underset{q(\mathbf{z})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\mathbf{z})||p(\mathbf{z}|\mathbf{x}))
+\end{equation}
 
+The posterior distribution is approximated with the optimized member of the family $q^\ast(\mathbf{z})$\citep{Blei2017}.\\
+In general, variational inference tends to be faster than MCMC while MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed.
 
-\subsection{Modelling scRNa-Seq data}
+\todo{Maximisation of the evidence lower bound}
+
+\subsection{Modelling scRNA-Seq data}
 
 As described above, expression counts in single-cell RNA-Seq data can be modelled as negative binomial distributed [ZINBABWE] while other approaches model these counts as log-normal distributed [BISCUIT, ZIFA]. This approach estimates cell and gene-specific parameters that can be used downstream for several tasks as normlization [Catas Nat Methods], clustering [ref], visualization [some latent space...] and imputation [MAGIC?], differential expression [e.g. MAST].  
 
