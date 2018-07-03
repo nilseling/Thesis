@@ -4,5 +4,32 @@
 %*****************************
 
 \section{Bayesian approaches to model scRNAseq data}
+
+As described above, expression counts in single-cell RNA-Seq data can be modelled as negative binomial distributed [ZINBABWE] while other approaches model these counts as log-normal distributed [BISCUIT, ZIFA]. This approach estimates cell and gene-specific parameters that can be used downstream for several tasks as normlization [Catas Nat Methods], clustering [ref], visualization [some latent space...] and imputation [MAGIC?], differential expression [e.g. MAST].   
+
+
+\subsection{Scalability of Bayesian inference}
+
+With the development of dropblet based approaches [Klein, Macosko] and multiplexed sequencing [Seqwell], scalability is important. 
+
+Single-cell Variational Inference (scVI) 
+
+scVI: transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a zer0-inflated negative binomial model. 
+
+Zero-inflated negative binomial [Love 2014, Grun 2014, ZinBAWave]
+
+The transcript count of gene $g$ in cell $n$ is modelled as zero-inflated negative binomial distributed:
+
+\begin{align*}
+x_{n,g} = 
+ \left\lbrace
+  \begin{aligned}
+    &\textnormal{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
+    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+  \end{aligned}
+\right.
+\end{align*}
+
+\subsection{Neural networks for modelling scRNA-Seq data}
  
 
