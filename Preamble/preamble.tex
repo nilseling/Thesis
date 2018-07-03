@@ -55,10 +55,11 @@
 % define header 
 \usepackage{fancyhdr}
 \usepackage{etoolbox}
-\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\headrulewidth}{1pt}
 \newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
 \headrulecolor{Mahogany}
-\fancyheadoffset[RE,LO]{0pt}
+\fancyheadoffset[RE,LO]{0cm}
+\fancyheadoffset[LE,RO]{1.25cm}
 
 
 % ************************* Algorithms and Pseudocode **************************
