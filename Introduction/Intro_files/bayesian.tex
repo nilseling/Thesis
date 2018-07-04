@@ -27,9 +27,44 @@ where $c(D)$ represents the proportionality constant $L_\omega(D)=\int_\omega{}L
 
 \subsection{Prior distributions}
 
-The role of the prior distribution is to incorporate prior knowledge which is guides the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form a analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$ \citep{Fink1997}. Conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate priors can be seen in Table \ref{tab0:priors}.
+The role of the prior distribution is to incorporate prior knowledge which is guides the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form a analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. To find this distribution, the likelihood can be factorized into two terms: one that contains all constants independent of the model parameter $\omega$ and one factor that depends on the model parameter. A conjuage prior is of the same family of distributions as the factor depending on the model parameter. \citep{Fink1997}. Conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate priors can be seen in Table \ref{tab0:priors}.
 
+\begin{table}[hb	]
+\centering
+\caption{Conjugate prior distributions for common likelihood functions taken from \citep{Fink1997}}
+\label{tab0:priors}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Discrete} & &\\
+\midrule
+\midrule
+\textbf{Data generation process} & \textbf{Prior} & \textbf{Posterior} \\ 
+\midrule 
+Bernoulli & Beta & Beta \\
+Poisson & Gamma  & Gamma \\
+Negative Binomial & Beta & Beta \\
+\midrule
+\midrule
+\textbf{Continous} & & \\
+\midrule
+\midrule
+\textbf{Data generation process} & \textbf{Prior} & \textbf{Posterior} \\ 
+\midrule
+Uniform  & Pareto & Pareto \\ 
+Normal (unknown mean) &  Normal  & Normal \\ 
+Normal (unknown variance) &  Inverse Gamma  & Inverse Gamma \\ 
+Gamma (unknown rate) &  Gamma  & Gamma \\ 
+Exponential &  Gamma  & Gamma \\ 
+\bottomrule
+\end{tabular}
+\end{table} 
+
+When prior knowledge on the distribution of the model parameter is not available to select the prior distribution, non-informative or objective priors are used. The idea is that the "data should speak for itself" and therefore, these priors are chosen to have a minimal effect, relative to the data, on the posterior inference \citep{Bernardo2000}. The most commonly used non-informative prior is the Jeffreys prior \citep{Jeffreys1946} which is defined as the square root of the determinate of the Fisher information matrix. The use of non-informative priors can lead to improper posterior distributions. Furthermore, when $\int_\omega\pi(\omega)d\omega$ is infinite, the prior is called \emph{improper prior} and does not lead to a closed-form posterior distribution.
  
+
+Objective priors
+
+
 
 \subsection{Posterior inference}
 
