@@ -23,9 +23,13 @@ Bayes theorem in equation \ref{eq0:Bayes_theorem} can be simplified to:
 \pi^*(\omega|D)=c(D)L(D|\omega)\pi(\omega)\propto{}L(D|\omega)\pi(\omega)
 \end{equation} 
 
-
+where $c(D)$ represents the proportionality constant $L_\omega(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega$ and integrates to one when $\pi^*(\omega|D)$ is conjugate to the kernel function $L(D|\omega)\pi(\omega)$ \citep{Bernardo2003, Raiffa1961}. The definition of conjugate distributions is explained below.  
 
 \subsection{Prior distributions}
+
+The role of the prior distribution is to incorporate prior knowledge which is guides the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form a analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$ \citep{Fink1997}. Conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate priors can be seen in Table \ref{tab0:priors}.
+
+ 
 
 \subsection{Posterior inference}
 
