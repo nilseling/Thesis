@@ -5,12 +5,27 @@
 
 \section{Bayesian approaches to model scRNAseq data}
 
-In the last decade, an array of tools to process and analyse scRNA-Seq data has been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been done in details depending on the type of analysis that need to be performed \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters to quantify certain features of scRNA-Seq datasets. \\
+In the last decade, an array of tools to process and analyse scRNA-Seq data has been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been done in details depending on the type of analysis that need to be performed \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters to propagate uncertainty into downstream analysis. \\
 
 \subsection{The basics of Bayesian inference}
 
-\todo{Explain Bayes theorem}\\
+The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference, model parameters represent an fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior believes about the distribution of $\omega$ are summarized in form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution $\pi^*(\omega|D)$  is updated to form the posterior distribution of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Canton1763}:
 
+\begin{equation} \label{eq0:Bayes_theorem}
+\pi^*(\omega|D,\cdot)=\frac{L(D|\omega)\pi(\omega)}{L_\omega(D)}.
+\end{equation}
+
+Here, $L(D|\omega)$ is the likelihood of observing the data given the parameter $\omega$ and $L_\omega(D)$ is the marginal likelihood when integrating out the parameter $\omega$.\\
+
+Bayes theorem in equation \ref{eq0:Bayes_theorem} can be simplified to:
+
+\begin{equation}
+\pi^*(\omega|D)=c(D)L(D|\omega)\pi(\omega)\propto{}L(D|\omega)\pi(\omega)
+\end{equation} 
+
+
+
+\subsection{Prior distributions}
 
 \subsection{Posterior inference}
 
