@@ -120,14 +120,20 @@ For this algorithm, the transition probability density $q(\theta_i,\theta_i')$ n
 
 \textbf{\textit{Practical considerations}}
 
-Thinning, Burn-in \cite{Greyer1992}
+Once the sampler is chosen to generate as approximation of the posterior density, one needs to validate the convergence of the chain. For this, the initial draws of the distribution are discarded (\emph{burn-in}). Within the burn-in period, the autocovariance of the chain decay to a negligible level \citep{Greyer1992}. After burn-in, on can compute the autocorrelation of the chain to assess convergence. The standard deviation of the chain (a first order autoregressive process) is defined as:
+
+\begin{equation}
+\sigma=\frac{\sigma^*}{\sqrt{n}}\sqrt{\frac{1+\rho}{1-\rho}}
+\end{equation}
+
+where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$  and $n$ is the sample size \cite{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduces by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain did not reach the equilibrium yet \citep{Geweke1992}.
 
 \subsection{Variational Bayes}
 
-When datasets are large and models are complex, it is not always feasible to use the above described MCMC sampling methods to derive posterior distributions. Variational inference derives an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence:
+When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference are quicker to derive an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence:
 
 \begin{equation}
-q^\ast(\mathbf{z})=\underset{q(\mathbf{z})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\mathbf{z})||p(\mathbf{z}|\mathbf{x}))
+q^\ast(\bm{\theta})=\underset{q(\bm{\theta})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\mathbf{z})||p(\bm{\theta}|D))
 \end{equation}
 
 The posterior distribution is approximated with the optimized member of the family $q^\ast(\mathbf{z})$\citep{Blei2017}.\\
