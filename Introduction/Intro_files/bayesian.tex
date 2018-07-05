@@ -63,7 +63,15 @@ When prior knowledge on the distribution of the model parameter is not available
 
 \subsection{Posterior inference}
 
-\todo{Explain posterior inference}\\
+Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
+
+Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, Markov Chain Monte Carlo}. At this point, I like to focus on \emph{Markov Chain Monte Carlo (MCMC)} as a sampling strategy to approximate posterior distributions.
+
+\subsubsection{Markov Chain Monte Carlo}
+
+\textbf{\textit{Gibbs sampling}}
+
+\textbf{\textit{Metropolis Hastings}}
 
 \todo{MCMC, Metropolis Hastings, Gibbs sampling}\\
 
@@ -87,6 +95,8 @@ The posterior distribution is approximated with the optimized member of the fami
 In general, variational inference tends to be faster than MCMC while MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed.
 
 \todo{Maximisation of the evidence lower bound}
+
+\section{Bayesian decision theory}
 
 \subsection{Modelling scRNA-Seq data}
 
