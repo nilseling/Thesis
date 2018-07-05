@@ -65,23 +65,54 @@ When prior knowledge on the distribution of the model parameter is not available
 
 Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
 
-Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, Markov Chain Monte Carlo}. At this point, I like to focus on \emph{Markov Chain Monte Carlo (MCMC)} as a sampling strategy to approximate posterior distributions.
+Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, Markov Chain Monte Carlo}. At this point, I like to focus on \emph{Markov Chain Monte Carlo (MCMC)} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
 
 \subsubsection{Markov Chain Monte Carlo}
 
+The idea behind MCMC is to generate a sample of the posterior distribution $\pi^*(\omega|D)$ for $\omega\in\Omega$ when the distribution cannot be obtained directly. For this, a Markov chain with state space $\Omega$ is simulated over $n$ iterations whose equilibrium distribution is $\pi^*(\omega|D)$ \citep{Bernardo2000}. Extensive research lead to the development of algorithms that generate this equilibrium distribution \citep{Casella1992, Gelfand1990, Greyer1992, Besag1993, Gelman1992}.
+The following two examples of MCMC are commonly used for a range of applications in Bayesian statistics \citep{Bernardo2000}.\\
+
 \textbf{\textit{Gibbs sampling}}
 
-\textbf{\textit{Metropolis Hastings}}
+We consider a complex model where $\bm{\theta}$ represents the vector of unknown parameters in Bayes theorem. The joint posterior $\pi^*(\bm{\theta}|D)=\pi^*(\theta_1,...,\theta_k|D)$ is not tractable and needs to be numerically approximated. To obtain posterior distributions for each model parameter $\theta_i$, one defines the \emph{full conditional} distribution:
 
-\todo{MCMC, Metropolis Hastings, Gibbs sampling}\\
+\begin{equation}
+\pi^*(\theta_i|D,\theta_j,j\neq{}i), \quad i=1,...,k
+\end{equation}
+
+This defines the density of the individual component $\theta_i$ given the data and specified values (current updates) of all other components $\theta_j$ \cite{Geman1984} and can easily be identified from the part of the posterior distribution depending on $\theta_i$ \citep{Bernardo2000}. In each iteration $t$ with $t=1,...,n$ every component $\theta_i,\,{}i=1,...,k$ is updated as followed:
+
+\begin{align*}
+\textnormal{draw} \quad  \theta_1^{(t+1}) \quad \textnormal{from} \quad & \pi(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi(\theta|D, \theta_1^{(t)},\theta_3^{(t)},...\theta_k^{(t)})\\
+&.\\
+&.\\
+&.\\
+\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi(\theta|D, \theta_1^{(t)},...\theta_{k-1}^{(t)})
+\end{align*}
+
+For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1,...,\theta_k)$ converges against the posterior distribution of $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. \\
+The transitions probability density function is defined as:
+
+\begin{equation}
+p(\theta^t,\theta^{t+1})=\prod_{l=1}^k{}\pi(\theta_l^{t+1}|\theta_j^t,j>l,\theta_j^{t+1},j<l,D)
+\end{equation}
+
+The implementation of Gibbs sampling is straightforward when the full conditionals have a known form. For other distributions, stochastic simulation techniques can be used.\\
+
+\textbf{\textit{Metropolis-Hastings}}
+
+One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, hastings1970} which constructs a Markov chain $\bm{\theta}^1,...,\bm{\theta}^n$ with state space $\Theta$ as follows:
+
+
 
 Metropolis Hastings \citep{Metropolis1953, Hastings1970}
 
 Gibbs sampling \citep{Geman1984}
 
-Application to Bayesian statistics \citep{Gelfand1990}
+\textbf{\textit{Practical considerations}}
 
-In Markov chain Monte Carlo (MCMC) sampling, an ergodic Markov chain on the latent variable is generated with a stationary distribution that represents the posterior $p(\mathbf{z}|\mathbf{x})$  
+Thinning, Burn-in \cite{Greyer1992}
 
 \todo{Variational Bayes}
 
@@ -96,7 +127,7 @@ In general, variational inference tends to be faster than MCMC while MCMC allows
 
 \todo{Maximisation of the evidence lower bound}
 
-\section{Bayesian decision theory}
+\subsection{Bayesian decision theory}
 
 \subsection{Modelling scRNA-Seq data}
 
