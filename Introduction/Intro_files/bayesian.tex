@@ -83,12 +83,12 @@ We consider a complex model where $\bm{\theta}$ represents the vector of unknown
 This defines the density of the individual component $\theta_i$ given the data and specified values (current updates) of all other components $\theta_j$ \cite{Geman1984} and can easily be identified from the part of the posterior distribution depending on $\theta_i$ \citep{Bernardo2000}. In each iteration $t$ with $t=1,...,n$ every component $\theta_i,\,{}i=1,...,k$ is updated as followed:
 
 \begin{align*}
-\textnormal{draw} \quad  \theta_1^{(t+1}) \quad \textnormal{from} \quad & \pi(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
-\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi(\theta|D, \theta_1^{(t)},\theta_3^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_1^{(t+1}) \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_1^{(t)},\theta_3^{(t)},...\theta_k^{(t)})\\
 &.\\
 &.\\
 &.\\
-\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi(\theta|D, \theta_1^{(t)},...\theta_{k-1}^{(t)})
+\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi^*(\theta|D, \theta_1^{(t)},...\theta_{k-1}^{(t)})
 \end{align*}
 
 For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1,...,\theta_k)$ converges against the posterior distribution of $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. \\
@@ -102,19 +102,27 @@ The implementation of Gibbs sampling is straightforward when the full conditiona
 
 \textbf{\textit{Metropolis-Hastings}}
 
-One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, hastings1970} which constructs a Markov chain $\bm{\theta}^1,...,\bm{\theta}^n$ with state space $\Theta$ as follows:
+One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
+Let $q(\theta_i,\theta_i')$ be a transition probability density function given a current state $\theta_i^t=\theta_i$, then the vector $\theta_i'$ represents a proposed possible value for $\theta_i^{t+1}$ \citep{Bernardo2000}. Furthermore, with some probability $\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$ the proposed value $\theta_i'$ is accepted as $\theta_i^{t+1}=\theta_i'$ and otherwise rejected: $\theta_i^{t+1}=\theta_i^t$ \cite{Roberts1994, Hastings1970}. In practice, the update is found as follows:
 
+\begin{enumerate}
+\item Sample $\nu\sim\textnormal{Unif(0,1)}$ and a candidate $\theta_i'$ from $q(\theta_i,\theta_i')$.
+\item Define
 
+\begin{equation}
+\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)=\min\left\lbrace{}1,\frac{\pi^*(\theta_i'|D,\theta_j,j\neq{}i)q(\theta_i',\theta_i)}{\pi^*(\theta_i|D,\theta_j,j\neq{}i)q(\theta_i,\theta_i')}\right\rbrace
+\end{equation}
 
-Metropolis Hastings \citep{Metropolis1953, Hastings1970}
+\item If $\nu\leq{}\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$, return $\theta_i'$ otherwise return $\theta_i^t$
+\end{enumerate}
 
-Gibbs sampling \citep{Geman1984}
+For this algorithm, the transition probability density $q(\theta_i,\theta_i')$ needs to be chosen. A common choice is a Normal distribution centred at $\theta_i$ where the variance needs to be selected to have some level of optimality in the performance of the algorithm \citep{Roberts2001}. An automated tuning process for the variance of the proposal distribution $q(\theta_i,\theta_i')$ was introduced by Roberts and Rosenthal, 2009 \citep{Roberts2009}. This \emph{adaptive Metropolis-Hastings} algorithm is often used in combination with Gibbs sampling (\emph{adaptive Metropolis-within-Gibbs sampling}) to approximate the posterior distribution of model parameters for complex models \citep{Roberts2009}.\\
 
 \textbf{\textit{Practical considerations}}
 
 Thinning, Burn-in \cite{Greyer1992}
 
-\todo{Variational Bayes}
+\subsection{Variational Bayes}
 
 When datasets are large and models are complex, it is not always feasible to use the above described MCMC sampling methods to derive posterior distributions. Variational inference derives an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence:
 
