@@ -171,9 +171,60 @@ In the case of testing changes in mean expression, the difference $\delta_g$ rep
 
 \subsection{Modelling scRNA-Seq data}
 
-As described above, expression counts in single-cell RNA-Seq data can be modelled as negative binomial distributed [ZINBABWE] while other approaches model these counts as log-normal distributed [BISCUIT, ZIFA]. This approach estimates cell and gene-specific parameters that can be used downstream for several tasks as normlization [Catas Nat Methods], clustering [ref], visualization [some latent space...] and imputation [MAGIC?], differential expression [e.g. MAST].  
+Several models have been proposed to estimate model parameters based on scRNA-Seq data. A common approach is to model the count data as negative binomial distributed (NB) \citep{Vallejos2015BASiCS, Risso2018, Lopez2018}. The NB distribution is defined as:
+
+\begin{equation}
+f_{NB}(y;\mu,\theta)=\frac{(y+\theta)}{(y+1)(\theta)}\left(\frac{\theta}{\theta + \mu}\right)^\theta\left(\frac{\mu}{\mu + \theta}\right)^y
+\end{equation}
+
+Here, the dispersion of the NB is $\delta=\theta^{-1}$ \cite{Risso2018}. In the case of a hierarchical generative model, the NB can be decomposed into a Poisson distribution with Gamma random effect \cite{Vallejos2015BASiCS}:
+
+\begin{align*}
+y|\cdot&\sim{}\textnormal{Poisson}(\nu\mu)\\
+\nu|\alpha,\beta&\sim{}\textnormal{Gamma}(\alpha,\beta)
+\end{align*}
+
+In some cases \citep{Risso2018, Lopez2018} the NB is extended to account for dropout events in scRNA-Seq data \citep{Kharchenko2015}. The zero-inflated NB (ZINB) takes the form:
+
+\begin{equation}
+f_{ZINB}(y;\mu,\theta,\pi)=\pi\delta_0(y) + (1-\pi)f_{NB}(y;\mu,\theta) 
+\end{equation}
+
+where $\delta_0(\cdot)$ is the Dirac function and $\pi\in[0,1]$ is the probability that 0 is observed instead of the count $y$ \citep{Risso2018}. In the hierarchical fromulation this can be modelled by adding a Bernoulli distributed random effect:
+
+\begin{align*}
+y|\cdot & = 
+ \left\lbrace
+  \begin{aligned}
+    & x && \textnormal{if} \; h = 0,  \\ 
+    & 0 && \textnormal{otherwise}    	    
+  \end{aligned}
+\right.\\
+x|\cdot&\sim{}\textnormal{Poisson}(\nu\mu)\\
+h & \sim \textnormal{Bernoulli}(\cdot)\\
+\nu|\alpha,\beta&\sim{}\textnormal{Gamma}(\alpha,\beta)
+\end{align*}
+
+Other approaches model scRNA-Seq counts as log-normal distributed \citep{Azizi2017,Pierson2015}. ZIFA (zero-inflated factor analysis, \citep{Pierson2015}) assumes that the data $Y=[y_1,...,y_N]$, where $N$ is the number of samples with $D$ genes, are generated from an unobserved low-dimensional space $Z=[z_1,...,z_N]$ with dimension $K,\,{}K\ll{}D$. Te generation process is a linear transformation with added Gaussian noise from the latent space ($N\times{}K$) into the latent high-dimensional gene expression space with dimension $N\times{}D$. Addtionally, with some probability being a function of the latent expression level of gene $j$ in cell $i$ $x_{ij}$: $p_0=\exp(-\lambda{}x_{ij}^2)$, a dropout is observed. The full model is defined as \citep{Pierson2015}:
+
+\begin{align*}
+y_{ij} & = 
+ \left\lbrace
+  \begin{aligned}
+    & x_{ij} && \textnormal{if} \; h_{ij} = 0,  \\ 
+    & 0 && \textnormal{otherwise}    	    
+  \end{aligned}
+\right.\\
+\bm{x}_{i}|\bm{z}_i&\sim{}\textnormal{Normal}(\bm{Az}_i+\bm{\mu},\bm{W})\\
+h_{ij}|x_{ij} & \sim \textnormal{Bernoulli}(p_0)\\
+\bm{z_i}&\sim{}\textnormal{Normal}(0,\bm{I})
+\end{align*} 
+
+Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\times{}1$ mean vector, $\bm{W}$ a $D\times{}D$ covariance matrix and $\bm{I}$ the $K\times{}K$ identity matrix.
 
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
+
+Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).
 
 \subsection{Scalability of Bayesian inference}
 
