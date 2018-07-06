@@ -151,7 +151,7 @@ q(\bm{\theta})=\prod_{j=1}^m{}q_j(\theta_j)
 
 Here, each model parameter $\theta_j$ is governed by its own variational factor \citep{Blei2017}. One commonly used technique to maximise the ELBO is \emph{coordinate ascent mean-field variational inference} (CAVI). Similar to Gibbs sampling, CAVI maximises the ELBO for one parameter while keeping all other parameters constant. This is done iteratively until the ELBO converges against a local maximum \citep{Blei2017}. 
 
-\subsection{Bayesian decision theory}
+\subsection{Bayesian decision theory} \label{sec0:decision}
 
 We assume the data $D$ have arisen under one of the hypotheses $H_1$ or $H_0$ according to $L(D|H_1)$ or $L(D|H_0)$. The data produce posterior probabilities $\pi^*(H_1|D)$ and $\pi^*(H_0|D)$ from prior distributions $\pi(H_1)$ and $\pi(H_0)$. The Bayes factor $B_{10}$ \citep{Jeffreys1961} is defined as the ratio of the posterior odds of $H_1$ to its prior odds:
 
@@ -224,7 +224,7 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 
-Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
+Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
 In BASiCS, the expression count of of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates read from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  the $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
 
 \begin{equation} 
@@ -278,7 +278,16 @@ This formulation can be used to obtain normalized counts. Furthermore, the coeff
 
 As discussed in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, the CV$^2$ is inversely proportional to the mean expression $\mu_i$. Furthermore, $\delta_i$ can be interpreted as the residual CV$^2$ after removing Poisson sampling and residual technical over-dispersion \citep{Vallejos2015BASiCS, Vallejos2016}. We will therefore use $\delta_i$ as a proxy for the biological part of transcriptional variability when modelling scRNA-Seq data.\\
 
-Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see section \ref{sec0:posterior_inference}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These  
+Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see section \ref{sec0:posterior_inference}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These include: normalisation of expression counts, variance decomposition into biological and technical noise, detection of highly and lowly variable genes and differential mean and differential over-dispersion testing. The later is done by computing the tail posterior propabilities of the difference in mean expression or over-dispersion between two conditions ($p$ and $p'$) is larger than an evidence threshold $\tau_0$ or $\omega_0$ (see section \ref{sec0:decision}, and \citep{Bochkina2007, Vallejos2016}):
+
+\begin{align*}
+\pi_{ipp'}(\tau_0)&\equiv{}P(|log(\mu_i^{(p)}/\mu_i^{(p')})|>\tau_0|D)>\alpha_m\\
+\pi_{ipp'}(\omega_0)&\equiv{}P(|log(\delta_i^{(p)}/\delta_i^{(p')})|>\omega_0|D)>\alpha_d
+\end{align*}
+
+If the tail posterior probability is larger than a given propability threshold $\alpha_m$ or $\alpha_d$, the gene is considered to be differentially expressed or differentially over-dispersed \citep{Vallejos2016}. The evidence threshold is usually fixed \emph{a priori} and the probability threshold is defined to control the expected false discovery rate (EFDR) to (e.g.) 5\% \cite{Newton2004, Vallejos2016}.\\
+
+As in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, estimates of the over-dispersion parameters $\delta$ are negatively correlated to mean expression $\mu$ \textbf{(Fig.~\ref{fig0:BASiCS}B)}. This indicates that in homogeneous populations of cells, highly expressed genes tend to be less noisy than lowly expressed genes. This effect confounds differential over-dispersion testing when mean expression changes. Therefore, when assessing changes in over-dispersion, only genes with no changes in mean expression are considered (see Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, section \ref{sec1:varaibility} and \textbf{Box 2}).  
 
 \subsection{Scalability of Bayesian inference}
 
