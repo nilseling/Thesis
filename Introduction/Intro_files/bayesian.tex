@@ -61,7 +61,7 @@ Exponential &  Gamma  & Gamma \\
 
 When prior knowledge on the distribution of the model parameter is not available to select the prior distribution, non-informative or objective priors are used. The idea is that the "data should speak for itself" and therefore, these priors are chosen to have a minimal effect, relative to the data, on the posterior inference \citep{Bernardo2000}. The most commonly used non-informative prior is the Jeffreys prior \citep{Jeffreys1946} which is defined as the square root of the determinate of the Fisher information matrix. The use of non-informative priors can lead to improper posterior distributions. Furthermore, when $\int_\omega\pi(\omega)d\omega$ is infinite, the prior is called \emph{improper prior} and does not lead to a closed-form posterior distribution \citep{Bernardo2003}.
 
-\subsection{Posterior inference}
+\subsection{Posterior inference} \label{sec0:posterior_inference}
 
 Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
 
@@ -224,7 +224,61 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 
-Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).
+Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
+In BASiCS, the expression count of of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates read from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  the $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
+
+\begin{equation} 
+ X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \sim
+ \left\lbrace
+  \begin{aligned}
+    &\textnormal{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
+    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+  \end{aligned}
+\right.
+\end{equation} 
+
+In this model, two random effects were added to model the technical and biological part of the over-dispersion:
+
+\begin{equation} 
+\nu_j|s_j,\theta \sim \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.2cm} \rho_{ij}|\delta_i  \sim \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
+\end{equation} 
+
+Here, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells. \\
+
+Prior specifications for the model parameters are chosen as followed:
+
+\begin{align*}
+\mu_i&\sim\textnormal{log-N}(0,a_\mu^2) \quad \textnormal{for}\;{}i=1,...,q_0\\
+\delta_i&\sim\textnormal{log-N}(0,a_\delta^2) \quad \textnormal{for}\;{}i=1,...,q_0\\
+s_j&\sim\textnormal{Gamma}(a_s,b_s), \quad j=1,...,n\\
+\theta&\sim\textnormal{Gamma}(a_\theta,b_\theta)\\
+\Phi&\sim{}n\textnormal{Dirichlet}(a_\Phi), \quad \Phi=(\phi_1,...,\phi_n)
+\end{align*}
+
+After integrating out the $\rho_{ij}$ to enhance mixing \citep{Vallejos2015BASiCS} the likelihood is defined as:
+
+\begin{align} 
+\Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
+&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]
+\end{align} 
+
+\todo{Draw model and negative correlation between mu and delta} \\
+
+Given the NB model, the expected biological counts take the form:
+
+\begin{equation}
+\mathbb{E}(X_{ij}|\mu_i,\delta_i,\phi_j,s_j,\theta)=\phi_js_j\mu_i
+\end{equation}
+
+This formulation can be used to obtain normalized counts. Furthermore, the coefficient of variation is defined as:
+
+\begin{equation}
+\textnormal{CV}^2(X_{ij}|\mu_i,\delta_i,\phi_j,s_j,\theta)=\frac{1}{\phi_js_j\mu_i} + \theta + \delta_i(\theta + 1)
+\end{equation}
+
+As discussed in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, the CV$^2$ is inversely proportional to the mean expression $\mu_i$. Furthermore, $\delta_i$ can be interpreted as the residual CV$^2$ after removing Poisson sampling and residual technical over-dispersion \citep{Vallejos2015BASiCS, Vallejos2016}. We will therefore use $\delta_i$ as a proxy for the biological part of transcriptional variability when modelling scRNA-Seq data.\\
+
+Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see section \ref{sec0:posterior_inference}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These  
 
 \subsection{Scalability of Bayesian inference}
 
