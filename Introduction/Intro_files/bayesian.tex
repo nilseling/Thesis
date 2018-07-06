@@ -151,15 +151,23 @@ q(\bm{\theta})=\prod_{j=1}^m{}q_j(\theta_j)
 
 Here, each model parameter $\theta_j$ is governed by its own variational factor \citep{Blei2017}. One commonly used technique to maximise the ELBO is \emph{coordinate ascent mean-field variational inference} (CAVI). Similar to Gibbs sampling, CAVI maximises the ELBO for one parameter while keeping all other parameters constant. This is done iteratively until the ELBO converges against a local maximum \citep{Blei2017}. 
 
-\subsubsection{Auto-Encoding Variational Bayes}
-
-\todo{Explain auto-encoder once I talked to Cata}
-
 \subsection{Bayesian decision theory}
 
-\todo{Bayes factor}
+We assume the data $D$ have arisen under one of the hypotheses $H_1$ or $H_0$ according to $L(D|H_1)$ or $L(D|H_0)$. The data produce posterior probabilities $\pi^*(H_1|D)$ and $\pi^*(H_0|D)$ from prior distributions $\pi(H_1)$ and $\pi(H_0)$. The Bayes factor $B_{10}$ \citep{Jeffreys1961} is defined as the ratio of the posterior odds of $H_1$ to its prior odds:
 
-\todo{Posterior tail probabilities}
+\begin{equation}
+B_{10}=\frac{\pi^*(H_1|D)}{\pi^*(H_0|D)}/{}\frac{\pi(H_1)}{\pi(H_0)}=\frac{L(D|H_1)}{L(D|H0)}
+\end{equation}  
+
+When the hypotheses $H_1$ and $H_0$ are equally probable \emph{a prior}, the Bayes factor is equal to the posterior odds in favour of $H_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|H_1)$ and $L(D|H0)$ with represents the integrals of the likelihood over all model parameters. When improper priors are used, these marginal likelihoods are intractable and this measure is difficult to compute. \\
+
+Alternatively, when improper priors are used, \emph{tail posterior probabilities} can be computed as a selection rule regarding $H_1$ and $H_0$. Posterior tail probabilities were introduced to test the difference $\delta_g$ in log-expression of gene $i$ between condition $A$ and condition $B$ \citep{Bochkina2007}. Here, the posterior tail probability of $\delta_g$ being larger than a given threshold $\delta_g^{(\alpha)}$ is defined as:
+
+\begin{equation}
+\pi(\delta_g,\delta_g^{(\alpha)})=P\left\lbrace|\delta_g|>\delta_g^{(\alpha)}|D\right\rbrace
+\end{equation}
+
+In the case of testing changes in mean expression, the difference $\delta_g$ represents the log-fold change in mean expression $\log(\frac{\mu^{(B)}}{\mu^{(A)}})$. In practice, for each iteration of the MCMC, this difference is computed and the tail posterior probability is the fraction of the absolute distance being larger than the threshold. If the tail posterior probability is larger than an evidence threshold (e.g. 80\%) one would reject the null hypothesis $|\delta_g|\leq\delta_g^{(\alpha)}$ \citep{Vallejos2016}. 
 
 \subsection{Modelling scRNA-Seq data}
 
@@ -208,6 +216,12 @@ Fast inference of this model is implemented via stochastic optimization. First, 
 \begin{equation}
 p(z_n,l_n|x_{n,g},s_n)=p(z_n|x_{n,g},s_n)p(l_n|x_{n,g},s_n)
 \end{equation} 
+
+\subsubsection{Auto-Encoding Variational Bayes}
+
+Encoding $x$ in latent space $z$
+
+In cases where the integrals for mean-field variational Bayes are intractable, the auto-encoding variational Bayes (AEVB) technique jointly learns the parameters of $\pi^*(\bm{\theta}|D)$ and $q(\bm{\theta})$. Furthermore,  $q(\bm{\theta})$ is not factorial and its parameters are not learned from a closed-form distributions \citep{Kingma2013}.
 
 
 
