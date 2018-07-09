@@ -291,17 +291,7 @@ As in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, estimates of the over-d
 
 \subsection{Scalability of Bayesian inference}
 
-With the development of dropblet based approaches [Klein, Macosko] and multiplexed sequencing [Seqwell], scalability is important.
-
-Stochastic optimization as principle to scale models.
-
-Single-cell Variational Inference (scVI) 
-
-scVI: transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a zer0-inflated negative binomial model. 
-
-Zero-inflated negative binomial [Love 2014, Grun 2014, ZinBAWave]
-
-The transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as zero-inflated negative binomial distributed:
+With the development of droplet based scRNA-Seq approaches \citep{Macosko2015, Klein2015} and large scale microwell techniques \citep{Han2018}, the amount of cells that can be assayed in one experiment scaled from hundreds to hundreds of thousands \citep{Svensson2018}. To learn model parameters of a generative model across all cells and all genes became computationally challenging when considering a full Bayesian MCMC based approach. To address this problem, a model framework called single-cell variational inference (scVI) has been developed that uses stochastic optimization within a variational autoencoder network to approximate posterior distributions of model parameters and latent factors \citep{Lopez2018}. In scVI transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. The latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a zero-inflated negative binomial model. For this, the transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as:
 
 \begin{align*}
 x_{n,g} & = 
@@ -319,9 +309,9 @@ l_n & \sim \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
 z_n & \sim \textnormal{Normal}(0,I)
 \end{align*}
 
-\todo{add graphical model}
+\todo{add graphical model}\\
 
-In this model, the negative binomial distribution is realized as a hierarchical formulation of $y_{n,g}$ being Poisson distributed around the latent random variable $l_n$ with an additional random effect $w_{n,g}$. Additionally, the zero-inflation of the model is controlled by the latent variable $h_{n,g}$. $l_n$ is a random variable that represents nuisance variation due to differences in capture efficiency and sequencing depth and which correlates with log-library size. $l_n$ is log-normal distributed parameterized by $l_\mu,l_\sigma\in\mathbb{R}^B_+$ which are empirical mean and variance estimates of the log-library size per batch in $B$ and which are therefore constants in the model \textbf{(Fig.~\ref{fig0:scVI}A)}.\\
+In this model, the negative binomial distribution is realized as a hierarchical formulation of $y_{n,g}$ being Poisson distributed around the latent random variable $l_n$ with an additional random effect $w_{n,g}$. Additionally, the zero-inflation of the model is controlled by the latent variable $h_{n,g}$. $l_n$ is a random variable that represents nuisance variation due to differences in capture efficiency and sequencing depth and correlates with log-library size. $l_n$ is log-normal distributed parametrized by $l_\mu,l_\sigma\in\mathbb{R}^B_+$ which are empirical mean and variance estimates of the log-library size per batch in $B$ and which are therefore constants in the model \textbf{(Fig.~\ref{fig0:scVI}A)}.\\
 
 $w_{n,g}$ is Gamma distributed with the shape parameter $\rho_n^g$ and the scale parameter $\theta$. $\rho_g$ represents an intermediate matrix that relates the observations $x_{n,g}$ to the latent variables $z_n$. It provides a batch-corrected, normalized estimate of the percentage of transcripts in each cell $n$ from each gene $g$. $\theta$ is a global inverse-dispersion variable shared across all genes and all cells. The latent variable $z_n$ captures a latent representation of the data reflecting biological variation between the cells. $f_w$ and $f_h$ are neural networks mapping the latent space and batch annotation back to the full dimension of all genes: $\mathbb{R}^d\times{}\left\lbrace0,1\right\rbrace^B\rightarrow\mathbb{R}^G$.\\
 
@@ -331,27 +321,9 @@ Fast inference of this model is implemented via stochastic optimization. First, 
 p(z_n,l_n|x_{n,g},s_n)=p(z_n|x_{n,g},s_n)p(l_n|x_{n,g},s_n)
 \end{equation} 
 
-\subsubsection{Auto-Encoding Variational Bayes}
+The variational distribution $q(z_n|\cdot)$ is chosen to be Gaussian with diagonal covariance matrix and mean and covariance are learned by a multilayer perceptron (MLP) network similar to Kingma \emph{et al.}, 2013 \citep{Kingma2013}. Similarly, $q(l_n|\cdot)$ is chosen to be log-normal where the scalar mean and variance are learned by a MLP \citep{Kingma2013}.The authors found used reparametrization to solve the variational lower bound of this system \cite{Lopez2018, Kingma2013}. Furthermore, scVI uses stochastic optimization by sampling 128 cells for optimizing the objective function. This approach is therefore fast (5 hours for > 1 million cells and 750 genes and 10 hours for > 1 million cells and 10,000 genes) and memory efficient. \\
 
-Encoding $x$ in latent space $z$
-
-In cases where the integrals for mean-field variational Bayes are intractable, the auto-encoding variational Bayes (AEVB) technique jointly learns the parameters of $\pi^*(\bm{\theta}|D)$ and $q(\bm{\theta})$. Furthermore,  $q(\bm{\theta})$ is not factorial and its parameters are not learned from a closed-form distributions \citep{Kingma2013}.
-
-
-
-
-
-
-scRNA-Seq data is better fitted with a ZINB than log-Normal or zero-inflated log-Normal [Lopez2018]. 
-
-scVI accounts for batch effects, normalizes data, provides low-dimensional representation, takes 5 hours for > 1 million cells and 750 genes and 10 hours for > 1 million cells and 10,000 genes.
-
-Differential mean expression testing via Bayes factor:
-
-\todo{Write model for differential testing}
-
-
-Summary: Zero-inflation is not needed and zeros in dataset can be explained by NB distribution [Lopez2018]. And when number of cells is smaller than number of genes, model underfits. Strength: representation of data in latent space
+The authors concluded that: 1. scRNA-Seq data is better fitted with a ZINB than log-Normal or zero-inflated log-Norm; 2. Zero-inflation is not needed as part of the model since the zeros in dataset can be explained by NB distribution; 3. When the number of cells is smaller than number of genes, scVI underfits the data \citep{Lopez2018}. The clear strength of the model is the fast estimation of model parameters that can be used for down-stream analysis (e.g. visualization, normalization, differential expression testing)
 
 \subsection{Other applications for Bayesian model using scRNA-Seq data}
  
