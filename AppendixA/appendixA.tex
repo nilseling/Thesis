@@ -1,0 +1,30 @@
+%!TEX root = ../thesis.tex
+% ******************************************
+% 			Thesis Appendix A 
+% ******************************************
+
+\chapter{Experimental methods} 
+
+\section{Ageing increases transcriptional noise in CD4$^+$ T cell activation}
+
+\subsection{Mouse material}
+
+CAST/EiJ male mice were maintained under specific pathogen-free conditions at the University of Cambridge, CRUK – Cambridge Institute under the auspices of a UK Home Office license. Inbred wild-type C57/BL6 mice were purchased from Charles River UK Ltd (Margate, United Kingdom). Animals were euthanized in accordance with Schedule 1 of the Animals (Scientific Procedures) Act 1986. Each animal used was macroscopically examined. Animals with lesions or phenotypic alterations in their internal organs were discarded. \\
+
+\subsection{CD4$^+$ T cell isolation}
+
+Unstimulated CD4$^+$ T cells were purified from dissociated mouse spleens using EASY cell strainer (30 $\mu$m, Greiner BioOne), cell separation media (lympholyte, \#{}CL5035) and the CD4$^+$ CD62L$^+$ T Cell Isolation Kit II (Miltenyi Biotec, \#{}130-093-227). Flow cytometry confirmed that 96.4\% of the isolated CD4$^+$ T cells were naive in young B6 \textbf{(Fig.~\ref{fig1:characterization}D)}. Naive CD4$^+$ T cells formed a single, high-purity population in young animals. Old animals had a small population of CD4$^+$ T cells with slightly elevated CD44 levels, reduced CD62L expression, and attenuated activation dynamics \textbf{(Fig.~\ref{fig1:characterization}E-G)}; their removal did not impact the results presented in chapter 1 \textbf{(Fig.~\ref{fig1:validation}D)}.\\
+
+Purified unstimulated CD4$^+$ T cells were cultured in IMDM medium (GIBCO, \#{}21980-032) supplemented with 10\% Fetal Bovine Serum (Life Technology, \#{}10500064), 1 $\mu$g/mL Penicillin/Streptomicin (Life Technology, \#{}15070063), and 50 $\mu$M 2-mercaptoethanol (Gibco, \#{}31350-010). Cells were seeded into 96-well plates coated for 1h at 37$^|circ$C with anti-CD3$\epsilon$ (1 $\mu$g/ml, clone: 145-2C11, eBioscience, \#{}16-0031-82) and anti-CD28 (3 $\mu$g/ml, clone: 37.51, eBioscience, \#{}16-0281-82) at a density of 80,000-120,000 cells/ml, and then cultured in a total volume of 100 $\mu$l media that did not contain cytokines or additional antibodies.  
+
+All cells were cultured in a humidified incubator at 37$^|circ$C, with 5\% CO2. Unstimulated and activated CD4$^+$ T cells were then immediately collected and loaded on a 5–10$\mu$m Auto Prep Integrated Fluidic Circuit (IFC; Fluidigm, San Francisco, CA) to capture single cells using the C1 Single cell Auto Prep System (Fluidigm). All the IFCs were visually inspected, and wells with multiple cells or cell debris were identified per instructions of the manufacturer (PN 101-2711 A1 White Paper). Upon cell capture, reverse transcription and cDNA amplification were performed using the SMARTer PCR cDNA Synthesis Kit (Clontech) and the Advantage 2 PCR Kit (Clontech). ERCC spike-in RNA (Ambion) (1 $\mu$L diluted at 1:50,000) was added to the C1 lysis mix. All the capture sites were included for the RNA-seq library preparation, and wells identified above as multiple cells or containing debris were removed during computational analysis.
+
+\subsection{Flow cytometry}
+
+Unstimulated CD4$^+$ T cells were purified from spleens of young and old C57/BL6 mice (see above). Isolated cells were, directly or after 3h activation in vitro (see above), incubated with TruStainfcX (anti-mouse CD16/32, clone:93, BioLegend) before staining with immunofluorescence conjugated antibodies against murine CD4 (clone: RM4-5, BioLegend), CD44 (clone: IM7, BioLegend), CD62L (clone: MEL-14, BioLegend), CD25 (clone: 3C7, BioLegend), CD69 (clone: H1.2F3, BioLegend), CD127 (clone: A7R34, BioLegend), and KLRG1 (clone: 2F1, BD Biosciences). Cell viability was determined using Fixable eFluor 780 viability dye (eBioscience). Data were acquired on a 5-laser Aria IIu SORP instrument (BD Biosciences) and data analysis was performed using FlowJo software (Tree Star).\\
+
+Naive and effector memory CD4$^+$ T cells were purified from spleens of both young and old C57/BL6 mice by FACS.  Briefly, spleens were harvested from both young and old animals and single cell suspensions were obtained by meshing through a cell strainer (70 $\mu$m). B cells were depleted from cell suspensions by MACS using CD19 microbeads (Miltenyi Biotec, \#{}130-052-201) and red blood cells were lysed with RBC lysis buffer (Biolegend, \#{}B205551). The enriched cell fraction was then stained with Fixable eFluor 780 viability dye (eBioscience) following by Fc receptor blocking with TruStain fcXTM (clone: 39, Biolegend) and subsequent staining with a panel of fluorescence-conjugated antibodies against CD4 (clone: RM4-5, BioLegend), CD44 (clone: IM7, BioLegend), CD62L (clone: MEL-14, BioLegend), CD24 (clone: M1/69, BioLegend), Qa2 (clone: 695H1-9-9, BioLegend), CD69 (clone: H1.2F3, BioLegend) and PD-1 (clone: RMP1-30, BioLegend).  Stained cells were immediately sorted using a 5-laser Aria IIu SORP instrument (BD Biosciences) with the stringent gating strategy described in \textbf{Fig.~\ref{fig1:FACS}}. 
+
+\subsection{RNA-Seq library preparation and sequencing}
+
+Single-cell RNA-Seq libraries were prepared using standard Fluidigm protocol (\# PN 100-7168 K1) based on SMARTer chemistry and Illumina Nextera XT (Illumina) using paired-end 125bp sequencing on Illumina HiSeq2500. Each RNA-seq library was sequenced to a typical depth of 1.3 million reads on average. To account for potential batch effects, for each experimental condition, two biological replicates were prepared using independent C1 IFCs.
