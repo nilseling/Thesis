@@ -223,6 +223,7 @@ h_{ij}|x_{ij} & \sim \textnormal{Bernoulli}(p_0)\\
 Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\times{}1$ mean vector, $\bm{W}$ a $D\times{}D$ covariance matrix and $\bm{I}$ the $K\times{}K$ identity matrix.
 
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
+\label{sec0:BASiCS}
 
 Throughout this thesis, I will use the BASiCS framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
 In BASiCS, the expression count of of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates read from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  the $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
