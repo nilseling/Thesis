@@ -4,7 +4,6 @@
 %*****************************
 
 \section{Single-cell RNA sequencing of murine CD4$^+$ T cells}
-\subsection*{Single-cell RNA sequencing of CD4$^+$ T cells during activation, ageing and across two mouse strains}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 \centering    
@@ -45,7 +44,7 @@ Naive and effector memory CD4$^+$ T cells were purified from spleens of both you
 
 \subsubsection{scRNA-Seq using the Fluidigm C1 system}
 
-Naive, FACS-purified naive and activated CD4$^+$ T cells were loaded on a 5–10$\mu$m Auto Prep Integrated Fluidic Circuit (IFC) to capture single cells using the C1 Single cell Auto Prep System (Fluidigm). All IFCs were visually inspected, and wells with multiple cells or cell debris were marked as low quality. Upon cell capture, reverse transcription and cDNA amplification were performed using the SMARTer PCR cDNA Synthesis Kit and the Advantage 2 PCR Kit. ERCC spike-in RNA (1 $\mu$L diluted at 1:50,000) was added to the C1 lysis mix. All capture sites were included for the RNA-Seq library preparation (see \textbf{Appendix \ref{appA.1:RNA-Seq}}).
+Unstimulated and activated CD4$^+$ T cells were loaded on a 5–10$\mu$m Auto Prep Integrated Fluidic Circuit (IFC) to capture single cells using the C1 Single cell Auto Prep System (Fluidigm). All IFCs were visually inspected, and wells with multiple cells or cell debris were marked as low quality. Upon cell capture, reverse transcription and cDNA amplification were performed using the SMARTer PCR cDNA Synthesis Kit and the Advantage 2 PCR Kit. ERCC spike-in RNA (1 $\mu$L diluted at 1:50,000) was added to the C1 lysis mix. All capture sites were included for the RNA-Seq library preparation (see \textbf{Appendix \ref{appA.1:RNA-Seq}}).
 
 \subsection{Computational strategy}
 
@@ -78,14 +77,23 @@ To control for biological contaminations, known markers of lymphocytes were used
 \captionsetup[figure]{list=yes}
 
 \subsubsection{BASiCS parameter estimation using transcriptomes of CD4$^+$ T cells}
-To quantify and assess changes in mean expression and expression variability, we used the Bayesian hierarchical framework BASiCS introduced in section \ref{sec0:BASiCS}. The Markov Chain Monte-Carlo (MCMC) simulation was run on quality filtered transcriptomes of CD4$^+$ T cells condition-specifically for 40,000 iterations. We used posterior medians of $\mu_i$ to capture mean expression and posterior medians of the over-dispersion parameter $\delta_i$ to quantify biological expression variability. Differential mean expression testing was performed using a probabilistic decision rule of $\log_2(\mu_i^{(A)}/\mu_i^{(B)})>\tau_0$ being larger than a given probability threshold (\emph{e.g.} 80\%). Here, A and B indicate the different conditions and $\tau_0$ is the chosen minimum tolerance threshold. The decision rule associated to differential variability testing is: $\log_2(\delta_i^{(A)}/\delta_i^{(B)})>\omega_0$. Due to the strong confounding between mean expression $\mu_i$ and over-dispersion $\delta_i$ (as described in section \ref{sec0:BASiCS}), we only consider genes with no changes in mean expression ($\tau_0=0$, FDR<0.05) to assess changes in variability. Throughout this chapter, the decision rule is abbreviated with: log2FC. 
+\label{sec1:BASiCS}
+
+To quantify and assess changes in mean expression and expression variability, we used the Bayesian hierarchical framework BASiCS introduced in section \ref{sec0:BASiCS}\citep{Vallejos2015BASiCS, Vallejos2016}. The Markov Chain Monte-Carlo (MCMC) simulation was run on quality filtered transcriptomes of CD4$^+$ T cells condition-specifically for 40,000 iterations. We used posterior medians of $\mu_i$ to capture mean expression and posterior medians of the over-dispersion parameter $\delta_i$ to quantify biological expression variability. Differential mean expression testing was performed using a probabilistic decision rule of $\log_2(\mu_i^{(A)}/\mu_i^{(B)})>\tau_0$ being larger than a given probability threshold (\emph{e.g.} 80\%). The probability threshold was chosen to keep the expected false discovery rate (EFDR) at 5\% \citep{Vallejos2016}. Here, A and B indicate the different conditions and $\tau_0$ is the chosen minimum tolerance threshold. The decision rule associated to differential variability testing is: $\log_2(\delta_i^{(A)}/\delta_i^{(B)})>\omega_0$. Due to the strong confounding between mean expression $\mu_i$ and over-dispersion $\delta_i$ (as described in section \ref{sec0:BASiCS}), we only consider genes with no changes in mean expression ($\tau_0=0$, EFDR<0.05) to assess changes in variability. Throughout this chapter, the decision rule is abbreviated with: log2FC. 
 
 \newpage
 
 \subsection{Characterization of isolated CD4$^+$ T cells}
 
-We determined the cell cycle stage of each cell using \emph{cyclone} \citep{Scialdone2015} implemented in \emph{scran} \citep{Lun2016}.
-In contrast to haematopoeitic cells \citep{Kowalczyk2015}, even when activated, all CD4$^+$ T cells are in G1 phase of cell cycle \textbf{(Fig.~\ref{fig1:characterization}A)}. We performed clonal expansion by reconstructing the sequence of the T cell receptor for each cell \citep{Stubbington2015} and did not detect clonal expansion in CD4$^+$ T cells from aged animals \textbf{(Fig.~\ref{fig1:characterization}B)}. Similarly, we did not detect difference in cell size \textbf{(Fig.~\ref{fig1:characterization}C)} that could impact analysis of gene expression variability. Using flow cytometry analysis, we confirmed that 96.4\% of the isolated CD4$^+$ T cells were naive in young B6 \textbf{(Fig.~\ref{fig1:characterization}D)}. Naive CD4$^+$ T cells formed a single, high-purity population in young animals. Old animals had a small population of CD4$^+$ T cells with slightly elevated CD44 levels, reduced CD62L expression, and attenuated activation dynamics \textbf{(Fig. \ref{fig1:characterization}E-G)}. Upon T cell receptor (TCR) activation in the presence of particular cytokines, naive CD4$^+$ T cells can differentiate into several lineages of functionally different T helper cells (mainly Th1, Th2, Th17, Treg, Tfh) \citep{Stubbington2015, Zhu2010}. In our data we do not detect any early differentiation in naive and activated CD4$^+$ T cell subsets. In accordance with the literature we found \textit{Gata3} but not Th2 cytokines expressed in the majority of cells  \citep{Ho2009}. Interestingly, the Th1-related genes \textit{Tbx21} and \textit{Ifng} were up-regulated, in an uncoordinated manner, in a small population of activated CD4$^+$ T cells of old animals. This is consistent with a known Th1 bias in CD4$^+$ T cell responses in old mice \citep{Zhang2014} and humans \citep{Sakata-Kaneko2000} \textbf{(Fig.~\ref{fig1:characterization}H)}. Furthermore, we did not detect any difference in TCR components/signalling and importantly detected no signs of T cell exhaustion \citep{Wherry2011}, especially in cells isolated from old animals \textbf{(Fig.~\ref{fig1:characterization}I)}. We also ruled out strain-specific differences in commitment towards T helper cell lineages \textbf{(Fig. \ref{fig1:characterization}J-K)}. 
+To avoid biases during quantification of transcriptional variability, careful inspection of possible substructures in the isolated cells is needed. Possible drivers for cell-to-cell expression variability include: cell cycle, clonality, cell size, differences in activation state/exhaustion and T cell priming in form of lineage commitment. We therefore assessed these features in the MACS-purified naive CD4$^+$ T cells in their unstimulated and activated state.\\
+
+Firstly, we perfomed computational analysis to determine cell cycle stage, clonality and cell size. We estimated the cell cycle stage of each cell using \emph{cyclone} \citep{Scialdone2015} implemented in \emph{scran} \citep{Lun2016}. In contrast to haematopoeitic cells \citep{Kowalczyk2015}, even when activated, all CD4$^+$ T cells are in G1 phase of cell cycle \textbf{(Fig.~\ref{fig1:characterization}A)}. We performed clonal expansion by reconstructing the sequence of the T cell receptor for each cell \citep{Stubbington2015} and did not detect clonal expansion in CD4$^+$ T cells from aged animals \textbf{(Fig.~\ref{fig1:characterization}B)}. Similarly, we did not detect difference in cell size \textbf{(Fig.~\ref{fig1:characterization}C)} that could impact analysis of gene expression variability. \\
+
+Secondly, using flow cytometry analysis, we assessed the purity and activation state (Il2r$\alpha$ and Cd69) of CD4$^+$ T cells, confirming that 96.4\% of the isolated CD4$^+$ T cells were naive in young B6 \textbf{(Fig.~\ref{fig1:characterization}D)}. Old animals had a small population of CD4$^+$ T cells with slightly elevated CD44 levels, reduced CD62L expression, indicative for memory T cells, and attenuated activation dynamics \textbf{(Fig. \ref{fig1:characterization}E-G)}. We did not detect differences in the proportion of lymphocytes (Il7r) and natural killer cells (Klrg1) between cells isolated of young and old animals. \\
+
+Lastly, we determined if lineage commitment occurs in naive and activated CD4$^+$ T cells. In our data we do not detect any early differentiation in naive and activated CD4$^+$ T cell subsets. In accordance with the literature we found \textit{Gata3} but not Th2 cytokines expressed in the majority of cells  \citep{Ho2009}. Interestingly, the Th1-related genes \textit{Tbx21} and \textit{Ifng} were up-regulated, in an uncoordinated manner, in a small population of activated CD4$^+$ T cells of old animals. This is consistent with a known Th1 bias in CD4$^+$ T cell responses in old mice \citep{Zhang2014} and humans \citep{Sakata-Kaneko2000} \textbf{(Fig.~\ref{fig1:characterization}H)}. \\
+
+Furthermore, we did not detect any difference in TCR components/signalling and importantly detected no signs of T cell exhaustion \citep{Wherry2011}, especially in cells isolated from old animals \textbf{(Fig.~\ref{fig1:characterization}I)}. We also ruled out strain-specific differences in commitment towards T helper cell lineages \textbf{(Fig. \ref{fig1:characterization}J-K)}. 
 
 \newpage
 
@@ -104,13 +112,13 @@ In contrast to haematopoeitic cells \citep{Kowalczyk2015}, even when activated, 
 \\}
 \captionsetup[figure]{list=yes}
 
-After the above analyses and the experimental characterization, a total of 1514 high-quality CD4$^+$ T cell transcriptomes were analysed across all conditions and strains. An overview of all high-quality transcriptomes can be seen in \textbf{Fig.~\ref{fig1:all_cells}}. We detect that unstimulated and stimulated cells group together \textbf{(Fig.~\ref{fig1:all_cells}A)} while separation is also noticeable between strains \textbf{(Fig.~\ref{fig1:all_cells}B)} and experimental methods \textbf{(Fig.~\ref{fig1:all_cells}C)}. As discussed below, cells from young and old animals do not separate when visualizing the cells in form of a t-distributed stochastic neighbour embedding (tSNE, \textbf{Fig. \ref{fig1:all_cells}C}). 
+After the above analyses and the experimental characterization, a total of 1514 high-quality CD4$^+$ T cell transcriptomes were analysed across all conditions (unstimulated and activated; naive, FACS-purified naive, FACS-purified EM) and strains (B6 and CAST). An overview of all high-quality transcriptomes can be seen in \textbf{Fig.~\ref{fig1:all_cells}}. We detect that unstimulated and stimulated cells group together \textbf{(Fig.~\ref{fig1:all_cells}A)} while separation is also noticeable between strains \textbf{(Fig.~\ref{fig1:all_cells}B)} and experimental methods \textbf{(Fig.~\ref{fig1:all_cells}C)}. As discussed below, cells from young and old animals do not separate when visualizing the cells in form of a t-distributed stochastic neighbour embedding (tSNE, \textbf{Fig. \ref{fig1:all_cells}C}). 
 
 \newpage
 
 \begin{figure}[!hb]
 \centering
-\includegraphics[width=0.8\textwidth]{Fig_5.png}
+\includegraphics[width=\textwidth]{Fig_5.png}
 \caption[Visualization of all isolated CD4$^+$ T cells]{\textbf{Visualization of all isolated CD4$^+$ T cells.}\\
 tSNE dimensionality reduction of 1514 CD4$^+$ T cells isolated from young and old mice of two related strains. Cells were labelled based on \textbf{(A)} their activation state, \textbf{(B)} the mouse strain, \textbf{(C)} experimental isolation approach and \textbf{(D)} age.}
 \label{fig1:all_cells}
@@ -119,7 +127,6 @@ tSNE dimensionality reduction of 1514 CD4$^+$ T cells isolated from young and ol
 \newpage
 
 \section{Strain-specific gene expression in naive CD4$^+$ T cells}
-\subsection*{Single-cell RNA-seq reveals strain-specific gene expression in naive CD4$^+$ T cells}
 
 To fully characterize the variation observed in \textbf{Fig. \ref{fig1:all_cells}}, we dissected differences in gene expression between the two different mouse strains for naive CD4$^+$ T cells. Similar for \textbf{Fig. \ref{fig1:all_cells}}, we found that naive CD4+ T cells cluster by strain when only profiling naive CD4$^+$ T cells \textbf{(Fig. \ref{fig1:strain_specific})}.
 
