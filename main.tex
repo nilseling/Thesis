@@ -1,112 +1,107 @@
-% ******************************* PhD Thesis Template **************************
-% Please have a look at the README.md file for info on how to use the template
+% *************************************
+% ------- PhD Thesis Nils Eling -------
+% *************************************
 
 \documentclass[a4paper,12pt,times,numbered,print,index]{Classes/PhDThesisPSnPDF}
 
-% ******************************************************************************
-% ******************************* Class Options ********************************
-% *********************** See README for more details **************************
-% ******************************************************************************
+% *************************************
+% **** Class Options 
+% *************************************
 
-% `a4paper'(The University of Cambridge PhD thesis guidelines recommends a page
-% size a4 - default option) or `a5paper': A5 Paper size is also allowed as per
-% the Cambridge University Engineering Deparment guidelines for PhD thesis
-%
-% `11pt' or `12pt'(default): Font Size 10pt is NOT recommended by the University
-% guidelines
-%
-% `oneside' or `twoside'(default): Printing double side (twoside) or single
-% side.
-%
-% `print': Use `print' for print version with appropriate margins and page
-% layout. Leaving the options field blank will activate Online version.
-%
+% `a4paper'(The University of Cambridge PhD thesis guidelines recommends a page size a4 - default option) or `a5paper': A5 Paper size is also allowed as per the Cambridge University Engineering Deparment guidelines for PhD thesis
+
+% `11pt' or `12pt'(default): Font Size 10pt is NOT recommended by the University guidelines
+
+% `oneside' or `twoside'(default): Printing double side (twoside) or single side.
+
+% `print': Use `print' for print version with appropriate margins and page layout. Leaving the options field blank will activate Online version.
+
 % `index': For index at the end of the thesis
-%
+
 % `draftclassic': For draft mode without loading any images (same as draft in book)
-%
-% `draft': Special draft mode with line numbers, images, and water mark with
-% timestamp and custom text. Position of the text can also be modified.
-%
+
+% `draft': Special draft mode with line numbers, images, and water mark with timestamp and custom text. Position of the text can also be modified.
+
 % `abstract': To generate only the title page and abstract page with
 % dissertation title and name, to submit to the Student Registry
-%
-% `chapter`: This option enables only the specified chapter and it's references
-%  Useful for review and corrections.
-%
-% ************************* Custom Page Margins ********************************
-%
-% `custommargin`: Use `custommargin' in options to activate custom page margins,
-% which can be defined in the preamble.tex. Custom margin will override
-% print/online margin setup.
-%
-% *********************** Choosing the Fonts in Class Options ******************
-%
-% `times' : Times font with math support. (The Cambridge University guidelines
-% recommend using times)
-%
-% `fourier': Utopia Font with Fourier Math font (Font has to be installed)
-%            It's a free font.
-%
-% `customfont': Use `customfont' option in the document class and load the
-% package in the preamble.tex
-%
+
+% `chapter`: This option enables only the specified chapter and it's references. Useful for review and corrections.
+
+% *************************************
+% **** Custom Page Margins 
+% *************************************
+
+% `custommargin`: Use `custommargin' in options to activate custom page margins, which can be defined in the preamble.tex. Custom margin will override print/online margin setup.
+
+% *************************************
+% **** Choosing the Fonts in Class Options 
+% *************************************
+
+% `times' : Times font with math support. (The Cambridge University guidelines recommend using times)
+
+% `fourier': Utopia Font with Fourier Math font (Font has to be installed)      
+
+% `customfont': Use `customfont' option in the document class and load the package in the preamble.tex
+
 % default or leave empty: `Latin Modern' font will be loaded.
-%
-% ********************** Choosing the Bibliography style ***********************
-%
+
+% *************************************
+% **** Choosing the Bibliography style 
+% *************************************
+
 % `authoryear': For author-year citation eg., Krishna (2013)
-%
+
 % `numbered': (Default Option) For numbered and sorted citation e.g., [1,5,2]
-%
-% `custombib': Define your own bibliography style in the `preamble.tex' file.
-%              `\RequirePackage[square, sort, numbers, authoryear]{natbib}'.
-%              This can be also used to load biblatex instead of natbib
-%              (See Preamble)
-%
-% **************************** Choosing the Page Style *************************
-%
-% `default (leave empty)': For Page Numbers in Header (Left Even, Right Odd) and
-% Chapter Name in Header (Right Even) and Section Name (Left Odd). Blank Footer.
-%
-% `PageStyleI': Chapter Name next & Page Number on Even Side (Left Even).
-% Section Name & Page Number in Header on Odd Side (Right Odd). Footer is empty.
-%
-% `PageStyleII': Chapter Name on Even Side (Left Even) in Header. Section Number
-% and Section Name in Header on Odd Side (Right Odd). Page numbering in footer
+
+% `custombib': Define your own bibliography style in the `preamble.tex' file. `\RequirePackage[square, sort, numbers, authoryear]{natbib}'.cThis can be also used to load biblatex instead of natbib (See Preamble)
+
+% *************************************
+% **** Choosing the Page Style 
+% *************************************
+
+% `default (leave empty)': For Page Numbers in Header (Left Even, Right Odd) and Chapter Name in Header (Right Even) and Section Name (Left Odd). Blank Footer.
+
+% `PageStyleI': Chapter Name next & Page Number on Even Side (Left Even).  Section Name & Page Number in Header on Odd Side (Right Odd). Footer is empty.
+
+% `PageStyleII': Chapter Name on Even Side (Left Even) in Header. Section Number and Section Name in Header on Odd Side (Right Odd). Page numbering in footer
 
 % Uncomment to change page style
 %\pagestyle{PageStyleII}
 
-% ********************************** Preamble **********************************
-% Preamble: Contains packages and user-defined commands and settings
+% *************************************
+% **** Preamble 
+% *************************************
+
 \input{Preamble/preamble}
 
-% ************************ Thesis Information & Meta-data **********************
-% Thesis title and author information, refernce file for biblatex
+% *************************************
+% **** Thesis Information & Meta-data 
+% *************************************
+
 \input{thesis-info}
 
-% ***************************** Abstract Separate ******************************
-% To printout only the titlepage and the abstract with the PhD title and the
-% author name for submission to the Student Registry, use the `abstract' option in
-% the document class.
+% *************************************
+% ***** Abstract 
+% *************************************
 
 \ifdefineAbstract
  \pagestyle{empty}
  \includeonly{Declaration/declaration, Abstract/abstract}
 \fi
 
-% ***************************** Chapter Mode ***********************************
-% The chapter mode allows user to only print particular chapters with references
-% Title, Contents, Frontmatter are disabled by default
-% Useful option to review a particular chapter or to send it to supervisior.
-% To use choose `chapter' option in the document class
+% *************************************
+% **** Chapter Mode 
+% *************************************
+% The chapter mode allows user to only print particular chapters with references. Title, Contents, Frontmatter are disabled by default. Useful option to review a particular chapter or to send it to supervisior. To use choose `chapter' option in the document class
 
 \ifdefineChapter
  \includeonly{Chapter3/chapter3}
 \fi
 
-% ******************************** Front Matter ********************************
+% *************************************
+% **** Front Matter 
+% *************************************
+
 \begin{document}
 
 \frontmatter
@@ -118,7 +113,9 @@
 %\include{Acknowledgement/acknowledgement}
 %\include{Abstract/abstract}
 
-% *********************** Adding TOC and List of Figures ***********************
+% *************************************
+% **** Adding TOC and List of Figures 
+% *************************************
 
 \tableofcontents
 
@@ -131,22 +128,31 @@
 
 \printnomenclature
 
-% ******************************** Main Matter *********************************
+% *************************************
+% **** Main Matter
+% ************************************* 
+
 \mainmatter
 
-\include{Nomenclature/Nomenclature}
+%\include{Nomenclature/Nomenclature}
 
 %\include{Introduction/intro}
-\include{Chapter1/chapter1}
+%\include{Chapter1/chapter1}
 %\include{Chapter2/chapter2}
 %\include{Chapter3/chapter3}
 
 
-% ********************************** Back Matter *******************************
+% *************************************
+% **** Back Matter 
+% *************************************
+
 % Backmatter should be commented out, if you are using appendices after References
 %\backmatter
 
-% ********************************** Bibliography ******************************
+% *************************************
+% **** Bibliography 
+% *************************************
+
 \begin{spacing}{0.9}
 
 % To use the conventional natbib style referencing
@@ -160,26 +166,28 @@
 \bibliography{References/library} % Path to your References.bib file
 
 
-% If you would like to use BibLaTeX for your references, pass `custombib' as
-% an option in the document class. The location of 'reference.bib' should be
-% specified in the preamble.tex file in the custombib section.
-% Comment out the lines related to natbib above and uncomment the following line.
+% If you would like to use BibLaTeX for your references, pass `custombib' as an option in the document class. The location of 'reference.bib' should be specified in the preamble.tex file in the custombib section. Comment out the lines related to natbib above and uncomment the following line.
 
 %\printbibliography[heading=bibintoc, title={References}]
 
 
 \end{spacing}
 
-% ********************************** Appendices ********************************
+% *************************************
+% **** Appendices 
+% *************************************
 
 \begin{appendices} % Using appendices environment for more functunality
 
 \include{AppendixA/appendixA}
-%\include{Appendix2/appendix2}
+%\include{AppendixB/appendixB}
 
 \end{appendices}
 
-% *************************************** Index ********************************
+% *************************************
+% **** Index 
+% *************************************
+
 \printthesisindex % If index is present
 
 \end{document}
