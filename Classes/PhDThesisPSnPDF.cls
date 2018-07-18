@@ -996,7 +996,7 @@ wish to left align your text}
 \newenvironment{declaration}{
 \cleardoublepage
 \setsinglecolumn
-\chapter*{\centering \Large Declaration}
+\textcolor{Mahogany}{\section*{\LARGE \textsc{Declaration}}}
 \thispagestyle{empty}
 }{
 \flushright
@@ -1014,7 +1014,7 @@ wish to left align your text}
 \newenvironment{acknowledgements}{
 \cleardoublepage
 \setsinglecolumn
-\chapter*{\centering \Large Acknowledgements}
+\textcolor{Mahogany}{\section*{\LARGE \textsc{Acknowledgements}}}
 \thispagestyle{empty}
 }
 
@@ -1115,7 +1115,7 @@ wish to left align your text}
 % Normal abstract in the thesis
   \cleardoublepage
   \setsinglecolumn
-  \chapter*{\centering \Large Abstract}
+  \textcolor{Mahogany}{\section*{\LARGE \textsc{Abstract}}}
   \thispagestyle{empty}
 \fi
 }
