@@ -1,0 +1,165 @@
+%!TEX root = ../thesis.tex
+% ******************************************
+% 			Thesis Appendix B
+% ******************************************
+
+\chapter{Computational methods methods} 
+
+\section{Addressing the mean confounding effect for differential variability testing}
+\label{appB.1}
+
+\subsection{Prior specifications of extended BASiCS model}
+
+\begin{eqnarray}
+\mu_i &\sim \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
+\delta_i | \mu_i &\sim \mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right)\\
+\beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim & \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid & \textnormal{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
+(\phi_1, \ldots, \phi_n)' & \sim & n \times \textnormal{Dirichlet}(a_\phi),\\
+\theta & \sim & \textnormal{Gamma}(a_\theta,b_\theta),
+\end{eqnarray} with all hyper-parameters fixed \emph{a priori}. Default values are chosen as: \begin{eqnarray}
+m_{\beta} & = & \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)},\\
+V_{\beta} & = & \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)},\\
+a_{\sigma^2} & = & 2,\\
+b_{\sigma^2} & = & 2,
+\end{eqnarray}
+
+\subsection{Likelihood of extended BASiCS model}
+
+The likeligood function of the extended BASiCS model takes the form:
+
+\begin{align} \label{eq::loglik}
+\Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
+&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right].
+\end{align} 
+
+\subsection{Derivation of full conditionals for extended BASiCS model}
+
+To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). $q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. $L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.\\ 
+
+Full conditional for $\mu_i$ across all cells:
+\begin{fleqn}
+\begin{align*}
+&\pi^*(\mu_i|\cdot)&&\propto{} \Lagr_i\times\pi(\mu_i)\times\pi(\delta_i|\mu_i,\beta,\sigma^2,\eta)\\
+& &&\propto{}\left[\prod_{j=1}^n\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right]\times\exp\left(-\frac{(\log(\mu_i)-0)^2}{2a_\mu^2}\right)\frac{1}{\mu_i}\\
+& &&\times\exp\left\lbrace-\frac{\lambda_i}{2\sigma^2}(\log(\delta_i)-f(\mu_i))^2\right\rbrace\\
+& &&\propto\left[\prod_{j=1}^n{}\frac{(\mu_i)^{x_{ij}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right]\times{}\exp\left(-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right)\frac{1}{\mu_i}\\
+& &&\propto{}\frac{\mu_i^{\sum_{j=1}^n{}x_{ij}}}{\prod_{j=1}^n{}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\exp\left(-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right)\frac{1}{\mu_i}
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\delta_i$ across all cells:
+\begin{fleqn}
+\begin{align*}
+&\pi^*(\delta_i|\cdot)&&\propto{} \Lagr_i\times\pi(\delta_i|\mu_i,\beta,\sigma^2,\eta)\\
+& &&\propto{}\left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right]\\
+& &&\times\exp\left\lbrace-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right\rbrace\frac{1}{\delta_i}\\
+& &&\propto\left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\frac{(\frac{1}{\delta_i})^{\frac{1}{\delta_i}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right]\times{}\exp\left\lbrace-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right\rbrace\frac{1}{\delta_i}\\
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\beta$ across all cells and genes:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\beta|\cdot)&\propto{} \Lagr\times\pi(\delta|\mu,\beta,\sigma^2,\eta)\times\pi(\beta)\\
+&\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)'\Lambda(Y-X\beta)\rbrace\times\\
+&(\frac{1}{\sigma^2})^{\frac{k}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)'V_\beta^{-1}(\beta-m_\beta)\rbrace\\
+&\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)'\Lambda(Y-X\beta)+(\beta-m_\beta)'V_\beta^{-1}(\beta-m_\beta)]\rbrace\\
+&\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[Y'\Lambda{}Y-2(X\beta)'\Lambda{}Y+(X\beta)'\Lambda{}X\beta\\
+&+\beta'V_\beta^{-1}\beta-2m_\beta'V_\beta^{-1}\beta+m_\beta{}V_\beta^{-1}m_\beta{}]\rbrace\\
+&\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[\beta'X'\Lambda{}X\beta+\beta'V_\beta^{-1}\beta-2X'\Lambda{}Y\beta-2V_\beta^{-1}m_\beta\beta]\rbrace\\
+&\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[\beta'(X'\Lambda{}X+V_\beta^{-1})\beta-2(X'\Lambda{}Y+V_\beta^{-1}m_\beta)\beta]\rbrace\\
+&\propto{}N(m^*_\beta,\sigma^2V^*_\beta)
+\end{align*}
+\end{fleqn} With
+\begin{fleqn}
+\begin{align*}
+V^*_\beta&=(X'\Lambda{}X+V_\beta^{-1})^{-1}\\
+m^*_\beta&=(X'\Lambda{}X+V_\beta^{-1})^{-1}(X'\Lambda{}Y+V_\beta^{-1}m_\beta{})
+\end{align*}
+
+Full conditional for $\lambda_i$ across all cells:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\lambda_i|\cdot)&\propto{}\Lagr_i\times\pi(\delta_i|\mu,\beta,\sigma^2,\eta)\times\pi(\lambda_i)\\
+&\propto{}\lambda_i^{1/2}\exp\lbrace-\frac{\lambda_i}{2\sigma^2}(\log(\delta_i)-f(\mu_i))^2\rbrace\cdot\lambda_i{}^{\frac{\eta}{2}-1}\exp(-\lambda_i{}\frac{\eta}{2})\\
+&\propto{}\lambda_i^{\frac{\eta+1}{2}-1}\exp\lbrace-\frac{\lambda_i}{2}(\eta+\frac{1}{\sigma^2}(\log(\delta_i)_i-f(\mu_i)))\rbrace\\
+&\propto{}\textnormal{Gamma}(a^*_\lambda,b^*_\lambda)
+\end{align*}
+\end{fleqn}
+With
+\begin{align*}
+a^*_\lambda&=\frac{\eta+1}{2}\\
+b^*_\lambda&=\frac{1}{2}\left[\frac{1}{\sigma^2}(\log(\delta_i)-f(\mu_i))^2+\eta\right]
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\sigma^2$ across all cells and genes:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\sigma^2|\cdot)&\propto{}\Lagr\times\pi(\delta|\mu,\beta,\sigma^2,\eta)\times\pi(\sigma^2)\\
+&\propto{}\left(\frac{1}{\sigma^2}\right)^{\frac{q_0}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(Y-X\beta)'\Lambda(Y-X\beta)\rbrace\\
+&\cdot\left(\frac{1}{\sigma^2}\right)^{L+2}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta{})'V_\beta^{-1}(\beta-m_\beta{})\rbrace\\
+&\cdot\left(\frac{1}{\sigma^2}\right)^{a_{\sigma^2}+1}\exp\lbrace-\frac{b_{\sigma^2}}{\sigma^2}\rbrace\\
+&\propto{}\left(\frac{1}{\sigma^2}\right)^{\frac{q_0+L+2}{2}+a_{\sigma^2}+1}\exp\lbrace-\frac{1}{\sigma^2}[b_{\sigma^2}+\frac{1}{2}[(Y-X\beta)'\Lambda(Y-X\beta) \\
+&+ (\beta-m_\beta{})'V_\beta^{-1}(\beta-m_\beta{})]]\rbrace
+\end{align*}
+\end{fleqn} 
+After completing the squares
+\begin{fleqn}
+\begin{align*}
+&\propto{}\left(\frac{1}{\sigma^2}\right)^{\frac{q_0+L+2}{2}+a_{\sigma^2}+1}\exp\lbrace-\frac{1}{\sigma^2}[b_{\sigma^2}+\frac{1}{2}(Y'\Lambda{}Y+m_\beta{}'V_\beta{}^{-1}m_\beta{}\\
+&+(\beta-m^*_{\beta})'(V^*_{\beta})^{-1}(\beta-m^*_{\beta})-(m^*_{\beta})'(V^*_{\beta})^{-1}m^*_{\beta})]\rbrace\\
+&\propto{}(\frac{1}{\sigma^2})^{a_{n,\sigma^2}+1}\exp(-\frac{b^*_{\sigma^2}}{\sigma^2})\\
+&\propto{}\textnormal{Inv-Gamma}(a^*_{\sigma^2},b^*_{\sigma^2})
+\end{align*}
+\end{fleqn}
+With
+\begin{fleqn}
+\begin{align*}
+a^*_{\sigma^2}&=\frac{q_0+L+2}{2}+a_{\sigma^2}\\
+b^*_{\sigma^2}&=b_{\sigma^2}+\frac{1}{2}(Y'\Lambda{}Y+m_\beta'V_\beta^{-1}m_\beta+(\beta-m^*_{\beta})'(V^*_{\beta})^{-1}(\beta-m^*_{\beta})-(m^*_{\beta})'(V^*_{\beta})^{-1}m^*_{\beta})\\
+&\equiv{}b_{\sigma^2}+\frac{1}{2}(Y'\Lambda Y+ m'_{\beta} V_\beta^{-1} m_\beta + \beta' (V^*_{\beta})^{-1} \beta - 2 \beta' (V^*_{\beta})^{-1} m^*_{\beta} )
+\end{align*}
+\end{fleqn}
+
+Full conditional for $s_j$ across all genes:
+\begin{fleqn}
+\begin{align*}
+\pi^*(s_j|\cdot)&\propto{}\Lagr_j\times\pi(s_j)\\
+&\propto{}s_j{}^{a_s-1}\exp\lbrace-b_ss_j\rbrace{}s_j{}^{-\frac{1}{\theta}}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\\
+&\propto{}s_j{}^{a_s-\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}-b_ss_j\rbrace
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\phi$ across all genes and cells:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\phi_j|\cdot)&\propto{}\Lagr_j\times\pi(\phi_j)\\
+&\propto{}\prod_{i=1}^{q_0}\prod_{j=1}^{n}\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\times{}\pi(\phi_j)\\
+&\propto{}\frac{\prod_{i=1}^{q_0}\prod_{j=1}^{n}\phi_j{}^{x_{ij}}}{\prod_{i=1}^{q_0}\prod_{j=1}^{n}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\pi(\phi_j)\\
+&\propto{}\frac{\prod_{i=1}^{q_0}\phi_j{}^{\sum_{j=1}^nx_{ij}}}{\prod_{i=1}^{q_0}\prod_{j=1}^{n}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\pi(\phi_j)
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\nu_j$ across all genes:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\nu_j|\cdot)&\propto{}\Lagr_j\times\pi(\nu_j)\\
+&\propto{}\left[\prod_{i=1}^{q_0}\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\nu_j}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right]\left[\prod_{i=q_0+1}^{q}\nu_j{}^{x_{ij}}\exp\lbrace-\nu_j\mu_i\rbrace\right]\\
+&\times{}\nu_j^{\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace
+\end{align*}
+\end{fleqn}
+
+Full conditional for $\theta$ across all genes and cells:
+\begin{fleqn}
+\begin{align*}
+\pi^*(\theta|\cdot)&\propto{}\Lagr\times\pi(\theta)\\
+&\propto{}\left[\prod_{j=1}^{n}\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\right]\times{}\theta^{a_\theta-1}\exp\lbrace-b_\theta\theta\rbrace\\
+&\propto{}\left[\prod_{j=1}^{n}\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\frac{1}{\nu_j}^{-\frac{1}{\theta}}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\right]\times\theta^{a_\theta-1}\exp\lbrace-b_\theta\theta\rbrace\\
+&\propto{}\left[\prod_{j=1}^{n}\frac{\frac{s_j}{\nu_j}^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\theta^{-\frac{1}{\theta}}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\right]\times{}\theta^{a_\theta-1}\exp\lbrace-b_\theta\theta\rbrace\\
+&\propto{}\frac{\left(\prod_{j=1}^{n}\frac{s_j}{\nu_j}\right)^{-\frac{1}{\theta}}}{\Gamma{}^n(\frac{1}{\theta})}\theta^{-\frac{n}{\theta}}\exp\lbrace-\frac{1}{\theta}\sum_{j=1}^n\frac{\nu_j}{s_j}\rbrace\theta^{a_\theta-1}\exp\lbrace-b_\theta\theta\rbrace\\
+&\propto{}\frac{\left(\prod_{j=1}^{n}\frac{s_j}{\nu_j}\right)^{-\frac{1}{\theta}}}{\Gamma{}^n(\frac{1}{\theta})}\theta^{a_\theta-\frac{n}{\theta}-1}\exp\lbrace-\frac{1}{\theta}\sum_{j=1}^n\frac{\nu_j}{s_j}-b_\theta\theta\rbrace
+\end{align*}
+\end{fleqn}
