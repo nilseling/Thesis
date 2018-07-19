@@ -3,14 +3,18 @@
 %	 Chapter 2
 %*****************************
 
-\chapter{Correcting the mean-variability dependency in scRNA-Seq data}  
+\chapter{Addressing the mean-variability dependency in scRNA-Seq data}  
 
 \graphicspath{{Chapter2/Figures/}}
 
+\vfill
+
 \begin{Abstract}
-Cell-to-cell transcriptional variability in otherwise homogeneous cell populations plays a crucial role in tissue function and development. Single-cell RNA sequencing can characterise this variability in a transcriptome-wide manner. However, technical variation and the confounding between variability and mean expression estimates hinders meaningful comparison of expression variability between cell populations. To address this problem, we introduce an analysis approach that extends the BASiCS statistical framework to derive a residual measure of variability that is not confounded by mean expression. This includes a robust procedure for quantifying technical noise in experiments where technical spike-in molecules are not available.
-We illustrate how our method provides biological insight into the dynamics of cell-to-cell expression variability, highlighting a synchronisation of biosynthetic machinery components in immune cells upon activation. In contrast to the uniform up-regulation of the biosynthetic machinery, CD4$^+$ T cells show heterogeneous up-regulation of immune-related and lineage-defining genes during activation and differentiation. 
+As shown above, cell-to-cell transcriptional variability in otherwise homogeneous cell populations plays crucial roles in immune activation and increases with age. Single-cell RNA sequencing can characterise this variability in a transcriptome-wide manner. However, technical variation and the confounding between variability and mean expression estimates hinders meaningful comparison of expression variability between cell populations. To address this problem, we introduce an analysis approach that extends the BASiCS statistical framework to derive a residual measure of variability that is not confounded by mean expression. This measure is used to test changes in variability in parallel to changes in mean expression on a gene-specific level transcriptome-wide.
+With this method, we assessed changes in variability for genes responding to CD4\plus{} T cell activation and detect a synchronisation of biosynthetic machinery components. Furthermore, cytokines such as Il2 that support the activation of surrounding cells by paracrine signalling are heterogeneously up-regulated upon immune activation. When profiling more subtle transcriptional changes during CD4\plus{} T cell differentiation, we detect opposing patterns of changes in variability between \textit{Tbx21} and \textit{Cxcr5}, which are markers for Th1 and Tfh cells, indicating a delayed commitment processes throughout differentiation. 
 \end{Abstract}
+
+\vfill
 
 \newpage
 
