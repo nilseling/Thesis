@@ -3,7 +3,7 @@
 % 			Thesis Appendix B
 % ******************************************
 
-\chapter{Computational methods methods} 
+\chapter{Computational methods} 
 
 \section{Addressing the mean confounding effect for differential variability testing}
 \label{appB.1}
@@ -11,8 +11,8 @@
 \subsection{Prior specifications of extended BASiCS model}
 
 \begin{eqnarray}
-\mu_i &\sim \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
-\delta_i | \mu_i &\sim \mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right)\\
+\mu_i &\sim &\mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
+\delta_i | \mu_i &\sim &\mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right)\\
 \beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
 \sigma^2 & \sim & \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
 s_j & \iid & \textnormal{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
