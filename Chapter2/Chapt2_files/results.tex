@@ -70,69 +70,86 @@ The latter is equivalent to the following non-linear regression model:
 
 \begin{equation} \label{eq::regression}
 \log(\delta_i) =\text{f}(\mu_i)+\epsilon_i, \hspace{0.5cm} \epsilon_i \sim{}\text{T}_{\eta}(0,\sigma^2), 
-\end{equation} where $\text{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) for a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific \textit{residual over-dispersion} parameter, capturing departures from the overall trend. \\ 
+\end{equation} where $\text{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) for a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific \textit{residual over-dispersion} parameter, capturing departures from the overall trend. \\
 
-A similar approach was introduced by DESeq2 \citep{Love2014} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we use Student-T distributed errors as it leads to inference that is more robust to the presence of outlier genes. Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
+A similar approach was introduced by DESeq2 \citep{Love2014} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we use Student-T distributed errors as it leads to inference that is more robust to the presence of outlier genes. 
+
+\newpage
+
+Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
 
 \begin{equation} \label{eq::trend}
 \text{f}(\mu_i) = \alpha_0 + \log(\mu_i)\alpha_1 + \sum_{l=1}^L \text{g}_l(\log(\mu_i))\beta_l,
 \end{equation} 
 
-where $\text{g}_1(\cdot), \ldots, \text{g}_L(\cdot)$ represent a set of Gaussian radial basis function (GRBF) kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. As in \cite{Kapourani2016}, these are defined as: 
+which is a linear combination of an intercept, a linear term $\log{\mu_i}$ and a set of $L$ Gaussian radial basis function (GRBF) kernels $\text{g}_1(\cdot), \ldots, \text{g}_L(\cdot)$. As in \cite{Kapourani2016}, these are defined as: 
 
 \begin{equation} \label{eq::GRBF}
 \text{g}_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
 \end{equation} 
 
-where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels. 
+where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. \\
+
+In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}. A schematic representation of this regression approach can be seen in \textbf{Fig. \ref{fig2:GRBFs}}.
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_2.png}
-\caption[Schematic representation of the regression approach using GRBFs]{\textbf{Schematic representation of the semi-parametric regresion approach using Gaussian Radial Basis Functions.}\\
-Point estimates of the log-transformed mean expression and log-transformed coefficient of variation (CV$^2$) computed on the Dictyostelium data at day 0 \citep{Antolovic2017} were used to fit a least-squares regression based on Gaussian Radial Basis Functions (GRBFs). The model matrix $X$ contains an intercept term (green line), a linear component (orange line) and 10 GRBFs (blue lines). For visualization purposes, a linear regression was fit using least-square estimates (red line) based on the given model matrix $X$.}
+\includegraphics[width=0.9\textwidth]{Fig_2.png}
+\caption[Schematic representation of the regression approach using GRBFs]{\textbf{Schematic representation of the regression approach using GRBFs.}\\
+Point estimates of the squared coefficient of variation (CV$^2$) were plotted against mean expression. For fitting a regression trend, the model matrix $X$ contains an intercept term (green line), a linear component (orange line) and 10 GRBFs (blue lines). For visualization purposes, a linear regression was fitted using least-square estimates (red line) based on the given model matrix $X$ and data from Dictyostelium at day 0 \citep{Antolovic2017}.}
 \label{fig2:GRBFs}
 \end{figure}
 
-In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}.  Details about this choice are described below. A schematic representation of this regression approach can be seen in \textbf{Fig. \ref{fig2:GRBFs}}.\\
-
-The remaining elements of the prior were chosen as follows: \begin{eqnarray}
-\beta|\sigma^2 & \sim &\text{N}(m_\beta,\sigma^2V_\beta),\\
-\sigma^2 & \sim & \text{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
-s_j & \iid & \text{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
-(\phi_1, \ldots, \phi_n)' & \sim & n \times \text{Dirichlet}(a_\phi),\\
-\theta & \sim & \text{Gamma}(a_\theta,b_\theta),
-\end{eqnarray} with all hyper-parameters fixed \emph{a priori}. Default values are chosen as: \begin{eqnarray}
-m_{\beta} & = & \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)},\\
-V_{\beta} & = & \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)},\\
-a_{\sigma^2} & = & 2,\\
-b_{\sigma^2} & = & 2,
-\end{eqnarray} with the remaining default hyper-parameter values as in \cite{Vallejos2016}.\\
-
-In principle, the degrees of freedom parameter $\eta$ could also be estimated within a Bayesian framework. However, we observed that fixing this parameter \emph{a priori} led to more stable results. A default choice for this parameter is described below.
 
 \subsection{Implementation}
 
-Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by \cite{Vallejos2016}. For this purpose, the log-Student-T distribution in \ref{eq::jointprior} is represented via the same data augmentation scheme as in \cite{Vallejos2015}. The latter introduces an auxiliary set of parameters $\lambda_i$ such that:
+Next, we will give a detailed explanation on how the model was build and how posterior sampling was performed. 
 
-\begin{equation}
-\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta \ind \text{log-N}\left( f(\mu_i),\frac{\sigma^2}{\lambda_i} \right), \hspace{0.3cm} \lambda_i|\eta \ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right).
+
+\subsubsection{Prior specification}
+
+For implementation purposes, the log-Student-T distribution in \ref{eq::jointprior} is represented via a shape mixture of a log-Normal density with a Gamma density as in \cite{Vallejos2015}. This introduces an auxiliary set of parameters $\lambda_i$ such that the full prior specifications of the extended BASiCS model are:
+
+\begin{align*}
+\mu_i &\ind \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta &\ind \text{log-N}\left( \text{f}(\mu_i),\frac{\sigma^2}{\lambda_i} \right)\\
+\lambda_i|\eta &\ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right)\\
+\beta|\sigma^2 & \sim \textnormal{Normal}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim  \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid  \textnormal{Gamma}(a_s,b_s) \\
+(\phi_1, \ldots, \phi_n)' & \sim  n \times \textnormal{Dirichlet}(a_\phi),\\
+\theta & \sim  \textnormal{Gamma}(a_\theta,b_\theta)
+\end{align*}
+
+Here, $s^2_{\mu}, m_\beta, V_\beta, a_{\sigma^2}, b_{\sigma^2}, a_s, b_s, a_\phi, a_\theta, b_\theta$ are hyper-parameters that are fixed \emph{a priori}. Their initial values can be found in \textbf{Appendix \ref{appB.1.hyper}}. In principle, the degrees of freedom parameter $\eta$ could also be estimated within a Bayesian framework. However, we observed that fixing this parameter \emph{a priori} led to more stable results. A default choice for this parameter is described in \textbf{Section \ref{sec2:hyper-parameters}}.
+
+\newpage
+
+\subsubsection{Estimation of regression parameters}
+
+To simplify inference for the regression coefficients $\beta = (\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L)'$ equation \ref{eq::trend} can be rewritten as a linear regression model using 
+
+\begin{equation} \label{eq::trend2} 
+\text{f}(\mu_i) = X \beta
 \end{equation} 
 
-Moreover, the regression coefficients $\beta = (\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L)'$ are inferred by noting that \ref{eq::trend} can be rewritten as a linear regression model using 
-
-\begin{equation} \label{eq::trend2} f(\mu_i) = X \beta, \end{equation} 
-
-where $X$ is a $q_0 \times (L+2)$ matrix given by 
+Here, $X$ is a $q_0 \times (L+2)$ model matrix given by 
 
 \begin{equation} \label{eq::X} X = \left( \begin{array}{ccccc}
 1 & \log(\mu_1) & g_1(\log(\mu_1)) & \cdots & g_L(\log(\mu_1)) \\
 1 & \log(\mu_2) & g_1(\log(\mu_2)) & \cdots & g_L(\log(\mu_2)) \\
 \vdots & \vdots & \vdots & \ddots & \vdots  \\
 1 & \log(\mu_{q_0}) & g_1(\log(\mu_{q_0})) & \cdots & g_L(\log(\mu_{q_0}))
-\end{array}\right).\end{equation}
+\end{array}\right)
+\end{equation}
 
-In this setting, the full conditionals associated with $s_j$, $\phi_j$, $\nu_j$ and $\theta$ are not affected by the new prior specification of $(\mu_i, \delta_i)'$ and can be found in \cite{Vallejos2016}. The full conditional for $\mu_i$, $\delta_i$, $\beta$, and $\sigma^2$ are derived below. As in \cite{Vallejos2015BASiCS}, these are derived by integrating out the random effect $\rho_{ij}$ in \ref{eq::PoissonBASiCS}, leading to:
+Each column contains either the intercept, the linear component or values of one of the $L$ GRBF. This matrix is updated every 50 iterations during posterior sampling.
+
+\subsubsection{Posterior inference}
+
+Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by Vallejos \emph{et al.} 2016 \cite{Vallejos2016}. To implement the sampler, the full conditionals for each model parameter need to be derived. \\
+
+As in Vallejos \emph{et al.}, 2015 \cite{Vallejos2015BASiCS}, the random effect $\rho_{ij}$ in \ref{eq::PoissonBASiCS} is integrated out, leading to following count distributions:
 
 \begin{equation} \label{eq::NegBinBASiCS}
  X_{ij}|\mu_i,\delta_i,\phi_j,\nu_j \ind
@@ -148,36 +165,31 @@ Based on \ref{eq::NegBinBASiCS}, the likelihood function therefore takes the for
 
 \begin{align} \label{eq::loglik}
 \Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
-&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right].
+&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right]
 \end{align} 
 
-Let $f(\mu_i)$ be as in \ref{eq::trend}. The full conditionals associated to the mean expression parameters $\mu_i$ and over-dispersion parameters $\delta_i$ are respectively given by:
+\newpage
 
-\begin{footnotesize} \begin{eqnarray} \label{eq::FullCondMuDelta}
-\pi^*(\mu_i|\cdot) & \propto & \frac{\mu_i^{\sum_{j=1}^n{}x_{ij}}}{\prod_{j=1}^n{}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}} \exp\left\{-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2 / \lambda_i }\right\} \frac{1}{\mu_i}, \\
-\pi^*(\delta_i|\cdot) & \propto & \left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\frac{(\frac{1}{\delta_i})^{\frac{1}{\delta_i}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right] \exp\left\{-\frac{(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2 / \lambda_i}\right\} \frac{1}{\delta_i}.
-\end{eqnarray} \end{footnotesize}
+The full conditionals can now be derived by calculating the parameter-dependent part of the posterior distribution which is a product of the likelihood times the prior specifications $\pi^\ast(\cdot)\propto{}\Lagr\times\pi(\cdot)$. Full conditionals for the model as as follows: 
 
-Moreover, the full conditionals associated to the remaining parameters $\lambda_i$, $\beta$ and $\sigma^2$ are given by 
+Let $\text{f}(\mu_i)$ be as in \ref{eq::trend}. The full conditionals associated to the mean expression parameters $\mu_i$ and over-dispersion parameters $\delta_i$ are respectively given by:\\
 
-\begin{eqnarray}
-\lambda_i|\cdot & \ind & \text{Gamma}(a^*_{\lambda_i},b^*_{\lambda_i}), \hspace{0.2cm} i = 1, \ldots, q_0, \\
-\beta|\cdot & \sim & N(m^*_{\beta}, \sigma^2 V^*_{\beta}), \\
-\sigma^2|\cdot & \sim & \text{Inv-Gamma}(a^*_{\sigma^2},b^*_{\sigma^2}),
-\end{eqnarray} 
+\begingroup
+\addtolength{\jot}{1em}
+\begin{align*} \label{eq::FullCond}
+&\pi^*(\mu_i|\cdot) && \propto \frac{\mu_i^{\sum_{j=1}^n{}x_{ij}}}{\prod_{j=1}^n{}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\exp\left(-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right)\frac{1}{\mu_i} \\
+&\pi^*(\delta_i|\cdot) && \propto \left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\frac{(\frac{1}{\delta_i})^{\frac{1}{\delta_i}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right]\times{}\exp\left\lbrace-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right\rbrace\frac{1}{\delta_i}\\
+&\pi^*(\beta|\cdot)&&\propto{}\text{Normal}(m^*_\beta,\sigma^2V^*_\beta)\\
+&\pi^*(\lambda_i|\cdot)&&\propto{}\text{Gamma}(a^*_\lambda,b^*_\lambda)\\
+&\pi^*(\sigma^2|\cdot)&&\propto{}\text{Inv-Gamma}(a^*_{\sigma^2},b^*_{\sigma^2})\\
+&\pi^*(s_j|\cdot)&&\propto{}s_j{}^{a_s-\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}-b_ss_j\rbrace\\
+&\pi^*(\phi_j|\cdot)&&\propto{}\frac{\prod_{i=1}^{q_0}\phi_j{}^{\sum_{j=1}^nx_{ij}}}{\prod_{i=1}^{q_0}\prod_{j=1}^{n}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\pi(\phi_j)\\
+&\pi^*(\nu_j|\cdot)&&\propto{}\left[\prod_{i=1}^{q_0}\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\nu_j}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right]\left[\prod_{i=q_0+1}^{q}\nu_j{}^{x_{ij}}\exp\lbrace-\nu_j\mu_i\rbrace\right]\nu_j^{\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\\
+&\pi^*(\theta|\cdot)&&\propto{}\frac{\left(\prod_{j=1}^{n}\frac{s_j}{\nu_j}\right)^{-\frac{1}{\theta}}}{\Gamma{}^n(\frac{1}{\theta})}\theta^{a_\theta-\frac{n}{\theta}-1}\exp\lbrace-\frac{1}{\theta}\sum_{j=1}^n\frac{\nu_j}{s_j}-b_\theta\theta\rbrace
+\end{align*}
+\endgroup
 
-with \begin{eqnarray}
-a^*_{\lambda_i} & = & \frac{\eta+1}{2} \\
-b^*_{\lambda_i} & = & \frac{1}{2}\left[\frac{1}{\sigma^2}(\log(\delta_i)-f(\mu_i))^2+\eta\right] \\
-V^*_{\beta} & = & (X' \Lambda X + V_\beta^{-1})^{-1} \\
-m^*_{\beta} & = & (X' \Lambda X+V_\beta^{-1})^{-1}(X' \Lambda Y + V_\beta^{-1}m_\beta{}) \\
-a^*_{\sigma^2} & = & \frac{q_0+L+2}{2}+a_{\sigma^2}\\
-b^*_{\sigma^2} & = & b_{\sigma^2}+\frac{1}{2}(Y'\Lambda Y+ m'_{\beta} V_\beta^{-1} m_\beta+ \nonumber \\
-&  &(\beta-m^*_{\beta})' (V^*_{\beta})^{-1} (\beta-m^*_{\beta}) - (m^*_{\beta})' (V^*_{\beta})^{-1} m^*_{\beta}),  \\
-& \equiv & b_{\sigma^2}+\frac{1}{2}(Y'\Lambda Y+ m'_{\beta} V_\beta^{-1} m_\beta + \beta' (V^*_{\beta})^{-1} \beta - 2 \beta' (V^*_{\beta})^{-1} m^*_{\beta} ),
-\end{eqnarray} where $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$. Finally, the full conditionals associated to the global technical noise parameter ($\theta$) and cell-specific parameters ($\phi_j$, $s_j$ and $\nu_j$) are defined as in \cite{Vallejos2016}.\\
-
-The derivation of the full conditionals can be found in \textbf{Appendix  \ref{appB.1}}.
+Here, posteriors for $\beta, \lambda_i, \sigma^2$ take on closed form distributions. The posterior for $s_j$ represents a Generalized Inverser Gaussian distribution with parameters. To sample all other posterior distributions adaptive Metropolis sampling was implemented as described in \textbf{Section \ref{sec0:posterior_inference}}. The derivation of the full conditionals can be found in \textbf{Appendix  \ref{appB.1.derivation}}.
 
 \newpage
 
