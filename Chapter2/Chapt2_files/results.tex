@@ -193,32 +193,51 @@ Here, posteriors for $\beta, \lambda_i, \sigma^2$ take on closed form distributi
 
 \newpage
 
-
 \subsection{Probabilistic rule associated to the differential test} \label{sec:differentialtest}
 
-We use a probabilistic approach to identify changes in gene expression between groups of cells. Let $\delta_i^A$ and $\delta_i^B$ be the over-dispersion parameters associated to gene $i$ in groups $A$ and $B$. Following \ref{eq::regression}, the log$_2$ fold change in over-dispersion between these groups can be decomposed as: \begin{equation} \label{eq::dispersion_lfc}
-\log_2 \left( \frac{\delta_i^A}{\delta_i^B}\right) = \log_2(e) \times \left[\underbrace{f^A(\mu_i^A) - f^B(\mu_i^B) }_{\text{Mean contribution}} + \underbrace{\epsilon_i^A - \epsilon_i^B}_{\text{Residual change}} \right],
-\end{equation} where the first term captures the over-dispersion change that can be attributed to differences between $\mu_i^A$ and $\mu_i^B$. The second term in \ref{eq::dispersion_lfc} represents the change in residual over-dispersion that is not confounded by mean expression. Based on this observation, statistically significant differences in residual over-dispersion will be identified for those genes where the tail posterior probability of observing a large difference between $\epsilon_i^A$ and $\epsilon_i^B$ exceeds a certain threshold, i.e.~\begin{equation} \label{eq::decision_rule}
-\text{P}(\mid\epsilon_i^{A}-\epsilon_i^{B}\mid >\psi_0 \mid \text{Data} ) >\alpha_R,
-\end{equation} 
-where $\psi_0 > 0$ defines a minimum tolerance threshold. As a default choice, we assume $\psi_0 = \log_2(1.5) / \log_2(e) \approx 0.41$ which translates into a 50\% increase in over-dispersion. In the limiting case when $\psi_0 = 0$, the probability in \eqref{eq::decision_rule} is equal to 1 regardless of the information contained in the data. Therefore, as in \cite{Bochkina2007}, our decision rule is based on the maximum of the posterior probabilities associated to the one-sided hypotheses $\epsilon^A - \epsilon^B_i > 0$ and  $\epsilon^A - \epsilon^B_i < 0$, i.e. \begin{equation} \label{eq::decision_rule2} 2 \times \max\{\pi_i, 1-\pi_i\} - 1  >\alpha_R, \hspace{0.2cm} \text{with} \hspace{0.2cm} \pi_i = \text{P}(\epsilon_i^{A}-\epsilon_i^{B} > 0 \mid \text{Data})
-\end{equation}In both cases, the posterior probability threshold $\alpha_R$ is chosen to control the expected false discovery rate (EFDR) \citep{Newton2004}. The default value for EFDR is set to 10\%.
-As a default and to support interpretability of the results, we exclude genes that are not expressed in at least 2 cells per condition from differential variability testing.\\
-Changes in mean and over-dispersion are highlighted using the decision rule of \cite{Vallejos2016}. \\
+The residual over-dispersion parameter is calculated as $\epsilon_i=\log(\delta_i)-\text{f}(\mu_i)$. We can now implement a probabilistic approach to identify changes in residual over-disperison between groups of cells. Let $\delta_i^A$ and $\delta_i^B$ be the over-dispersion parameters associated to gene $i$ in groups $A$ and $B$. Following \ref{eq::regression}, the log$_2$ fold change in over-dispersion between these groups can be decomposed as: 
 
-To evaluate the performance of our differential test we generated synthetic data under a null model (without changes in variability) and an alternative model (with changes in variability). All datasets were generated following the BASiCS model, with parameter values used set by empirical estimates based on 98 microglia cells (see below). For this purpose, we use the \emph{BASiCS$\_$Sim} function. To simulate data under an alternative model, 1000 genes were randomly selected and their associated $\delta_i$'s were increased or decreased by a $\log_2$ fold change of 5. Differential testing was performed either between data simulated on the same set of parameters (null model) or between data simulated from the original parameters and the altered parameters (alternative model). We report the EFDR \citep{Newton2004} as well as the false positive rate (FPR) for simulations under the null model and the true positive rate (TPR) for simulations under the alternative model. Synthetic data was generated with different sample sizes, with 5 repetitions for each sample size \textbf{(Fig. \ref{fig2:EFDR})}.
+\begin{equation} \label{eq::dispersion_lfc}
+\log_2 \left( \frac{\delta_i^A}{\delta_i^B}\right) = \log_2(e) \times \left[\underbrace{\text{f}^A(\mu_i^A) - \text{f}^B(\mu_i^B) }_{\text{Mean contribution}} + \underbrace{\epsilon_i^A - \epsilon_i^B}_{\text{Residual change}} \right]
+\end{equation} 
+
+where the first term captures the over-dispersion change that can be attributed to differences between $\mu_i^A$ and $\mu_i^B$. The second term in \ref{eq::dispersion_lfc} represents the change in residual over-dispersion that is not confounded by mean expression. Based on this observation, statistically significant differences in residual over-dispersion will be identified for those genes where the tail posterior probability of observing a large difference between $\epsilon_i^A$ and $\epsilon_i^B$ exceeds a certain threshold $\psi_0 > 0$:
+
+\begin{equation} \label{eq::decision_rule}
+\pi_i(\psi_0)\text{P}(\mid\epsilon_i^{A}-\epsilon_i^{B}\mid >\psi_0 \mid \text{Data} ) >\alpha_R
+\end{equation}
+ 
+As a default choice, we assume $\psi_0 = \log_2(1.5) / \log_2(e) \approx 0.41$ which translates into a 50\% increase in over-dispersion. In the limiting case when $\psi_0 = 0$, the probability in \eqref{eq::decision_rule} is equal to 1 regardless of the information contained in the data. Therefore, as in \cite{Bochkina2007}, our decision rule is based on the maximum of the posterior probabilities associated to the one-sided hypotheses $\epsilon^A - \epsilon^B_i > 0$ and  $\epsilon^A - \epsilon^B_i < 0$:
+
+\begin{equation} \label{eq::decision_rule2} 2 \times \max\{\pi_i^+, 1-\pi_i^+\} - 1  >\alpha_R, \hspace{0.2cm} \text{with} \hspace{0.2cm} \pi_i^+ = \text{P}(\epsilon_i^{A}-\epsilon_i^{B} > 0 \mid \text{Data})
+\end{equation}
+
+In both cases, the posterior probability threshold $\alpha_R$ is chosen to control the expected false discovery rate (EFDR) \citep{Newton2004}. The default value for EFDR is set to 10\%. The EFDR is defined as:
+
+\begin{equation}
+\text{EFDR}_{\alpha_R}(\psi_0)=\frac{\sum_{i=1}^{q_0}(1-\pi_i(\psi_0))\text{I}(\pi_i(\psi_0)>\alpha_R)}{\sum_{i=1}^{q_0}\text{I}(\pi_i(\psi_0)>\alpha_R)}
+\end{equation}
+
+where I(A)=1 if the event A is true. As a default and to support interpretability of the results, we exclude genes that are not expressed in at least 2 cells per condition from differential variability testing.\\
+
+To evaluate the performance of our differential test we generated synthetic data under a null model (without changes in variability) and an alternative model (with changes in variability). All datasets were generated following the BASiCS model, with parameter values set by empirical posterior estimates based on 98 microglia cells. To simulate data under an alternative model, 1000 genes were randomly selected and their associated $\delta_i$'s were increased or decreased by a $\log_2$ fold change of 5. Increasing number of cells were simulated to estimate the effect of sample size on differential testing. Differential testing was performed either between data simulated on the same set of parameters (null model) or between data simulated from the original parameters and the altered parameters (alternative model). We report the EFDR \citep{Newton2004} as well as the false positive rate (FPR) for simulations under the null model and the true positive rate (TPR) for simulations under the alternative model \textbf{(Fig.~\ref{fig2:EFDR})}. 
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.9\textwidth]{Fig_3.png}
-\caption[EFDR, FPR and TPR estimation using simulated data.]{\textbf{EFDR, FPR and TPR estimation using simulated data.}\\
-Data was simulated using the BASiCS model with model parameters set by empirical estimates based on on 98 microglia cells (see \textbf{STAR Methods}).  \\
-Different samples sizes (40 - 200 cells) were simulated in replicates of 5. Differential testing was performed between 2 simulated datasets of equal size to calculate the false positive rate (FPR, number of detections divided by number of genes tested), the true positive rate (number of true positive divided by number of positives). Moreover, we report the expected false discovery rate \citep[EFDR,][]{Newton2004}. 
-For each test, the EFDR was controlled to 10\% and the default minimum tolerance thresholds were used ($\tau_0 = \log_2(1.5)$, $\omega_0 = \log_2(1.5)$ and $\psi_0 = 0.41$). \textbf{(A)-(C)} Synthetic datasets generated using the null model (without changes in variability). FPR and EFDR for (A) differential mean expression, (B) differential over-dispersion and (C) differential residual over-dispersion testing using datasets with increasing samples sizes. \textbf{(D)-(E)} Synthetic datasets generated using the alternative model where 1000 genes were randomly selected and their associated over-dispersion parameters were increased or decreased by a $\log_2$ fold change of 5 (see \textbf{STAR Methods}). TPR and EFDR for (D) differential over-dispersion testing and (E) differential residual over-dispersion testing using datasets with increasing samples sizes simulated.\\
+\caption[EFDR, FPR and TPR estimation using simulated data]{\textbf{EFDR, FPR and TPR estimation using simulated data (Full legend on next page).}\\
 }\label{fig2:EFDR}
 \end{figure}
 
 \newpage
+
+\captionsetup[figure]{list=no}
+\addtocounter{figure}{-1}   
+\captionof{figure}{\textbf{EFDR, FPR and TPR estimation using simulated data (continued).}\\
+Data was simulated using the BASiCS model with model parameters set by empirical estimates based on on 98 microglia cells (see \textbf{Table \ref{tab2:datasets}}). Different samples sizes (40 - 200 cells) were simulated in replicates of 5. Differential testing was performed between 2 simulated datasets of equal size to calculate the false positive rate (FPR, number of detections divided by number of genes tested), the true positive rate (number of true positive divided by number of positives). Moreover, we report the expected false discovery rate (EFDR, \citep{Newton2004}). For each test, the EFDR was controlled to 10\% and the default minimum tolerance thresholds were used ($\tau_0 = \log_2(1.5)$, $\omega_0 = \log_2(1.5)$ and $\psi_0 = 0.41$), \textbf{(A)-(C)} Synthetic datasets generated using the null model (without changes in variability). FPR and EFDR for (A) differential mean expression, (B) differential over-dispersion and (C) differential residual over-dispersion testing using datasets with increasing samples sizes, \textbf{(D)-(E)} Synthetic datasets generated using the alternative model where 1000 genes were randomly selected and their associated over-dispersion parameters were increased or decreased by a $\log_2$ fold change of 5. TPR and EFDR for (D) differential over-dispersion testing and (E) differential residual over-dispersion testing using datasets with increasing samples sizes simulated.\\}
+\captionsetup[figure]{list=yes}
+
+As expected, the EFDR is controlled to 10\%. Furthermore, the FPR for differential mean expression and differential over-dispersion is consistently smaller than 10\% and is only slightly higher for differential residual over-dispersion testing. The TPR for differential over-dispersion and differential residual over-dispersion testing increases with increasing sample size and plateaus at 100\% \textbf{(Fig.~\ref{fig2:EFDR})}.
 
 \subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
 
