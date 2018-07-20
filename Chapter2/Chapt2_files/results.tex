@@ -241,9 +241,11 @@ As expected, the EFDR is controlled to 10\%. Furthermore, the FPR for differenti
 
 \subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
 
-As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as the associated hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the BASiCS software. These were chosen to achieve a compromise between flexibility and shrinkage strength when applied to the datasets described in \textbf{Table \ref{tab2:datatsets}}. \\ 
+As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as their hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the extended BASiCS model. These were chosen to achieve a compromise between flexibility and shrinkage strength when applied to the datasets described in \textbf{Table \ref{tab2:datatsets}}. \\ 
 
-Firstly, we observed that large values of $L$ can lead to over-fitting but that small values of $L$ can limit the flexibility to capture non-linear relations between $\log(\delta_i)$ and $\log(\mu_i)$. Thus, as a parsimonious choice, we selected $L = 10$. Moreover, as in \cite{Kapourani2016}, values for $m_l$ were chosen to be equally spaced across the range of $\log(\mu_i)$, i.e. 
+\todo{generate plots to show fits for different Ls and different cs.}
+
+Firstly, we observed that large values of $L$ can lead to over-fitting but that small values of $L$ can limit the flexibility to capture non-linear relations between $\log(\delta_i)$ and $\log(\mu_i)$. Thus, as a parsimonious choice, we selected $L = 10$. Moreover, as in \cite{Kapourani2016}, values for $m_l$ were chosen to be equally spaced across the range of $\log(\mu_i)$:. 
 
 \begin{equation} m_l = a + (l-1)\frac{b - a }{L-1}, \hspace{0.2cm}  l=1,\ldots, L, \end{equation} 
 
