@@ -10,24 +10,41 @@
 
 \subsection{Prior specifications of extended BASiCS model}
 
-\begin{eqnarray}
-\mu_i &\sim &\mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
-\delta_i | \mu_i &\sim &\mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right)\\
-\beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
-\sigma^2 & \sim & \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
-s_j & \iid & \textnormal{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
-(\phi_1, \ldots, \phi_n)' & \sim & n \times \textnormal{Dirichlet}(a_\phi),\\
-\theta & \sim & \textnormal{Gamma}(a_\theta,b_\theta),
-\end{eqnarray} with all hyper-parameters fixed \emph{a priori}. Default values are chosen as: \begin{eqnarray}
-m_{\beta} & = & \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)},\\
-V_{\beta} & = & \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)},\\
-a_{\sigma^2} & = & 2,\\
-b_{\sigma^2} & = & 2,
-\end{eqnarray}
+\begin{align*}
+\mu_i &\ind \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta &\ind \text{log-N}\left( \text{f}(\mu_i),\frac{\sigma^2}{\lambda_i} \right)\\
+\lambda_i|\eta &\ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right)\\
+\beta|\sigma^2 & \sim \textnormal{Normal}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim  \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid  \textnormal{Gamma}(a_s,b_s) \\
+(\phi_1, \ldots, \phi_n)' & \sim  n \times \textnormal{Dirichlet}(a_\phi),\\
+\theta & \sim  \textnormal{Gamma}(a_\theta,b_\theta)
+\end{align*}
+
+\subsection{Starting values for hyper-parameter}
+\label{appB.1.hyper}
+
+\todo{list hyper-parameter values}
+\begin{align*}
+m_{\beta} & = \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)}\\
+V_{\beta} & = \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)}\\
+a_{\sigma^2} & = 2\\
+b_{\sigma^2} & = 2\\
+s^2_{\mu}& =  \\
+m_\beta& =  \\
+V_\beta& =  \\
+a_{\sigma^2}& =  \\
+b_{\sigma^2}& =  \\
+a_s& =  \\
+b_s& =  \\
+a_\phi& =  \\
+a_\theta& =  \\
+b_\theta& = 
+\end{align*}
 
 \subsection{Likelihood of extended BASiCS model}
 
-The likeligood function of the extended BASiCS model takes the form:
+The likelihood function of the extended BASiCS model takes the form:
 
 \begin{align} \label{eq::loglik}
 \Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
