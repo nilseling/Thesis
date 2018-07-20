@@ -15,8 +15,8 @@ As a reminder: Let $X_{ij}$ be a random variable representing the expression cou
  X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \ind
  \left\lbrace
   \begin{aligned}
-    &\textnormal{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
-    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+    &\text{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
+    &\text{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
   \end{aligned}
 \right.
 \end{equation} 
@@ -24,7 +24,7 @@ As a reminder: Let $X_{ij}$ be a random variable representing the expression cou
 where, to account for technical ($\nu_j$) and biological ($\rho_ij$) factors that affect the variance of the transcript counts, we incorporate two random effects: 
 
 \begin{equation} \label{eq::RandomEffectsBASiCS}
-\nu_j|s_j,\theta \ind \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.5cm} \rho_{ij}|\delta_i  \ind \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
+\nu_j|s_j,\theta \ind \text{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.5cm} \rho_{ij}|\delta_i  \ind \text{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
 \end{equation} 
 
 Here, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. The strength of the technical noise $\nu_j$ noise is quantified by a global parameter $\theta$ (shared across all genes and cells). The strength of heterogeneous gene expression across cells $\rho_{ij}$ is controlled by gene-specific over-dispersion parameters $\delta_i$ which we used as a proxy for biological expression variability in chapter 1.  Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells. \\
@@ -58,30 +58,30 @@ The hierarchical Bayes approach infers full posterior distributions for the gene
 \textbf{(A and B)} Illustration of changes in expression variability for a single gene between two cell populations without (left) and with (right) changes in mean expression, \textbf{(C and D)} The extended BASiCS model infers a regression trend between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression $\mu_i$. Residual over-dispersion parameters $\epsilon_i$ are defined by departures from the regression trend (red arrow). The colour code within the scatterplots is used to represent areas with high (yellow/red) and low (blue) concentration of genes. For illustration purposes, the data introduced by \cite{Antolovic2017} has been used, \textbf{(C)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$. Genes that are not detected in at least 2 cells are indicated by purple points, \textbf{(D)} Gene-specific estimates of residual over-dispersion parameters $\epsilon_i$ are independent of mean expression parameters $\mu_i$, \textbf{(E)} Illustration of how posterior uncertainty is used to highlight changes in residual over-dispersion. Two example genes with (upper panels) and without (lower panels) changes in residual over-dispersion are shown. Left panels illustrate the posterior density associated to residual over-dispersion parameters $\epsilon_i$ for a gene in two groups of cells (group A: light blue, group B: dark blue). The coloured area in the right panels represents the posterior probability of observing an absolute difference $|\epsilon^A_{i} - \epsilon^B_{i}|$ that is larger than the minimum tolerance threshold $\psi_0$.\\}
 \captionsetup[figure]{list=yes}
 
-\subsection{Modelling the confounding between mean and dispersion} \label{sec2:extended_BASiCS}
+\subsection{Modelling the confounding between mean and over-dispersion} \label{sec2:extended_BASiCS}
 
-Here, we extend BASiCS to account for the confounding effect described above. For this purpose, we estimate the relationship between mean and over-dispersion parameters by introducing the following joint prior distribution for $(\mu_i, \delta_i)'$: 
+Here, we extend BASiCS to account for the confounding effect described above. In a Bayesian framework, the prior information captures the relationship between parameters. Therefore, we introduce the following joint prior distribution for $(\mu_i, \delta_i)'$: 
 
-\begin{equation} \label{eq::jointprior} \mu_i \sim \mbox{log-normal}\left(0, s^2_{\mu}\right), \hspace{0.8cm}
-\delta_i | \mu_i \sim \mbox{log-}t_{\eta}\left( \textnormal{f}(\mu_i), \sigma^2 \right).
+\begin{equation} \label{eq::jointprior} \mu_i \sim \text{log-Normal}\left(0, s^2_{\mu}\right), \hspace{0.8cm}
+\delta_i | \mu_i \sim \text{log-}\text{T}_{\eta}\left( \text{f}(\mu_i), \sigma^2 \right).
 \end{equation} 
 
 The latter is equivalent to the following non-linear regression model:
 
 \begin{equation} \label{eq::regression}
-\log(\delta_i) =\textnormal{f}(\mu_i)+\epsilon_i, \hspace{0.5cm} \epsilon_i \sim{}t_{\eta}(0,\sigma^2), 
-\end{equation} where $\textnormal{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) expressed at a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific {\it residual over-dispersion} parameter, capturing departures from the overall trend. If a gene exhibits a positive value for $\epsilon_i$, this indicates more variation than expected for genes with similar expression level. Accordingly, negative values of $\epsilon_i$ suggest less variation than expected for genes with similar expression level. \\ 
+\log(\delta_i) =\text{f}(\mu_i)+\epsilon_i, \hspace{0.5cm} \epsilon_i \sim{}\text{T}_{\eta}(0,\sigma^2), 
+\end{equation} where $\text{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) for a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific \textit{residual over-dispersion} parameter, capturing departures from the overall trend. \\ 
 
-A similar approach was introduced by DESeq2 \citep{Love2014} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we opt for a Student-$t$ distribution as it leads to inference that is more robust to the presence of outlier genes. Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
+A similar approach was introduced by DESeq2 \citep{Love2014} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we use Student-T distributed errors as it leads to inference that is more robust to the presence of outlier genes. Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
 
 \begin{equation} \label{eq::trend}
-f(\mu_i) = \alpha_0 + \log(\mu_i)\alpha_1 + \sum_{l=1}^L g_l(\log(\mu_i))\beta_l,
+\text{f}(\mu_i) = \alpha_0 + \log(\mu_i)\alpha_1 + \sum_{l=1}^L \text{g}_l(\log(\mu_i))\beta_l,
 \end{equation} 
 
-where $g_1(\cdot), \ldots, g_L(\cdot)$ represent a set of Gaussian radial basis function (GRBF) kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. As in \cite{Kapourani2016}, these are defined as: 
+where $\text{g}_1(\cdot), \ldots, \text{g}_L(\cdot)$ represent a set of Gaussian radial basis function (GRBF) kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. As in \cite{Kapourani2016}, these are defined as: 
 
 \begin{equation} \label{eq::GRBF}
-g_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
+\text{g}_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
 \end{equation} 
 
 where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels. 
@@ -97,11 +97,11 @@ Point estimates of the log-transformed mean expression and log-transformed coeff
 In \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a handful of genes are observed. In \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori}.  Details about this choice are described below. A schematic representation of this regression approach can be seen in \textbf{Fig. \ref{fig2:GRBFs}}.\\
 
 The remaining elements of the prior were chosen as follows: \begin{eqnarray}
-\beta|\sigma^2 & \sim &\textnormal{N}(m_\beta,\sigma^2V_\beta),\\
-\sigma^2 & \sim & \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
-s_j & \iid & \textnormal{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
-(\phi_1, \ldots, \phi_n)' & \sim & n \times \textnormal{Dirichlet}(a_\phi),\\
-\theta & \sim & \textnormal{Gamma}(a_\theta,b_\theta),
+\beta|\sigma^2 & \sim &\text{N}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim & \text{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid & \text{Gamma}(a_s,b_s), \hspace{0.2cm} j = 1, \ldots n,\\
+(\phi_1, \ldots, \phi_n)' & \sim & n \times \text{Dirichlet}(a_\phi),\\
+\theta & \sim & \text{Gamma}(a_\theta,b_\theta),
 \end{eqnarray} with all hyper-parameters fixed \emph{a priori}. Default values are chosen as: \begin{eqnarray}
 m_{\beta} & = & \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)},\\
 V_{\beta} & = & \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)},\\
@@ -113,10 +113,10 @@ In principle, the degrees of freedom parameter $\eta$ could also be estimated wi
 
 \subsection{Implementation}
 
-Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by \cite{Vallejos2016}. For this purpose, the log-Student-$t$ distribution in \ref{eq::jointprior} is represented via the same data augmentation scheme as in \cite{Vallejos2015}. The latter introduces an auxiliary set of parameters $\lambda_i$ such that:
+Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by \cite{Vallejos2016}. For this purpose, the log-Student-T distribution in \ref{eq::jointprior} is represented via the same data augmentation scheme as in \cite{Vallejos2015}. The latter introduces an auxiliary set of parameters $\lambda_i$ such that:
 
 \begin{equation}
-\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta \ind \textnormal{log-N}\left( f(\mu_i),\frac{\sigma^2}{\lambda_i} \right), \hspace{0.3cm} \lambda_i|\eta \ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right).
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta \ind \text{log-N}\left( f(\mu_i),\frac{\sigma^2}{\lambda_i} \right), \hspace{0.3cm} \lambda_i|\eta \ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right).
 \end{equation} 
 
 Moreover, the regression coefficients $\beta = (\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L)'$ are inferred by noting that \ref{eq::trend} can be rewritten as a linear regression model using 
@@ -138,8 +138,8 @@ In this setting, the full conditionals associated with $s_j$, $\phi_j$, $\nu_j$ 
  X_{ij}|\mu_i,\delta_i,\phi_j,\nu_j \ind
  \left\lbrace
   \begin{aligned}
-    &\textnormal{Neg-Bin}\left(\frac{1}{\delta_i},\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right), && i=1,...,q_0,j=1,...n;  \\ 
-    &\textnormal{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n        
+    &\text{Neg-Bin}\left(\frac{1}{\delta_i},\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right), && i=1,...,q_0,j=1,...n;  \\ 
+    &\text{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n        
   \end{aligned}
 \right.
 \end{equation}
