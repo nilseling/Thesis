@@ -292,15 +292,14 @@ Matched single molecule florescence \textit{in situ} hybridization (smFISH) data
 Non-UMI scRNA-Seq data of CD4\plus{} T cells represent data analysed in  the previous chapter. Raw data is available from ArrayExpress under accession code E-MTAB-4888. To perform a variety of tests, naive and activated CD4\plus{} T cells from young \emph{Mus musculus} (B6) mice were selected. Biological genes with an average count $<~1$ and non-detected technical genes were removed from the analysis. In total, 146 cells (93 naive and 53 activated CD4\plus{} T cells) and 10553 genes (10495 biological and 58 technical genes) passed filtering. Each condition contains 2 replicates.
 
 \subsection{CD4\plus{} T cell differentiation} \label{seq::data_cd4diff}
-Non-UMI scRNA-Seq data were generated from CD4\plus{} T cells during differentiation towards Th1 and Tfh cell fates after \emph{Plasmodium} infection \citep{Lonnberg2017}. Raw reads were downloaded from ArrayExpress [E-MTAB-4388] and mapped against the \emph{Mus musculus} genome (mm10) using \emph{gsnap} \citep{Wu2010a} with default settings. Read counting was performed using \emph{HTSeq} \citep{Anders2014} with default settings. \\
+
+Non-UMI scRNA-Seq data were generated from CD4\plus{} T cells during differentiation towards T helper 1 (Th1) and T follicular helper (Tfh) cell fates after \emph{Plasmodium} infection \citep{Lonnberg2017}. Raw reads were downloaded from ArrayExpress [E-MTAB-4388] and mapped against the \emph{Mus musculus} genome (GRCm38) using \emph{gsnap} \citep{Wu2010a} with default settings. Read counting was performed using \emph{HTSeq} \citep{Anders2014} with default settings. \\
 
 Quality control was performed by removing cells with fewer than 300,000 biological reads or fewer than 600,000 technical reads at day 2. At day 4 and 7, cells with fewer than 1,000,000 biological reads were excluded from downstream analysis. Additionally, we removed genes that did not show an average detection of more than 1 read at day 2, day 3, day 4 or day 7 after infection. After applying these criteria, 376 cells (Day 0: 16 cells, Day 2: 89, Day 3: 21, Day 4: 133, Day 7: 64, Day 7 non-infected: 53) and 7899 genes (7847 biological and 52 technical) remained for analysis. Note that, due to low sample sizes, we focused our analysis on data from day 2, day 4 and day 7 post-infection.
 
-\newpage
-
 \begin{table}[hb	]
 \centering
-\caption[Datasets used for model testing and novel analysis]{\textbf{Datasets used for model testing and novel analysis.} \\
+\caption[Datasets used for model testing and analysis]{\textbf{Datasets used for model testing and analysis.} \\
 For each of the datasets analysed in this study: number of cells (2$^{nd}$ column), number of genes (biological + technical spike-ins, 3$^{rd}$ column), number of batches (4$^{th}$ column), type of data acquisition system (5$^{th}$ column), information of whether the data was generated using unique molecular identifiers (UMIs, 6$^{th}$ column) and the reference to the original study (7$^{th}$ column) are provided.}
 \label{tab2:datasets}
 \begin{tabular}{lllllll}
