@@ -776,7 +776,8 @@ wish to left align your text}
     \renewcommand{\sectionmark}[1]{\markright{\thesection\ ##1}}
     \fancyhf{}
     \fancyhead[LO]{\nouppercase \rightmark}
-    \fancyhead[LE,RO]{\bfseries\thepage}
+    \fancyhead[LE]{\colorbox{Mahogany}{\parbox{6em}{\color{white}\bfseries\thepage\hfill}}}
+    \fancyhead[RO]{\colorbox{Mahogany}{\parbox{6em}{\hfill\color{white}\bfseries\thepage}}}
     \fancyhead[RE]{\nouppercase \leftmark}
   \fi
 \fi
