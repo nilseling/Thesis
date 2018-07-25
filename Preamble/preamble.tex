@@ -62,6 +62,19 @@
 \fancyheadoffset[RE,LO]{0cm}
 \fancyheadoffset[LE,RO]{1.25cm}
 
+% For recoloring the section header
+\usepackage{sectsty}
+\definecolor{dark-gray}{gray}{0.30}
+\sectionfont{\color{dark-gray}}
+\subsectionfont{\color{dark-gray}}
+
+% Fancier section header
+\newcommand{\hsp}{\hspace{6pt}}
+\usepackage[explicit]{titlesec}
+\titleformat{\section}[hang]{\Large\bfseries}{\color{dark-gray}\thesection}{6pt}{\begin{tabular}[t]{@{\color{dark-gray}\vrule width 2pt}>{\hsp}l}#1\end{tabular}}
+\titleformat{\subsection}[hang]{\large\bfseries}{\color{dark-gray}\thesubsection}{6pt}{\begin{tabular}[t]{@{\color{dark-gray}\vrule width 2pt}>{\hsp}l}#1\end{tabular}}
+
+
 
 % **** Algorithms and Pseudocode 
 
