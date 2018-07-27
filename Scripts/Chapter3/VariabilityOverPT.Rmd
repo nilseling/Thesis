@@ -35,7 +35,7 @@ library(plyr)
 library(reshape2)
 library(pheatmap)
 library(viridis)
-#source("../../Functions/auxiliary.R")
+source("../../../Spermatogenesis2018/Functions/auxiliary.R")
 
 # Read in sce
 sce <- readRDS("/Users/eling01/Dropbox (Cambridge University)/SST_spermatocytes/Analysis/data/10X_data/SCE_all.rds")
@@ -79,6 +79,19 @@ plot(mcmc(fits.epsilon[,1]))
 plot(mcmc(fits.epsilon[,10]))
 plot(mcmc(fits.epsilon[,100]))
 plot(mcmc(fits.epsilon[,1000]))
+```
+
+## Plot sample regressions
+
+```{r regression}
+cur_lm <- lm(epsilons["ENSMUSG00000027518",c("S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9")] ~ c(1:9))
+ggplot(data.frame(x = 1:9, y = epsilons["ENSMUSG00000027518",
+                                        c("S1", "S2", "S3", "S4", "S5", 
+                                          "S6", "S7", "S8", "S9")],
+                  fit = cur_lm$fitted.values)) +
+  geom_point(aes(x,y)) + geom_line(aes(x,fit)) + xlab("Cell type") + 
+  ylab("Eps_i")
+  
 ```
 
 The trace plots show convergence for the slope - we can use this for posterior tail propability testing.
@@ -167,6 +180,23 @@ pca <- prcomp(t(logcounts(sce)[HVgenes,]))
 # Pseudo rank
 prank <- PT(rd = pca$x[,1:2], clusters = colData(sce)$AnnotatedClusters,
             col_vector = metadata(sce)$color_vector)
+
+# Plot cells in one line
+set.seed(123)
+y = rnorm(length( prank[,"rank"]), mean = 0, sd = 0.01)
+p.PT <- ggplot(data.frame(x = prank[,"rank"],
+                  y = y,
+                  group = colData(sce)$AnnotatedClusters)) +
+  geom_point(aes(x, y , fill = group), shape = 21, size = 3) + 
+  scale_fill_manual(values = metadata(sce)$color_vector) + ylim(c(-0.033,0.033)) +
+  theme(legend.position = "none", panel.background = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), axis.line.y = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+ggsave("../../Chapter3/Figures/Variability/SpermPT.pdf", p.PT, width = 10, height = 3)
 
 # DPT 
 #dpt <- diffusionPT(sce, HVgenes, clusters = colData(sce)$AnnotatedClusters,
