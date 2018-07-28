@@ -4,7 +4,7 @@
 %*****************************
 
 \section{Droplet based single-cell RNA sequencing of mouse testis}
-\subsection*{High-resolution profiling by single-cell RNA-seq captures the unidirectional differentiation of germ cells during adult spermatogenesis}
+\label{sec3:clustering}
 
 Spermatogenesis is a recurrent differentiation process that produces male gametes within testicular seminiferous tubules \textbf{(Fig.~\ref{fig3:cell_staging}A)}. The seminiferous epithelium in the mouse is classified into twelve distinct stages, based on the combination of cell types present \textbf{(Fig.~\ref{fig3:cell_staging}B)}. Tubules cycle asynchronously and continuously through these stages and adult testis contain tubules in every possible epithelial stage \textbf{(Fig.~\ref{fig3:cell_staging}}. \\
 
@@ -179,6 +179,7 @@ We first identified a strong increase in the number of genes expressed as sperma
 Despite the overall increase in transcription, we observed distinct temporal expression patterns when visualizing specific marker genes for individual spermatocyte populations. Even within pachytene spermatocytes at different stages in their developmental progression, there exists substantial heterogeneity \textbf{(Fig.~\ref{fig3:meiosis}C)}. As expected, early spermatocyte markers (SC 1 and SC 2) were enriched for genes with known functions in male or female fertility, reflecting a history of intensive investigation \citep{Deng2002, Spruck2003, Vries2005}. In contrast, our datasets reveal genes present in previously-unknown transcriptional programs that functionally orchestrate the later stages of spermatocyte development.
 
 \section{Transcriptional dynamics during spermiogenesis}
+\label{sec3:spermiogenesis}
 
 A key event during spermiogenesis is chromatin condensation, which is required to package the haploid genome into the confined space of the sperm nucleus. Our data allowed us to dissect at high-resolution the gradual chromatin remodelling during spermatid differentiation, involving the replacement of canonical histones by histone variants followed by transition proteins and eventually protamines \citep{Balhorn2007, Kennani2017}. \\
 
@@ -273,6 +274,16 @@ On autosomes, H3K9me3 is enriched in pericentromeric regions of constitutive het
 In spermatocytes, spermatid-specific genes showed lower enrichment in H3K4me3 than non-spermatid specific genes (Wilcoxon-Mann-Whitney: p-value < 2.2x10$^{-16}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, left panel)}. In contrast, spermatid-specific genes have on average elevated H3K4me3 in spermatids, as expected based on their increased expression level compared to spermatocytes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, right panel)}. When examining the deposition of H3K9me3 on the promoters of X-linked genes, we detected a strong enrichment in spermatid-specific escape genes in spermatocytes (Wilcoxon-Mann-Whitney: p-value < 3.7x10$^{-11}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}B)}. This pattern indicates that spermatid-specific genes are more strongly repressed in spermatocytes. \\
 
 Our results describe for the first time, the precise epigenetic changes associated with escape gene activation in post-meiotic cells. These dynamics are exemplified by the chromatin remodelling that occurs around \textit{Akap4} and \textit{Cypt1}, both of which are well-studied spermatid-specific genes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}C)}. The promoters of these genes have high levels of H3K9me3 in spermatocytes, which decreases in spermatids, while H3K4me3 levels are strongly increased. 
+
+\section{Measuring changes in variability over pseudo-time}
+
+As described above, spermatogenesis is a unidirectional and continuous differentiation process coupled to a complex system of developmental steps. In this section, I will apply the regression BASiCS model developed in the previous chapter to study changes in transcriptional variability over the time-course of spermatogenesis. In mouse hematopoietic cell differentiation,  cell-to-cell diversity increases at critical state transitions where cell fate decisions are made \citep{Mojtahedi2016}. A similar effect was seen in chicken erythroid progenitor cells where the Shannon entropy is highest directly at the point of fate commitment and declines during the irreversible commitment to differentiation \cite{Richard2016}. In the previous chapter, we have demonstrated that transcriptional variability shows dynamic changes during CD4\plus{} T cell differentiation with high variability being observed at a possible early commitment point and a decrease in variability upon proliferation. Here, I profile changes in variability for individual genes during spermiogenesis, the differentiation process that directly follows meiosis (see \textbf{Section \ref{sec3:spermiogenesis}}). As described above, spermiogenesis is a differentiation process that involves an extensive remodelling of the chromatin with transcriptional shut-down occurring at around spermatid stage S10. I therefore selected spermatids from stages S1 to S9 for analysis. 
+
+\subsection{Using BASiCS on continuous data}
+
+Modelling changes in mean expression over a differentiation time-course is done by ordering transcriptional profiles of individual cell along their so called \emph{pseudo-time}. Different methods have been proposed to perform this ordering based on minimum spanning trees \citep{Trapnell2014} and nearest-neighbour graphs \cite{Setty2016}, Gaussian Processes \citep{Reid2016a, Campbell2016b} and diffusion maps \citep{Haghverdi2016}. Once the pseudo-temporal ordering is determined, genes which change in expression over pseudo-time can be found by fitting a generalized linear model to the expression counts and performing a likelihood ratio test against a null model with no pseudo-time dependence \citep{Trapnell2014}. Profiling changes in variability is more complicated as no single-cell measures of variability are available. Here, I use BASiCS to estimate residual over-dispersion parameters for homogeneous cell populations along the differentiation time-course. Different ways of identifying those homogeneous populations exists. First, ordered cells can be split into populations of equal size (e.g.~200 cells per group). This approach produces heterogeneous cell populations when quick cell state transitions occur which leads to abrupt changes in expression. I therefore rely on the clustering performed in \textbf{Section \ref{sec3:clustering}} which splits the full cell population along the differentiation trajectory. For each cluster from S1 to S9, the regression BASiCS model was run for 40,000 iterations with 20,000 iterations burn-in. \\
+
+
 
 \newpage
 
