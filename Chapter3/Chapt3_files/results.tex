@@ -283,9 +283,26 @@ As described above, spermatogenesis is a unidirectional and continuous different
 
 Modelling changes in mean expression over a differentiation time-course is done by ordering transcriptional profiles of individual cell along their so called \emph{pseudo-time}. Different methods have been proposed to perform this ordering based on minimum spanning trees \citep{Trapnell2014} and nearest-neighbour graphs \cite{Setty2016}, Gaussian Processes \citep{Reid2016a, Campbell2016b} and diffusion maps \citep{Haghverdi2016}. Once the pseudo-temporal ordering is determined, genes which change in expression over pseudo-time can be found by fitting a generalized linear model to the expression counts and performing a likelihood ratio test against a null model with no pseudo-time dependence \citep{Trapnell2014}. Profiling changes in variability is more complicated as no single-cell measures of variability are available. Here, I use BASiCS to estimate residual over-dispersion parameters for homogeneous cell populations along the differentiation time-course. Different ways of identifying those homogeneous populations exists. First, ordered cells can be split into populations of equal size (e.g.~200 cells per group). This approach produces heterogeneous cell populations when quick cell state transitions occur which leads to abrupt changes in expression. I therefore rely on the clustering performed in \textbf{Section \ref{sec3:clustering}} which splits the full cell population along the differentiation trajectory. For each cluster from S1 to S9, the regression BASiCS model was run for 40,000 iterations with 20,000 iterations burn-in. \\
 
+\newpage
+
 
 
 \newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{Fig_14.png}
+\caption[Quantification of expression dynamics form droplet-based scRNA-Seq data]{\textbf{Quantification of expression dynamics form droplet-based scRNA-Seq data (Full legend on next page).}}
+\label{fig2:droplet}
+\end{figure}
+
+\newpage
+
+\captionsetup[figure]{list=no}
+\addtocounter{figure}{-1}   
+\captionof{figure}{\textbf{Quantification of expression dynamics form droplet-based scRNA-Seq data (continued).}\\
+\textbf{(A)} Somitic (SM) and pre-somitic mesoderm (PSM) cells from droplet-based scRNA-Seq data \citep{Ibarra-Soria2018} were selected and visualized in form of a PCA. Colour labelling was done based on the cluster annotation taken from the original publication. For down-stream analysis cells with $\text{PC2}{}<{}-5$ and marked as 'presomiticmesoderm.b'/Pre-somitic mesoderm 2 were removed, \textbf{(B)} For each condition, over-dispersion estimates $\delta_i$ were plotted against mean expression estimates $\mu_i$. The regression trend is indicated as red line, \textbf{(C)} Posterior estimates for the log$_2$ fold change in mean expression between PSM and SM were plotted against mean expression averaged across the two populations. Differentially expressed genes are coloured based on their regulation: blue: PSM-specific (PSM+), red: SM-specific (SM+), \textbf{(D)} Posterior estimates for difference in residual over-dispersion between PSM and SM were plotted against mean expression averaged across the two populations. Differentially variable genes are coloured based on their regulation: purple: PSM-specific (PSM+), brown: SM-specific (SM+), \textbf{(E)} Heatmap showing the Z factor scaled gene expression of pre-somitic mesoderm specific genes of the GO category GO:0009952: anterior/posterior pattern specification. Genes were ordered based on their log$_2$ fold change in expression from highest to lowest, \textbf{(F)} Gene expression of \textit{Meox2} in PSM and SM. This gene was detected to be heterogeneously up-regulated in SM. Upper panel: violin plots showing distribution of log-normalized expression counts. Lower panel: \textit{Meox2} expression across the PCA from \textbf{(A)}.\\}
+\captionsetup[figure]{list=yes}
 
 \section{Discussion}
 
