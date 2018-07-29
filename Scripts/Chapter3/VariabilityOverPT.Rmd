@@ -210,7 +210,7 @@ ggsave("../../Chapter3/Figures/Variability/SpermPT.pdf", p.PT, width = 10, heigh
 head(df.out[order(df.out$Slope.mu, decreasing = TRUE),], 50)
 
 # Akap12
-cur.gene <- "Tsga8"
+cur.gene <- "Mybl1"
 cur.Z <- (logcounts(sce)[rowData(sce)$Symbol == cur.gene,] -
              mean(logcounts(sce)[rowData(sce)$Symbol == cur.gene,]))/
   sd(logcounts(sce)[rowData(sce)$Symbol == cur.gene,])
@@ -252,7 +252,7 @@ cur_p.var <- ggplot(data.frame(gene = epsilons[rowData(sce)$ID[rowData(sce)$Symb
 ```{r ranking}
 # Rank the genes based on the epsilons from S1-S14
 cur_eps <- epsilons[,paste("S", 1:14, sep = "")]
-cur_eps <- cur_eps[!(sum(t(apply(cur_eps, 1, is.na))) == ncol(cur_eps)),]
+cur_eps <- cur_eps[!is.na(rowMeans(cur_eps)),]
 
 cur_eps.ranked <- cur_eps[order(rowMeans(cur_eps, na.rm = TRUE), decreasing = TRUE),]
 ```
@@ -270,130 +270,25 @@ pheatmap(cur_eps.ranked[sam,], cluster_rows = FALSE, cluster_cols = FALSE,
          breaks = seq(-7,7, length.out = 100))
 ```
 
-## Visualize peaks for these genes
+# Rank genes by peak in variability
 
-```{r peaks}
-cur_files <- list.files("/Users/nils/Dropbox (Cambridge University)/SST_spermatocytes/Analysis/CnR/bedgraphs/H3K4me3/", 
-                        full.names = TRUE)
+```{r ranking}
+# Rank the genes based on the epsilons from S1-S14
+cur_eps <- epsilons[,paste("S", 1:14, sep = "")]
+cur_eps <- cur_eps[!is.na(rowMeans(cur_eps)),]
 
-# H3K4me3 spermatids day 24
-cur_file <- import(cur_files[12])
-
-# Exclude blacklisted regions
-cur_removed <- overlapsAny(cur_file, blacklist)
-cur_file <- cur_file[!cur_removed]
-cur_file <- cur_file[seqnames(cur_file) %in%
-                         c(as.character(1:19), "X", "Y", "MT"),]
-seqlevels(cur_file) <- c(as.character(1:19), "X", "Y", "MT")
-
-
-cur_genes <- rownames(cur_eps.ranked)[sam]
-cur_tss <- tss[match(cur_genes, tss@elementMetadata$gene_id)]
-
-cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-EnrichedHeatmap(cur_mat, col = c("white", "red", "black"), row_order = 1:length(cur_genes))
-
-# Visualize top 100 and bottom 100 genes
-cur_genes <- rownames(cur_eps.ranked)[1:100]
-cur_tss <- tss[match(cur_genes, tss@elementMetadata$gene_id)]
-
-cur_mat.highVar = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-EnrichedHeatmap(cur_mat.highVar, col = c("white", "red", "black"))
-
-cur_genes <- tail(rownames(cur_eps.ranked), 100)
-cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
-
-cur_mat.lowVar = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-EnrichedHeatmap(cur_mat.lowVar, col = c("white", "red", "black"))
-
-
+cur_eps.ranked <- cur_eps[order(apply(cur_eps, 1, which.max), decreasing = FALSE),]
 ```
 
-# Plot mean expression vs variability
+# Visualize all genes
 
 ```{r}
-cur_mus <- mus[,paste("S", 1:14, sep = "")]
-cur_mus <- cur_mus[rownames(cur_eps),]
-
-ggplot(data.frame(mus = log(rowMeans(cur_mus)),
-                  eps = rowMeans(cur_eps, na.rm = TRUE))) + 
-  geom_point(aes(mus, eps))
-
-highVar.lowMean <- rownames(cur_mus)[log(rowMeans(cur_mus)) < -1 &
-                                         rowMeans(cur_eps, na.rm = TRUE) > 0.5]
-
-highVar.highMean <- rownames(cur_mus)[log(rowMeans(cur_mus)) > 1 &
-                                         rowMeans(cur_eps, na.rm = TRUE) > 0.5]
-
-lowVar.highMean <- rownames(cur_mus)[log(rowMeans(cur_mus)) > 1 &
-                                         rowMeans(cur_eps, na.rm = TRUE) < 0]
-
-lowVar.lowMean <- rownames(cur_mus)[log(rowMeans(cur_mus)) < -1 &
-                                         rowMeans(cur_eps, na.rm = TRUE) < 0]
-```
-
-## Visualie Peaks for these categories
-
-```{r}
-cur_genes <- highVar.lowMean
-cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
-
-cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-median(rowMeans(cur_mat))
-
-EnrichedHeatmap(cur_mat, col = c("white", "red", "black"))
-
-cur_genes <- highVar.highMean
-cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
-
-cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-median(rowMeans(cur_mat))
-
-EnrichedHeatmap(cur_mat, col = c("white", "red", "black"))
-
-cur_genes <- lowVar.lowMean
-cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
-
-cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-median(rowMeans(cur_mat))
-
-EnrichedHeatmap(cur_mat, col = c("white", "red", "black"))
-
-cur_genes <- lowVar.highMean
-cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
-
-cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
-
-median(rowMeans(cur_mat))
-
-EnrichedHeatmap(cur_mat, col = c("white", "red", "black"))
+pdf("../../../../Desktop/VariabilityOrderingHeatmap.pdf", width = 5, height = 10)
+pheatmap(cur_eps.ranked, cluster_rows = FALSE, cluster_cols = FALSE, 
+         color = colorRampPalette(c("dark blue", "white", "dark red"))(100), 
+         breaks = seq(-7,7, length.out = 100), show_rownames = FALSE, 
+         show_colnames = FALSE, border_color = FALSE)
+dev.off()
 ```
 
 # Clustering of variability profiles
@@ -407,23 +302,58 @@ clusters <- kmeans(cur_eps, centers = 20)
 mat <- matrix(data = NA, nrow = 20, ncol = ncol(cur_eps))
 colnames(mat) <- colnames(cur_eps)
 
+# Plot smooth profiles
+p.list <- list()
+
 for(i in 1:20){
-  mat[i,] <- colMeans(cur_eps[clusters$cluster == i,])
-  plot(mat[i,])
+  cur_data <- cur_eps[clusters$cluster == i,]
+  cur_data.melt <- melt(cur_data)
+  p <- ggplot(cur_data.melt) + geom_point(aes(Var2, value, colour = Var2)) +
+    scale_color_manual(values = metadata(sce)$color_vector) + 
+    geom_smooth(aes(x = as.numeric(Var2), y = as.numeric(value)), lwd = 1, 
+                colour = "dark red") + xlab("") + guides(colour = FALSE)
+  p.list[[i]] <- p
+
 }
 
-# Visualize peaks
-for(i in 1:20){
-  cur_genes <- rownames(cur_eps)[clusters$cluster == i]
-  cur_tss <- tss[tss@elementMetadata$gene_id %in% cur_genes]
+var.clustering <- plot_grid(p.list[[1]], p.list[[2]], p.list[[3]], p.list[[4]], 
+                            p.list[[5]], p.list[[6]], p.list[[7]], p.list[[8]],
+                            p.list[[9]], p.list[[10]], p.list[[11]], p.list[[12]],
+                            p.list[[13]], p.list[[14]], p.list[[15]], p.list[[16]],
+                            p.list[[17]], p.list[[18]], p.list[[19]], p.list[[20]], 
+                            ncol = 4, nrow = 5)
+ggsave("../../../../Desktop/VariabilityClustering.pdf", var.clustering, width = 25,
+       height = 16)
+```
 
-  cur_mat = normalizeToMatrix(cur_file, cur_tss, 
-                        value_column = "score",
-                        extend = 5000, mean_mode = "w0", 
-                        w = 50, keep = c(0,0.99))
+## Visualize individual genes
 
-  print(EnrichedHeatmap(cur_mat, col = c("white", "red", "black")))
-}
+```{r}
+sce <- readRDS("/Users/nils/Dropbox (Cambridge University)/SST_spermatocytes/Analysis/data/10X_data/SCE_all.rds")
+sce <- sce[,grepl("B6", colData(sce)$Sample) &
+             colData(sce)$AnnotatedClusters %in% 
+             paste("S", 1:14, sep = "")]
+sce <- normalize(sce)
 
+cur.gene <- "Arfgef1"
+cur.Z <- (logcounts(sce)[rowData(sce)$Symbol == cur.gene,] -
+             mean(logcounts(sce)[rowData(sce)$Symbol == cur.gene,]))/
+  sd(logcounts(sce)[rowData(sce)$Symbol == cur.gene,])
 
+cur_p.box <- ggplot(data.frame(gene = cur.Z,
+                  cell_type = colData(sce)$AnnotatedClusters)) + 
+  geom_violin(aes(cell_type, gene, colour = cell_type)) + 
+  xlab("Pseudotime") + ylab(paste(cur.gene, ", z-score", sep = "")) +
+  geom_abline(slope = 0, intercept = 0, colour = "dark red") + 
+  scale_color_manual(values = metadata(sce)$color_vector) + 
+  guides(color = FALSE)
+
+cur_p.var <- ggplot(data.frame(gene = epsilons[rowData(sce)$ID[rowData(sce)$Symbol == cur.gene],paste("S", 1:14, sep = "")],
+                  cell_type = factor(paste("S", 1:14, sep = ""),
+                                    levels = paste("S", 1:14, sep = "")))) + 
+  geom_point(aes(cell_type, gene, colour = cell_type), size = 5) + 
+  xlab("Pseudotime") + ylab(paste(cur.gene, ", Variability", sep = "")) +
+  geom_abline(slope = 0, intercept = 0, colour = "dark red") + 
+  scale_color_manual(values = metadata(sce)$color_vector) + 
+  guides(color = FALSE)
 ```
