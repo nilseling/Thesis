@@ -285,7 +285,7 @@ Modelling changes in mean expression over a differentiation time-course is done 
 
 For each gene in each of the nine spermatid populations, BASiCS generates a posterior distribution estimating the residual over-dispersion parameter in form of an MCMC chain \textbf{(Fig.~\ref{fig3:variability_schematic}A)}. These measures are independent of mean expression (see previous chapter) and can therefore be used to study changes in variability which are not confounded by changes in mean expression throughout the differentiation of sperm. To profile and test temporal changes of transcriptional variability during the early part of spermiogenesis, I choose two approaches. \\
 
-First, for each MCMC iteration, I fit a linear regression between the current samples of $\epsilon_i$ against the cluster label \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. This fitting is performed for each gene individually. This approach generates a \emph{post hoc} distribution of the intercept and the slope regression coefficient that captures uncertainty in the regression fit. Focusing on the slope coefficient, I can compute the posterior tail probability of the slope coefficient being different from 0. If the posterior tail probability is larger than a threshold (e.g.~80\%), I consider the transcriptional variability of this gene to be either positively or negatively associated with temporal ordering. Similar to differential testing described in the previous chapter, the probability threshold is determined by fixing the expected false discovery rate to 10\%. A similar testing can be done for the slope coefficient when fitting a linear model between the group wise mean expression parameter $\mu_i$ and the group labels.\\
+First, for each MCMC iteration, I fit a linear regression between the current samples of $\epsilon_i$ against the cluster label \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. This fitting is performed for each gene individually. This approach generates a \emph{post hoc} distribution of the intercept and the slope regression coefficient that captures uncertainty in the regression fit. Focusing on the slope coefficient, I can compute the posterior tail probability of the slope coefficient being different from 0. If the posterior tail probability is larger than a threshold (e.g.~80\%), I consider the transcriptional variability of this gene to be either positively or negatively associated with temporal ordering. Similar to differential testing described in the previous chapter, the probability threshold is determined by fixing the expected false discovery rate to 10\%. A similar testing can be done for the slope coefficient when fitting a linear model between the group wise mean expression parameter $\log(\mu_i)$ and the group labels.\\
 
 Secondly, to detect non-linear patterns of changes in transcriptional variability, I perform clustering on the gene-specific variability profiles. Similar approaches have been chosen to find patterns of genes expression across pseudo-time. Common patterns for changes in expression levels include immediate, transient and gradual up- or down-regulation \citep{Trapnell2014}. When profiling changes in variability over the time-course of differentiation these clustered profiles can indicate similarly strong or weak transcriptional regulation or similar expression rates \textbf{(Fig.~\ref{fig3:variability_schematic}C)}.
 
@@ -306,9 +306,42 @@ Secondly, to detect non-linear patterns of changes in transcriptional variabilit
 \textbf{(A)} Somitic (SM) and pre-somitic mesoderm (PSM) cells from droplet-based scRNA-Seq data \citep{Ibarra-Soria2018} were selected and visualized in form of a PCA. Colour labelling was done based on the cluster annotation taken from the original publication. For down-stream analysis cells with $\text{PC2}{}<{}-5$ and marked as 'presomiticmesoderm.b'/Pre-somitic mesoderm 2 were removed, \textbf{(B)} For each condition, over-dispersion estimates $\delta_i$ were plotted against mean expression estimates $\mu_i$. The regression trend is indicated as red line, \textbf{(C)} Posterior estimates for the log$_2$ fold change in mean expression between PSM and SM were plotted against mean expression averaged across the two populations. Differentially expressed genes are coloured based on their regulation: blue: PSM-specific (PSM+), red: SM-specific (SM+), \textbf{(D)} Posterior estimates for difference in residual over-dispersion between PSM and SM were plotted against mean expression averaged across the two populations. Differentially variable genes are coloured based on their regulation: purple: PSM-specific (PSM+), brown: SM-specific (SM+), \textbf{(E)} Heatmap showing the Z factor scaled gene expression of pre-somitic mesoderm specific genes of the GO category GO:0009952: anterior/posterior pattern specification. Genes were ordered based on their log$_2$ fold change in expression from highest to lowest, \textbf{(F)} Gene expression of \textit{Meox2} in PSM and SM. This gene was detected to be heterogeneously up-regulated in SM. Upper panel: violin plots showing distribution of log-normalized expression counts. Lower panel: \textit{Meox2} expression across the PCA from \textbf{(A)}.\\}
 \captionsetup[figure]{list=yes}
 
+\subsection{Finding continuous changes in variability by linear model fitting}
+
+To detect single genes that continuously increase of decrease in variability, I fit a linear regression to each iteration of the MCMCs sampling $\epsilon_i$ or $\mu_i$ \emph{versus} the group labels \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. The posterior distributions of the slope coefficient were used to categorise genes based on their transcription dynamics along the differentiation time-course (middle panel in \textbf{Fig.~\ref{fig3:linear_variability}}). These categories include: 
+
+\begin{itemize}
+\itemsep0em 
+\item Increase in mean expression, no change in variability
+\item Increase in mean expression, increase in variability
+\item Increase in mean expression, decrease in variability
+\item Decrease in mean expression, no change in variability
+\item Decrease in mean expression, increase in variability
+\item Decrease in mean expression, decrease in variability
+\item No change in mean expression, no change in variability
+\item No change in mean expression, increase in variability
+\item No change in mean expression, decrease in variability
+\end{itemize}
+
 \newpage
 
-\subsection{Finding continuous changes in variability by linear model fitting}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig_15.png}
+\caption[Quantification of expression dynamics form droplet-based scRNA-Seq data]{\textbf{Quantification of expression dynamics form droplet-based scRNA-Seq data (Full legend on next page).}}
+\label{fig3:linear_variability}
+\end{figure}
+
+\newpage
+
+This approach leads to the detection of only few genes that significantly change in variability over the differentiation time-course while the majority of genes change only in mean expression. This can be interpreted as a tight regulation of transcriptional steps during spermiogenesis sperm maturation progresses. Such a process contrasts other differentiation programmes such as hematopoiesis where branching events occur and the whole cell population expands in transcriptional variability to find new attractor states \citep{Mojtahedi2016}. To visualize changes in transcriptional variability, I selected representative genes from four categories: (i) Increase in mean expression, increase in variability, (ii) Increase in mean expression, decrease in variability (iii) Decrease in mean expression, increase in variability, (iv) Decrease in mean expression, decrease in variability (see inlets in \textbf{Fig.~\ref{fig3:linear_variability}}). Interestingly, \textit{Tsga8}, one of the most rapidly evolving X-linked genes, shows a strong increase in expression and a clear decrease in transcriptional variability. \emph{Tsga8} has been reported to be involved in hybrid sterility where F$_1$ crosses of mice form different strains are unable to reproduce. This effect might be due to the strong divergence of the \emph{Tsga8} sequence between species \citep{Good2011}. A tight regulation of its expression during spermiogenesis can therefore further control the phenotypic effect in F$_1$ animals.
+
+\subsection{Clustering of variability profiles}
+
+
+\newpage
+
+\newpage
 
 
 
