@@ -6,6 +6,8 @@
 \section{Droplet based single-cell RNA sequencing of mouse testis}
 \label{sec3:clustering}
 
+The completion of one cycle takes 8.6 days in the mouse, and the overall differentiation process from spermatogonia to mature spermatozoa requires approximately 35 days \citep{Oakberg1956a}
+
 Spermatogenesis is a recurrent differentiation process that produces male gametes within testicular seminiferous tubules \textbf{(Fig.~\ref{fig3:cell_staging}A)}. The seminiferous epithelium in the mouse is classified into twelve distinct stages, based on the combination of cell types present \textbf{(Fig.~\ref{fig3:cell_staging}B)}. Tubules cycle asynchronously and continuously through these stages and adult testis contain tubules in every possible epithelial stage \textbf{(Fig.~\ref{fig3:cell_staging}}. \\
 
 \begin{figure}[!h]
@@ -127,6 +129,8 @@ In addition to assigning the dominant cell types in germ cell development, we fu
 \label{fig3:somatic_cells}
 \end{figure}
 
+In the mouse, this differentiation process initiates with the division of a spermatogonial stem cell (SSC or A$_{\text{single}}$) to form first a pair, and then a connected chain, of undifferentiated spermatogonia (A$_{\text{paired}}$ and A$_{\text{aligned}}$) \citep{Oakberg1971, DeRooij1973}. These cells have competency to undergo spermatogonial differentiation, which involves six transit-amplifying mitotic divisions generating A$_{1-4}$, Intermediate, and B spermatogonia, which then give rise to pre-leptotene spermatocytes (pL) \citep{DeRooij2000}
+
 Identifying spermatogonial sub-populations in adult testes is greatly complicated by their rarity relative to other germ cell types \citep{Lukassen2018}. However, during early juvenile development spermatogonia are relatively enriched, which we exploited to further characterize their heterogeneity \textbf{(Fig. \ref{fig3:spermatogonia}A)}. By combining cells from P10 and P15, we obtained 1,186 transcriptional profiles that capture sub-populations during spermatogonial differentiation \textbf{(Fig. \ref{fig3:spermatogonia}B)}. To analyse transcriptomes of P10 and P15 samples, we performed batch correction between these samples as described above. We detected two clusters corresponding to undifferentiated spermatogonia (A$_\textnormal{undiff}$) based on their expression of \textit{Nanos3} and \textit{Zbtb16} \textbf{(Fig. \ref{fig3:spermatogonia}B and C)} \citep{Buaas2004, Lolicato2008}). These cells comprise A$_\textnormal{s}$, A$_\textnormal{paired}$, and A$_\textnormal{aligned}$ spermatogonia that decrease in stemness as they divide and gain competency to differentiate \citep{Suzuki2012}. Additionally, these cells express a number of marker genes also detected in undifferentiated human spermatogonial stem cells, such as \textit{Gfra1}, \textit{Bcl6} and \textit{Id4} \citep{Guo2017}. Based on the expression of \textit{Stra8} (Stimulated by retinoic acid 8), we can map the point at which spermatogonial differentiation is induced (A$_\textnormal{aligned}$-to-A$_\textnormal{1}$ transition), thus marking the beginning of differentiating spermatogonia (A$_\textnormal{diff}$) \citep{Endo2015}. A$_\textnormal{diff}$ are marked by the expression of \textit{Sohlh1} \citep{Ballow2006} and are highly proliferative, generating A$_\textnormal{1-4}$, Intermediate and B spermatogonia. Late differentiating spermatocytes express \textit{Dmrtb1} (also referred to as \textit{Dmrt6}), which mediates the mitosis-to-meiosis transition and quickly disappears in preleptotene spermatocytes. This latter population shows a second increase in Stra8 expression levels, which is necessary for initiation of meiosis \textbf{(Fig. \ref{fig3:spermatogonia}B and C)} \citep{Anderson2008, Endo2015, Zhang2014}. 
 
 \newpage
@@ -160,6 +164,8 @@ By profiling carefully chosen developmental time points and applying new methods
 
 
 \section{Characterization of male meiosis}
+
+In contrast to mitosis, meiosis includes programmed DNA double strand break (DSB) formation, homologous recombination, and chromosome synapsis \citep{Marston2004}
 
 The mitotic expansion of spermatogonia produces large numbers of spermatocytes, which then undergo male meiosis where two consecutive cell divisions give rise to four haploid spermatids. In contrast to mitotic cell divisions, prophase of meiosis I is extremely prolonged, lasting up to 10 days in male mice \citep{Soh2017}. This process has been histologically described, but a full transcriptional characterization of spermatocytes undergoing meiosis is lacking. \\
 
