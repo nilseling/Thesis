@@ -335,7 +335,7 @@ sce <- sce[,grepl("B6", colData(sce)$Sample) &
              paste("S", 1:14, sep = "")]
 sce <- normalize(sce)
 
-cur.gene <- "Arfgef1"
+cur.gene <- "Cct4"
 cur.Z <- (logcounts(sce)[rowData(sce)$Symbol == cur.gene,] -
              mean(logcounts(sce)[rowData(sce)$Symbol == cur.gene,]))/
   sd(logcounts(sce)[rowData(sce)$Symbol == cur.gene,])
