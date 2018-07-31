@@ -8,13 +8,15 @@
 
 Spermatogenesis is a recurrent differentiation process that produces male gametes within testicular seminiferous tubules \textbf{(Fig.~\ref{fig3:cell_staging}A)}. The seminiferous epithelium in the mouse is classified into twelve distinct stages, based on the combination of cell types present \textbf{(Fig.~\ref{fig3:cell_staging}B)}. The completion of one cycle takes 8.6 days in the mouse, and the overall differentiation process from spermatogonia to mature spermatozoa requires approximately 35 days \citep{Oakberg1956a}. In adult animals, tubules cycle asynchronously and continuously through these stages which leads to the presence of all germ cell types at every given time-point \textbf{(Fig.~\ref{fig3:cell_staging})}. 
 
-\subsection{Experimental and computational approaches \\ to identify germ cell-types}
+\subsection{Data generation and processing strategies}
 
-To fully dissect mouse spermatogenesis, we performed three sets of experiments: 1. droplet-based scRNA-Seq of juvenile and adult animals, 2. bulk RNA-Seq of multiple time-points during the first wave of spermatogenesis and 3. CUT\&{}RUN (Cleavage Under Targets \& Release Using Nuclease) to profile chromatin marks in juvenile mice. The following section will give an overview on the experimental and computational approaches used while more details are given when specific analyses are performed throughout the chapter.
+To fully dissect mouse spermatogenesis, we performed three sets of experiments: 1. droplet-based scRNA-Seq of juvenile and adult animals, 2. bulk RNA-Seq of multiple time-points during the first wave of spermatogenesis and 3. CUT\&{}RUN to profile chromatin marks in juvenile mice. The following section will give an overview on the data generation and processing approaches. Detailed analysis steps are explained throughout the chapter
 
 \subsubsection{scRNA-Seq using the 10X Genomics\texttrademark}
 
-primarily analysed droplet based single-cell RNA sequencing using the 10X Chromium technology \citep{Zheng2017}. For this, mouse testes were enzymatically dissociated and single-cell suspensions at a concentration of ~300,000 cells/ml was loaded into one channel of the ChromiumTM Single Cell A Chip (10X Genomics), aiming for a recovery of 4000-5000 high-quality cells. Cells were isolated from specifically staged juvenile (between postnatal days 6 and 35) and adult (8-9 weeks) C57BL/6J (B6) mice \textbf{(Table \ref{tab3:QC_scRNAseq})}. To obtain gene-specific transcript counts for droplet based scRNA-Seq, the Cell Ranger \emph{count} function with default settings was used to align and count unique molecular identifiers (UMIs) per sample. This software retains cells with similar UMI distributions \citep{Zheng2017} which we label as "high-quality" transcriptomes. We use this default threshold to obtain high-quality cells with large numbers of UMIs. After merging all samples, we filtered out cells that express less than 1000 genes. Furthermore, we exclude cells with more than 10\% of reads mapping to the mitochondrial genome. \\
+Droplet based single-cell RNA sequencing was performed using the 10X Genomics\texttrademark{} technology \citep{Zheng2017}. For this, testes from specifically staged juvenile (between postnatal days 6 and 35) and adult (8-9 weeks) C57BL/6J (B6) mice were dissociated. Single-cell suspensions were loaded into one channel of the 10X Chromium\texttrademark{} Single Cell A Chip, aiming for a recovery of 4000-5000 high-quality cells. Further information on the experimental strategy can be found in \textbf{Appendix \ref{appA.2}} and \textbf{Table \ref{tab3:QC_scRNAseq}} summarises the cells captured per sample.\\ 
+
+To process droplet-based scRNA-Seq data after sequencing, 10X genomics\texttrademark{} developed a set of processing pipelines termed \textit{Cell Ranger}. We obtained gene-specific transcript counts using the Cell Ranger \emph{count} function with default settings. This pipeline aligns and counts UMIs per transcript and sample. This software retains cells with similar UMI distributions \citep{Zheng2017}. We use this default threshold to obtain high-quality cells with large numbers of UMIs. For further quality control and after merging cells of all samples, we filtered out cells that express less than 1000 genes. Additionally, we exclude cells with more than 10\% of reads mapping to the mitochondrial genome. The number of remaining cells per sample can be seen in \textbf{Table \ref{tab3:QC_scRNAseq}}.\\
 
 \newpage
 
@@ -22,7 +24,7 @@ primarily analysed droplet based single-cell RNA sequencing using the 10X Chromi
 \centering
 \includegraphics[width=\textwidth]{Fig_1.png}
 \caption[Staging of the testicular seminiferous epithelium]{\textbf{Staging of the testicular seminiferous epithelium (full legend on next page).}\\
-\textbf{(A)} Periodic Acid Schiff (PAS)-stained testis cross-section showing a number of seminiferous tubules at different epithelial stages (displayed as Roman numerals). Within each tubule, the inset circle refers to the corresponding section in (B). Scale bar represents 100 µm, \textbf{(B)} Schematic representation of the 12 stages of the seminiferous epithelium in mice. The colour gradient within the circle indicates the differentiation path of germ cells with the layers corresponding to individual cycles of the epithelium. The circle is divided into 12 section, each corresponding to one epithelial stage displaying the characteristic germ cells. Within each section, cells are positioned across the different layers according to their emergence during consecutive cycles, each being 8.6 days apart with more mature cells moving towards the centre, \textbf{(C)} Higher magnification of two tubules depicted in (A). The PAS-stained cross-sections show tubules in Stage VII and Stage X, with the different cell layers indicated by coloured lines. Stage VII tubules contain 4 different layers with germ cells from different generations that are approximately 8.6 days apart, whereas Stage X tubules only contain three layers. Cell types are labelled as: A – type A spermatogonia (SG), In – intermediate SG, B – type B SG, Pl – preleptotene spermatocytes (SCs), L – leptotene SCs, Z – zygotene SCs, P – pachytene SCs, D – diplotene SCs, M – metaphase I and II, 1-8 round spermatids (1-8), 9-16 elongating spermatids (9-16)}
+\textbf{(A)} Periodic Acid Schiff (PAS)-stained testis cross-section showing a number of seminiferous tubules at different epithelial stages (displayed as Roman numerals). Within each tubule, the inset circle refers to the corresponding section in (B). Scale bar represents 100 µm, \textbf{(B)} Schematic representation of the 12 stages of the seminiferous epithelium in mice. The colour gradient within the circle indicates the differentiation path of germ cells with the layers corresponding to individual cycles of the epithelium. The circle is divided into 12 section, each corresponding to one epithelial stage displaying the characteristic germ cells. Within each section, cells are positioned across the different layers according to their emergence during consecutive cycles, each being 8.6 days apart with more mature cells moving towards the centre, \textbf{(C)} Higher magnification of two tubules depicted in (A). The PAS-stained cross-sections show tubules in Stage VII and Stage X, with the different cell layers indicated by coloured lines. Stage VII tubules contain 4 different layers with germ cells from different generations that are approximately 8.6 days apart, whereas Stage X tubules only contain three layers. Cell types are labelled as: A – type A spermatogonia (SG), In – intermediate SG, B – type B SG, Pl – preleptotene spermatocytes (SCs), L – leptotene SCs, Z – zygotene SCs, P – pachytene SCs, D – diplotene SCs, M – metaphase I and II, 1-8 round spermatids (1-8), 9-16 elongating spermatids (9-16).}
 \label{fig3:cell_staging}
 \end{figure}
 
@@ -30,6 +32,35 @@ primarily analysed droplet based single-cell RNA sequencing using the 10X Chromi
 
 Using the Cell Ranger default threshold leads to the exclusion of cells with lower transcriptional complexity. We therefore used the emptyDrops function provided in the \emph{DropletUtils} Bioconductor package \citep{Lun2018} to statistically distinguish empty droplets from genuine cells (controlling the FDR to 1\%). After merging true cells across all samples, we filtered out cells with less than 500 genes expressed. Furthermore, we excluded cells with more than 10\% or mitochondrial genes expressed \textbf{(Table \ref{tab3:QC_scRNAseq})}. The transcriptomes of quality filtered cells were normalized using the scran package \citep{Lun2016pooling}. After quality control and filtering, we retained more than 20,000 high-quality single cells and over 46,000 cells including the once with lower transcriptional complexity \textbf{(Table \ref{tab3:QC_scRNAseq})}. \\
 This two-way approach allows us to (i) dissect molecular processes using high-quality cells and capture all testicular cell types, even cells with low transcriptional complexity.\\
+
+\begin{table}[ht	]
+\centering
+\caption[Quality filtering of scRNAseq data]{\textbf{Quality filtering of scRNAseq data.} \\
+Quality metrics of droplet-based scRNA-Seq. Sample: Stage and genotype information for all samples. Library: sample identifier. CellRanger filter: Number of retained cells after default thresholding using the CellRanger counts function.  After quality control: Number of cells obtained after quality control. Assigned Cell Type: Number of cells that fall into annotated clusters (removing outlying cells). EmptyDrops filter: Number of cells retained after using the emptyDrops function controling the FDR to 1\%. EmptyDrops quality control: Number of cells obtained after quality control of the \emph{emptyDrops} filtered cells.}
+\label{tab3:QC_scRNAseq}
+\begin{tabular}{lllllll}
+\toprule
+\textbf{Sample} & \textbf{Library} & \textbf{CellRanger} & \textbf{After} & \textbf{Assigned} & \textbf{EmptyDrops} & \textbf{EmptyDrops} \\
+& & \textbf{filter} & \textbf{QC} & \textbf{Cell Type} & \textbf{filter} & \textbf{QC} \\
+\midrule
+B6 & do17815 & 1157 & 1157 & 1123 & 4467 & 3400 \\
+\midrule
+B6 & do17816 & 2198 & 2198 & 2092 & 6145 & 4603 \\
+\midrule
+P10 & do17821 & 3229 & 3213 & 3212 & 4976 & 4202 \\
+\midrule
+P15 & do18195 & 4258 & 4258 & 4014 & 14050 & 13168 \\
+\midrule
+P20 & do17824 & 1775 & 1775 & 1662 & 9400 & 7491 \\
+\midrule
+P25 & do18196 & 4334 & 4334 & 4130 & 8038 & 6802 \\
+\midrule
+P30 & do17825 & 2278 & 2278 & 2211 & 5393 & 4958 \\
+\midrule
+P35 & do17827 & 3160 & 3160 & 3004 & 49002 & 10683 \\                 
+\bottomrule   
+\end{tabular}
+\end{table}
 
 Additionally, for juvenile samples, we generated whole-tissue bulk RNA sequencing, as well as mapping chromatin state in purified cell populations using CUT\&{}RUN (Cleavage Under Targets \& Release Using Nuclease) \citep{Skene2018}. With this, we additionally generated 30 bulk RNA-Seq libraries and 8 CUT\&{}RUN libraries.The full experimental set-up can be seen in \textbf{Fig.~\ref{fig3:experimental_design}}.
 
@@ -43,34 +74,6 @@ Overview of the experimental design yielding bulk RNA-Seq, droplet-based scRNA-S
 
 To remove batch-specific effects that arise when samples are prepared and sequenced in different experiments \textbf{(Tables \ref{tab3:QC_scRNAseq})}, we used the \emph{mnnCorrect} function implemented in the \emph{scran} package \citep{Haghverdi2018}. We used the top 1000 genes with highest biological variation across all samples as informative genes for batch correction. The \emph{mnnCorrect} function takes transcriptional profiles of cells isolated from adult B6 mice as first input and uses this dataset as reference for cell mapping. This approach maps the juvenile samples onto the adult B6 \textbf{(Fig.~\ref{fig3:cell_types}A)}
 
-\begin{table}[ht	]
-\centering
-\caption[Quality filtering of scRNAseq data]{\textbf{Quality filtering of scRNAseq data.} \\
-Quality metrics of droplet-based scRNA-Seq. Sample: Stage and genotype information for all samples. Library: sample identifier. CellRanger filter: Number of retained cells after default thresholding using the CellRanger counts function.  After quality control: Number of cells obtained after quality control. Assigned Cell Type: Number of cells that fall into annotated clusters (removing outlying cells). EmptyDrops filter: Number of cells retained after using the emptyDrops function controling the FDR to 1\%. EmptyDrops quality control: Number of cells obtained after quality control of the \emph{emptyDrops} filtered cells.}
-\label{tab3:QC_scRNAseq}
-\begin{tabular}{lllllll}
-\toprule
-\textbf{Sample} & \textbf{Library} & \textbf{CellRanger} & \textbf{After} & \textbf{Assigned} & \textbf{EmptyDrops} & \textbf{EmptyDrops} \\
-& & \textbf{filter} & \textbf{QC} & \textbf{Cell Type} & \textbf{filter} & \textbf{QC} \\
-\midrule
-B6     & do17815 & 1157              & 1157                  & 1123               & 4467              & 3400                       \\
-\midrule
-B6     & do17816 & 2198              & 2198                  & 2092               & 6145              & 4603                       \\
-\midrule
-P10    & do17821 & 3229              & 3213                  & 3212               & 4976              & 4202                       \\
-\midrule
-P15    & do18195 & 4258              & 4258                  & 4014               & 14050             & 13168                      \\
-\midrule
-P20    & do17824 & 1775              & 1775                  & 1662               & 9400              & 7491                       \\
-\midrule
-P25    & do18196 & 4334              & 4334                  & 4130               & 8038              & 6802                       \\
-\midrule
-P30    & do17825 & 2278              & 2278                  & 2211               & 5393              & 4958                       \\
-\midrule
-P35    & do17827 & 3160              & 3160                  & 3004               & 49002             & 10683                      \\                 
-\bottomrule   
-\end{tabular}
-\end{table}
 
 To identify cell types across all samples, batch corrected transcriptomes were clustered using a graph-based approach. A shared nearest-neighbour (SNN) graph \citep{Xu2015} was constructed considering 3 shared nearest neighbours using the \emph{buildSNNGraph} function in scran. In the next step, a multi-level modularity optimization algorithm was used to find community structure in the graph \citep{Blondel2008} implemented in \emph{igraph} R package. Cells in small clusters that show unclear identities were excluded from down-stream analysis.\\
 We next aimed to annotate clusters based on the expression of marker genes. The adult B6 samples were used to identify marker genes for all germ cell-types present in testes. To this end, we performed differential expression testing across multiple pairwise comparisons. To detect cluster-specific marker genes, the \emph{findMarkers} function implemented in \emph{scran} was used on the log$_2$-transformed normalized counts while providing the cluster labels \textbf{(Fig.~\ref{fig3:cell_types}B)}. \\
