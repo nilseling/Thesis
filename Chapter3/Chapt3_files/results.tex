@@ -30,22 +30,23 @@ To process droplet-based scRNA-Seq data after sequencing, 10X genomics\texttrade
 
 \newpage
 
-Using the Cell Ranger default threshold leads to the exclusion of cells with lower transcriptional complexity. We therefore used the emptyDrops function provided in the \emph{DropletUtils} Bioconductor package \citep{Lun2018} to statistically distinguish empty droplets from genuine cells (controlling the FDR to 1\%). After merging true cells across all samples, we filtered out cells with less than 500 genes expressed. Furthermore, we excluded cells with more than 10\% or mitochondrial genes expressed \textbf{(Table \ref{tab3:QC_scRNAseq})}. The transcriptomes of quality filtered cells were normalized using the scran package \citep{Lun2016pooling}. After quality control and filtering, we retained more than 20,000 high-quality single cells and over 46,000 cells including the once with lower transcriptional complexity \textbf{(Table \ref{tab3:QC_scRNAseq})}. \\
-This two-way approach allows us to (i) dissect molecular processes using high-quality cells and capture all testicular cell types, even cells with low transcriptional complexity.\\
+The Cell Ranger \emph{count} pipeline performs thresholding on the number of UMIs per cell to exclude empty droplets or droplets with low-quality cells. This default threshold excludes smaller cells with lower transcriptional complexity form a mixture containing cells with broadly different transcriptional complexities. We therefore used the \emph{emptyDrops} function provided in the \emph{DropletUtils} Bioconductor package to statistically distinguish empty droplets from genuine cells (controlling the FDR to 1\%) \citep{Lun2018}. Nevertheless, further quality control needs to be performed and after merging all remaining cells across all samples, we filtered out cells with less than 500 genes expressed. Furthermore, we excluded cells with more than 10\% or mitochondrial genes expressed \textbf{(Table \ref{tab3:QC_scRNAseq})}.\\
+ 
+The transcriptomes of quality filtered cells were normalized using the \emph{scran} package \citep{Lun2016pooling} by pooling similar cell types. After quality control and filtering, we retained more than 20,000 high-quality single cells and over 46,000 cells including the once with lower transcriptional complexity \textbf{(Table \ref{tab3:QC_scRNAseq})}. These cells were used to dissect molecular processes during spermatogenesis and to profile under-represented and transcriptionally inactive cell types in mouse testes. \\
 
 \begin{table}[ht	]
 \centering
 \caption[Quality filtering of scRNAseq data]{\textbf{Quality filtering of scRNAseq data.} \\
-Quality metrics of droplet-based scRNA-Seq. Sample: Stage and genotype information for all samples. Library: sample identifier. CellRanger filter: Number of retained cells after default thresholding using the CellRanger counts function.  After quality control: Number of cells obtained after quality control. Assigned Cell Type: Number of cells that fall into annotated clusters (removing outlying cells). EmptyDrops filter: Number of cells retained after using the emptyDrops function controling the FDR to 1\%. EmptyDrops quality control: Number of cells obtained after quality control of the \emph{emptyDrops} filtered cells.}
+Quality metrics of droplet-based scRNA-Seq. \textbf{Sample:} Stage information for all samples, \textbf{Library:} sample identifier, \textbf{CellRanger filter:} Number of retained cells after default thresholding using the CellRanger \emph{counts} function,  \textbf{After QC:} Number of cells obtained after quality control (QC), \textbf{Assigned Cell Type:} Number of cells that fall into annotated clusters (removing outlying cells), \textbf{EmptyDrops filter:} Number of cells retained after using the \emph{emptyDrops} function controlling the FDR to 1\%, \textbf{EmptyDrops QC:} Number of cells obtained after quality control (QC) of the \emph{emptyDrops} filtered cells.}
 \label{tab3:QC_scRNAseq}
 \begin{tabular}{lllllll}
 \toprule
 \textbf{Sample} & \textbf{Library} & \textbf{CellRanger} & \textbf{After} & \textbf{Assigned} & \textbf{EmptyDrops} & \textbf{EmptyDrops} \\
 & & \textbf{filter} & \textbf{QC} & \textbf{Cell Type} & \textbf{filter} & \textbf{QC} \\
 \midrule
-B6 & do17815 & 1157 & 1157 & 1123 & 4467 & 3400 \\
+Adult & do17815 & 1157 & 1157 & 1123 & 4467 & 3400 \\
 \midrule
-B6 & do17816 & 2198 & 2198 & 2092 & 6145 & 4603 \\
+Adult & do17816 & 2198 & 2198 & 2092 & 6145 & 4603 \\
 \midrule
 P10 & do17821 & 3229 & 3213 & 3212 & 4976 & 4202 \\
 \midrule
@@ -62,6 +63,8 @@ P35 & do17827 & 3160 & 3160 & 3004 & 49002 & 10683 \\
 \end{tabular}
 \end{table}
 
+\subsubsection{Bulk RNA-SeQ from juvenile animals}
+
 Additionally, for juvenile samples, we generated whole-tissue bulk RNA sequencing, as well as mapping chromatin state in purified cell populations using CUT\&{}RUN (Cleavage Under Targets \& Release Using Nuclease) \citep{Skene2018}. With this, we additionally generated 30 bulk RNA-Seq libraries and 8 CUT\&{}RUN libraries.The full experimental set-up can be seen in \textbf{Fig.~\ref{fig3:experimental_design}}.
 
 \begin{figure}[!h]
@@ -71,6 +74,8 @@ Additionally, for juvenile samples, we generated whole-tissue bulk RNA sequencin
 Overview of the experimental design yielding bulk RNA-Seq, droplet-based scRNA-Seq and chromatin profiling on FACS-purified cells using CUT\&{}RUN from one testis while using the contralateral testis for matched histology.}
 \label{fig3:experimental_design}
 \end{figure}
+
+\subsection{Identification of germ cell-types across all scRNA-Seq samples}
 
 To remove batch-specific effects that arise when samples are prepared and sequenced in different experiments \textbf{(Tables \ref{tab3:QC_scRNAseq})}, we used the \emph{mnnCorrect} function implemented in the \emph{scran} package \citep{Haghverdi2018}. We used the top 1000 genes with highest biological variation across all samples as informative genes for batch correction. The \emph{mnnCorrect} function takes transcriptional profiles of cells isolated from adult B6 mice as first input and uses this dataset as reference for cell mapping. This approach maps the juvenile samples onto the adult B6 \textbf{(Fig.~\ref{fig3:cell_types}A)}
 
