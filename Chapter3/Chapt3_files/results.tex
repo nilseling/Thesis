@@ -6,17 +6,21 @@
 \section{Data generation and processing strategies}
 \label{sec3:clustering}
 
-\subsection{Data generation and processing strategies}
-
 To fully dissect mouse spermatogenesis, we performed three sets of experiments: 1. droplet-based scRNA-Seq of juvenile and adult animals, 2. bulk RNA-Seq of multiple time-points during the first wave of spermatogenesis and 3. CUT\&{}RUN to profile chromatin marks in juvenile mice. The following section will give an overview on the data generation and processing approaches. Detailed analysis steps are explained throughout the chapter. The full experimental set-up can be seen in \textbf{Fig.~\ref{fig3:experimental_design}}.
 
-\subsubsection{scRNA-Seq using the 10X Genomics\texttrademark}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_2.png}
+\caption[Experimental design to dissect mouse spermatogenesis]{\textbf{Experimental design to dissect mouse spermatogenesis.}\\
+Overview of the experimental design yielding bulk RNA-Seq, droplet-based scRNA-Seq and chromatin profiling on FACS-purified cells using CUT\&{}RUN from one testis while using the contralateral testis for matched histology.}
+\label{fig3:experimental_design}
+\end{figure}
+
+\subsection{scRNA-Seq using the 10X Genomics\texttrademark{} system}
 
 Droplet based single-cell RNA sequencing was performed using the 10X Genomics\texttrademark{} technology \citep{Zheng2017}. For this, testes from specifically staged juvenile (between postnatal days 6 and 35) and adult (8-9 weeks) C57BL/6J (B6) mice were dissociated. Single-cell suspensions were loaded into one channel of the 10X Chromium\texttrademark{} Single Cell A Chip, aiming for a recovery of 4000-5000 high-quality cells. Further information on the experimental strategy can be found in \textbf{Appendix \ref{appA.2}} and \textbf{Table \ref{tab3:QC_scRNAseq}} summarises the cells captured per sample.\\ 
 
 To process droplet-based scRNA-Seq data after sequencing, 10X genomics\texttrademark{} developed a set of processing pipelines termed \textit{Cell Ranger}. We obtained gene-specific transcript counts using the Cell Ranger \emph{count} function with default settings. This pipeline aligns and counts UMIs per transcript and sample. This software retains cells with similar UMI distributions \citep{Zheng2017}. We use this default threshold to obtain high-quality cells with large numbers of UMIs. For further quality control and after merging cells of all samples, we filtered out cells that express less than 1000 genes. Additionally, we exclude cells with more than 10\% of reads mapping to the mitochondrial genome. The number of remaining cells per sample can be seen in \textbf{Table \ref{tab3:QC_scRNAseq}}.\\
-
-\newpage
 
 The Cell Ranger \emph{count} pipeline performs thresholding on the number of UMIs per cell to exclude empty droplets or droplets with low-quality cells. This default threshold excludes smaller cells with lower transcriptional complexity form a mixture containing cells with broadly different transcriptional complexities. We therefore used the \emph{emptyDrops} function provided in the \emph{DropletUtils} Bioconductor package to statistically distinguish empty droplets from genuine cells (controlling the FDR to 1\%) \citep{Lun2018}. Nevertheless, further quality control needs to be performed and after merging all remaining cells across all samples, we filtered out cells with less than 500 genes expressed. Furthermore, we excluded cells with more than 10\% or mitochondrial genes expressed \textbf{(Table \ref{tab3:QC_scRNAseq})}.\\
  
@@ -51,23 +55,15 @@ P35 & do17827 & 3160 & 3160 & 3004 & 49002 & 10683 \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Bulk RNA-Seg from juvenile animals}
+\subsection{Bulk RNA-Seg from juvenile animals}
 
 Additionally, we generated whole-tissue bulk RNA-Seq libraries from time-points during the first wave of spermatogenesis (\textbf{Appendix \ref{appA.2.bulk}}). More specifically, we sampled (in replicates) testes from mice at post-natal (P) day P6 (2x), P8, P10 (2x), P12 (2x), P14 (2x), P16, P18 (2x), P20 (2x), P22 (2x), P24 (2x), P26 (2x), P28 (2x), P30 (2x), P32, P34, P35 and from adult animals (2x). Detailed experimental methods can be found in \textbf{Appendix \ref{appA.2.bulk}}. With this, we generated 30 bulk RNA-Seq libraries that will be used for developmental staging of cell types and the dissect X chromosome expression dynamics.
 
-\subsubsection{CUT\&{}RUN from juvenile animals}
+\subsection{CUT\&{}RUN from juvenile animals}
 
 To map chromatin states in purified cell populations we used CUT\&{}RUN (Cleavage Under Targets \& Release Using Nuclease) \citep{Skene2018}. Detailed experimental methods can be found in \textbf{Appendix \ref{appA.2.CnR}}. In brief, spermatocytes and spermatids were sorted as described in \textbf{Appendix \ref{appA.2.sorting}} and attached to concanavalin A–coated magnetic beads. After permeabilisation, anti-bodies against H3K9me3 and H3K4me3 were incubated with the cells. Inactive micrococcal nuclease linked to protein A was added to the mix and cooled to 0$^\circ$. Protein A binds to the antibodies and upon activation the nuclease digests DNA next to the histones where the antibody bound. Cleaved DNA fragments diffused out of the nucleus and were prepared for sequencing. This technique allows targeted chromatin profiling for specific marks at a genome wide level and requires minimal cell input \citep{Skene2018}.\\
 
 Sequencing reads were aligned to the Mus musculus genome (GRCm38) using \textit{Bowtie2} with the following settings: --local --very-sensitive-local --no-unal -q --phred33. Paired end reads were counted in specified regions using the \textit{regionCounts} function implemented in the \textit{csaw} Bioconductor package \citep{Lun2015}. For this, duplicated reads, reads mapped more than 1000 bp apart and reads mapping to blacklisted regions (available at: \url{http://mitra.stanford.edu/kundaje/akundaje/release/blacklists/mm10-mouse/mm10.blacklist.bed.gz}) were removed. Regions of interests were: promoters (obtained using the \textit{promoters} function of the \textit{GenomicFeatures} package), 1000 bp windows across the chromosome (using the \textit{windowCounts} function of \textit{csaw}) and whole chromosomes. Counts per region were normalized based on library size (counts per million, CPM) for promoter regions and 1000 bp windows. Additionally, when considering entire chromosomes, the length of the chromosome was accounted for by computing the Fragments per Kilobase per Million mapped reads (FPKMs). 
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=\textwidth]{Fig_2.png}
-\caption[Experimental design to dissect mouse spermatogenesis]{\textbf{Experimental design to dissect mouse spermatogenesis.}\\
-Overview of the experimental design yielding bulk RNA-Seq, droplet-based scRNA-Seq and chromatin profiling on FACS-purified cells using CUT\&{}RUN from one testis while using the contralateral testis for matched histology.}
-\label{fig3:experimental_design}
-\end{figure}
 
 \subsection{Identification of germ cell-types across all scRNA-Seq samples}
 
