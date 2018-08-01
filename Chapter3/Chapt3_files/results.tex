@@ -296,22 +296,36 @@ While the bulk RNA-Seq data is ideal to identify spermatid-specific, \emph{de no
 
 \newpage
 
-\section{Epigenetic mechanisms underlying \emph{de novo} escape gene activation}
+\section{Epigenetic mechanisms of X chromosome reactivation}
 
-To gain insight into the mechanisms underlying de novo activation of spermatid-specific escape genes on the X chromosome, we profiled the chromatin landscape in spermatocytes and spermatids using the newly developed CUT\&{}RUN protocol for low cell numbers \textbf{(Fig.~\ref{fig3:K9_global}A and Appendix \ref{appA.2})} \citep{Skene2018}. \\
+To gain insight into the mechanisms underlying de novo activation of spermatid-specific escape genes on the X chromosome, we profiled the chromatin landscape in spermatocytes and spermatids using the newly developed CUT\&{}RUN protocol for low cell numbers \textbf{(Fig.~\ref{fig3:K9_global}A and Appendix \ref{appA.2})} \citep{Skene2018}. 
 
-We assayed trimethylation of histone H3 on lysine 4 (H3K4me3) as a proxy for promoter activity, as well as repressive trimethylation of lysine 9 (H3K9me3), which is associated with the sex body in early and late spermatocytes and enriched in post-meiotic sex chromatin (PMSC) \citep{Greaves2006, Tachibana2007}. By profiling the enrichment of H3K9me3 across all chromosomes, we confirmed that the X chromosome has high levels of H3K9me3 in spermatids \citep{Moretti2016}. In addition, we now show that H3K9me3 accumulation begins earlier in meiosis, and indeed spermatocytes show enrichment of this repressive mark \textbf{(Fig.~\ref{fig3:K9_global}B)}. 
+\subsection{CUT\&{}RUN to profile H3K4me3 and H3K9me3 marks}
+
+We assayed trimethylation of histone H3 on lysine 4 (H3K4me3) as a proxy for promoter activity, as well as repressive trimethylation of lysine 9 (H3K9me3), which is associated with the sex body in early and late spermatocytes and enriched in post-meiotic sex chromatin (PMSC) \citep{Greaves2006, Tachibana2007}. By profiling the enrichment of H3K9me3 across all chromosomes, we confirmed that the X chromosome has high levels of H3K9me3 in spermatids \citep{Moretti2016}. In addition, we now show that H3K9me3 accumulation begins earlier in meiosis, and indeed spermatocytes show enrichment of this repressive mark \textbf{(Fig.~\ref{fig3:K9_global}B)}. \\
+
+On autosomes, H3K9me3 is enriched in pericentromeric regions of constitutive heterochromatin \citep{Peters2001}; in sharp contrast, this repressive histone mark is more evenly distributed across the X chromosome in spermatocytes  \textbf{(Fig.~\ref{fig3:K9_global}D)}. Nevertheless, we detected broad regions showing particularly high levels of H3K9me3 scattered across the X chromosome  \textbf{(Fig.~\ref{fig3:K9_global}C)}, including the promoter of \textit{Akap4}, a well-known escape gene. This discovery prompted us to profile the chromatin dynamics of active and repressive marks at promoters of \emph{de novo} escape genes (\emph{spermatid-specific genes}) versus the promoters of all other expressed X-chromosome genes (\emph{non-spermatid specific genes}) \textbf{(Fig.~\ref{fig3:X_reactivation}C)}.
+
+\newpage
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.8\textwidth]{Fig_12.png}
+\includegraphics[width=\textwidth]{Fig_12.png}
 \caption[Chromatin profiling in spermatocytes and spermatids]{\textbf{Profiling of repressive and active chromatin marks in spermatocytes and spermatids.} \\
 \textbf{(A)} Spermatocytes and spermatids were isolated from the same individual using FACS and profiled using H3K4me3 (active mark) and H3K9me3 (repressive mark) using CUT\&{}RUN. \textbf{(B)} Number of H3K9me3 Fragments Per Kilobase per Million (FPKM) for each chromosome. Pink (spermatocytes); Blue (spermatids). Shape corresponds to biological replicate. \textbf{(C)} The top 1000 windows with highest H3K9me3 signal (1000 bp width, CPM) were merged using a tolerance of 1500 bp. Representative tracks of one replicate in spermatocytes and one replicate in spermatids are shown. \textbf{(D)} Cumulative summed counts per million across 10000 randomly sampled windows (1000 bp width) visualizing the distribution of the H3K9me3 signal across chromosome 9 (dashed line) and chromosome X (solid line). 
 }
 \label{fig3:K9_global}
 \end{figure}
 
-On autosomes, H3K9me3 is enriched in pericentromeric regions of constitutive heterochromatin \citep{Peters2001}; in sharp contrast, this repressive histone mark is more evenly distributed across the X chromosome in spermatocytes  \textbf{(Fig.~\ref{fig3:K9_global}D)}. Nevertheless, we detected broad regions showing particularly high levels of H3K9me3 scattered across the X chromosome  \textbf{(Fig.~\ref{fig3:K9_global}C)}, including the promoter of \textit{Akap4}, a well-known escape gene. This discovery prompted us to profile the chromatin dynamics of active and repressive marks at promoters of \emph{de novo} escape genes (\emph{spermatid-specific genes}) versus the promoters of all other expressed X-chromosome genes (\emph{non-spermatid specific genes}) \textbf{(Fig.~\ref{fig3:X_reactivation}C)}.
+\newpage
+
+\subsection{Targeted silencing of spermatid-specific escape genes}
+
+In spermatocytes, spermatid-specific genes showed lower enrichment in H3K4me3 than non-spermatid specific genes (Wilcoxon-Mann-Whitney: p-value < 2.2x10$^{-16}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, left panel)}. In contrast, spermatid-specific genes have on average elevated H3K4me3 in spermatids, as expected based on their increased expression level compared to spermatocytes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, right panel)}. When examining the deposition of H3K9me3 on the promoters of X-linked genes, we detected a strong enrichment in spermatid-specific escape genes in spermatocytes (Wilcoxon-Mann-Whitney: p-value < 3.7x10$^{-11}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}B)}. This pattern indicates that spermatid-specific genes are more strongly repressed in spermatocytes. \\
+
+Our results describe for the first time, the precise epigenetic changes associated with escape gene activation in post-meiotic cells. These dynamics are exemplified by the chromatin remodelling that occurs around \textit{Akap4} and \textit{Cypt1}, both of which are well-studied spermatid-specific genes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}C)}. The promoters of these genes have high levels of H3K9me3 in spermatocytes, which decreases in spermatids, while H3K4me3 levels are strongly increased. 
+
+\newpage
 
 \begin{figure}[!h]
 \centering
@@ -322,13 +336,11 @@ On autosomes, H3K9me3 is enriched in pericentromeric regions of constitutive het
 \label{fig3:K9_K4_targeted}
 \end{figure}
 
-In spermatocytes, spermatid-specific genes showed lower enrichment in H3K4me3 than non-spermatid specific genes (Wilcoxon-Mann-Whitney: p-value < 2.2x10$^{-16}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, left panel)}. In contrast, spermatid-specific genes have on average elevated H3K4me3 in spermatids, as expected based on their increased expression level compared to spermatocytes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, right panel)}. When examining the deposition of H3K9me3 on the promoters of X-linked genes, we detected a strong enrichment in spermatid-specific escape genes in spermatocytes (Wilcoxon-Mann-Whitney: p-value < 3.7x10$^{-11}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}B)}. This pattern indicates that spermatid-specific genes are more strongly repressed in spermatocytes. \\
-
-Our results describe for the first time, the precise epigenetic changes associated with escape gene activation in post-meiotic cells. These dynamics are exemplified by the chromatin remodelling that occurs around \textit{Akap4} and \textit{Cypt1}, both of which are well-studied spermatid-specific genes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}C)}. The promoters of these genes have high levels of H3K9me3 in spermatocytes, which decreases in spermatids, while H3K4me3 levels are strongly increased. 
+\newpage
 
 \section{Measuring changes in variability over pseudo-time}
 
-As described above, spermatogenesis is a unidirectional and continuous differentiation process coupled to a complex system of developmental steps. In this section, I will apply the regression BASiCS model developed in the previous chapter to study changes in transcriptional variability over the time-course of spermatogenesis. In mouse hematopoietic cell differentiation,  cell-to-cell diversity increases at critical state transitions where cell fate decisions are made \citep{Mojtahedi2016}. A similar effect was seen in chicken erythroid progenitor cells where the Shannon entropy is highest directly at the point of fate commitment and declines during the irreversible commitment to differentiation \cite{Richard2016}. In the previous chapter, we have demonstrated that transcriptional variability shows dynamic changes during CD4\plus{} T cell differentiation with high variability being observed at a possible early commitment point and a decrease in variability upon proliferation. Here, I profile changes in variability for individual genes during spermiogenesis, the differentiation process that directly follows meiosis (see \textbf{Section \ref{sec3:spermiogenesis}}). As described above, spermiogenesis is a differentiation process that involves an extensive remodelling of the chromatin with transcriptional shut-down occurring at around spermatid stage S10. I therefore selected spermatids from stages S1 to S9 for analysis where transcriptional regulation is needed for sperm maturation. Transcriptional changes after S10 are only due to degradation of mRNA. 
+As described above, spermatogenesis is a unidirectional and continuous differentiation process coupled to a complex system of developmental steps. In this section, I will apply the regression BASiCS model developed in the previous chapter to study changes in transcriptional variability over the time-course of spermatogenesis. In mouse hematopoietic cell differentiation,  cell-to-cell diversity increases at critical state transitions where cell fate decisions are made \citep{Mojtahedi2016}. A similar effect was seen in chicken erythroid progenitor cells where the Shannon entropy is highest directly at the point of fate commitment and declines during the irreversible commitment to differentiation \cite{Richard2016}. In the previous chapter, we have demonstrated that transcriptional variability shows dynamic changes during CD4\plus{} T cell differentiation with high variability being observed at a possible early commitment point and a decrease in variability upon proliferation. Here, I profile changes in variability for individual genes during spermiogenesis, the differentiation process that directly follows meiosis (see \textbf{Section \ref{sec3:spermiogenesis}}). As described above, spermiogenesis is a differentiation process that involves an extensive remodelling of the chromatin with transcriptional shut-down occurring at around spermatid stage S10. I therefore selected spermatids from stages S1 to S9 for analysis where transcriptional regulation is needed for sperm maturation. Transcriptional changes after S10 are only due to degradation of mRNA.
 
 \subsection{Using BASiCS on continuous data}
 
