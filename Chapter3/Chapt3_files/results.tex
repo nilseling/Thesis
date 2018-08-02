@@ -385,18 +385,19 @@ To detect single genes that continuously increase of decrease in variability, I 
 \item No change in mean expression, decrease in variability
 \end{itemize}
 
+This approach leads to the detection of few genes that significantly change in variability over the differentiation time-course in a linear fashion while the majority of genes change only in mean expression. One hypothesis is that sperm maturation is a tightly regulated progress where the majority of genes follow a clear transcriptional pattern. Such a process contrasts other differentiation programmes such as hematopoiesis where branching events occur and the whole cell population expands in transcriptional variability to find new attractor states \citep{Mojtahedi2016}. To visualize changes in transcriptional variability, I selected representative genes from four categories: (i) Increase in mean expression, increase in variability, (ii) Increase in mean expression, decrease in variability (iii) Decrease in mean expression, increase in variability, (iv) Decrease in mean expression, decrease in variability (see inlets in \textbf{Fig.~\ref{fig3:linear_variability}}). Interestingly, \textit{Tsga8}, one of the most rapidly evolving X-linked genes, shows a strong increase in expression and a clear decrease in transcriptional variability. \emph{Tsga8} has been reported to be involved in hybrid sterility where F$_1$ crosses of mice form different strains are unable to reproduce. This effect might be due to the strong divergence of the \emph{Tsga8} sequence between species \citep{Good2011}. A tight regulation of its expression during spermiogenesis can therefore further control the phenotypic effect in F$_1$ animals.
+
 \newpage
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.8\textwidth]{Fig_15.png}
-\caption[Quantification of expression dynamics form droplet-based scRNA-Seq data]{\textbf{Quantification of expression dynamics form droplet-based scRNA-Seq data (Full legend on next page).}}
+\caption[Linear changes in variability over spermiogenesis]{\textbf{Linear changes in variability over spermiogenesis.}\\
+Linear models were fit between the residual over-dispersion parameter $\epsilon_i$ or the mean expression parameter $\mu_i$ and the groups labels (S) 1-14 for each iteration of the MCMC. Median posterior estimates of the slope parameter of the variability fit were plotted against the slope parameter of the mean expression fit. each dot represents a single gene. Genese are coloured based on their regulation (legend). Plot inlets indicated the Z score scaled normalized expression (upper panel) and the group-wise residual over-dispersion estimates $\epsilon_i$ (lower panels) of representative genes for four categories.}
 \label{fig3:linear_variability}
 \end{figure}
 
 \newpage
-
-This approach leads to the detection of only few genes that significantly change in variability over the differentiation time-course while the majority of genes change only in mean expression. This can be interpreted as a tight regulation of transcriptional steps during spermiogenesis sperm maturation progresses. Such a process contrasts other differentiation programmes such as hematopoiesis where branching events occur and the whole cell population expands in transcriptional variability to find new attractor states \citep{Mojtahedi2016}. To visualize changes in transcriptional variability, I selected representative genes from four categories: (i) Increase in mean expression, increase in variability, (ii) Increase in mean expression, decrease in variability (iii) Decrease in mean expression, increase in variability, (iv) Decrease in mean expression, decrease in variability (see inlets in \textbf{Fig.~\ref{fig3:linear_variability}}). Interestingly, \textit{Tsga8}, one of the most rapidly evolving X-linked genes, shows a strong increase in expression and a clear decrease in transcriptional variability. \emph{Tsga8} has been reported to be involved in hybrid sterility where F$_1$ crosses of mice form different strains are unable to reproduce. This effect might be due to the strong divergence of the \emph{Tsga8} sequence between species \citep{Good2011}. A tight regulation of its expression during spermiogenesis can therefore further control the phenotypic effect in F$_1$ animals.
 
 \subsection{Clustering of variability profiles}
 
