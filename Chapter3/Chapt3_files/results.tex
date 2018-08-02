@@ -401,19 +401,27 @@ Linear models were fit between the residual over-dispersion parameter $\epsilon_
 
 \subsection{Clustering of variability profiles}
 
+To identify non-linear patterns across all genes, I first ordered variability profiles based on their peak in variability \textbf{(Fig.~\ref{fig3:variability_clustering}A)}. Here, variability profiles are represented by the median residual over-dispersion parameter $\epsilon_i$  ordered from S1 to S14. Most variability profiles showed highest variability in specifically one group while also other patterns of variability are detectable. \\
+
+To identify the major patterns of variability across the full range of spermiogenesis, I performed k-means clustering across all variability profiles. In this case, I had to select the expected number of clusters. Due to the fact that most genes showed peak variability in exactly one group, I selected $\text{k}=20$ to detect patterns other than peaks in single groups. After clustering, I detect a variety of variability patterns ranging from high variability in early spermiogenesis to high variability at later stages \textbf{(Fig.~\ref{fig3:variability_clustering}B)}. Most interestingly, I observed patterns that show gradual increase in variability until around spermatid stage S9 and decrease afterwards \textbf{(Fig.~\ref{fig3:variability_clustering}B, middle panel)}. \\
+
+The group with peak variability at around S9 consists of all transition proteins (\textit{Tnp1}, \textit{Tnp2}) and protamins (\textit{Prm1}, \textit{Prm2}, \textit{Prm3}). When visualizing the expression patterns of \textit{Prm1}, I detect a quick shift in expression within cells from S9 \textbf{(Fig.~\ref{fig3:variability_clustering}C, middle panel)}. Similarly, genes that show highest variability at later stages during spermiogenesis \textbf{(Fig.~\ref{fig3:variability_clustering}B, second to last panel)} show a quick transcriptional decline after transcriptional shut-down (e.g.~ \emph{Tekt4}, \textbf{Fig.~\ref{fig3:variability_clustering}B}). \\
+
+These results indicate that the changes in expression associated to the trajectory of pseudo-time are additional confounding factors when quantifying transcriptional variability. Similar to removing the confounding between mean expression and variability, a regression approach can be chosen to correct variability measures based on the correlation between expression and pseudo-time. 
+
+
 
 \newpage
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_16.png}
-\caption[Quantification of expression dynamics form droplet-based scRNA-Seq data]{\textbf{Quantification of expression dynamics form droplet-based scRNA-Seq data (Full legend on next page).}}
-\label{fig3:linear_variability}
+\caption[Clustering of variability profiles]{\textbf{Clustering of variability profiles.}\\
+\textbf{(A)} Variability profiles (median of the $\epsilon_i$ estimates ordered by developmental progression) were ordered based on their maximum $\epsilon_i$ starting in S1 spermatids, \textbf{(B)} Variability profiles were clustered using k-means with $\text{k}=20$. 5 representative patterns of variability are displayed ranging from highest variability in round spermatids to highest variability in elongating spermatids, \textbf{(C)} Z score scaled, normalized expression of example genes per variability pattern taken from (B) are displayed in form of boxplots.}
+\label{fig3:variability_clustering}
 \end{figure}
 
 \newpage
-
-
 
 \section{Discussion}
 
