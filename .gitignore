@@ -37,4 +37,9 @@ thesis.run.xml*
 *run.xml*
 *.latexmkrc*
 *_latexmk*
-
+*.acn
+*.acr
+*.alg
+*.glg
+*.gls
+*.glsdefs

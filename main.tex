@@ -2,7 +2,7 @@
 % ------- PhD Thesis Nils Eling -------
 % *************************************
 
-\documentclass[a4paper,12pt,times,numbered,print,index,chapter]{Classes/PhDThesisPSnPDF}
+\documentclass[a4paper,12pt,times,numbered,print]{Classes/PhDThesisPSnPDF}
 
 % *************************************
 % **** Class Options 
@@ -74,6 +74,8 @@
 
 \input{Preamble/preamble}
 
+\include{Acronym/Acronym}
+
 % *************************************
 % **** Thesis Information & Meta-data 
 % *************************************
@@ -126,15 +128,15 @@
 % \printnomenclature[space] space can be set as 2em between symbol and description
 %\printnomenclature[3em]
 
-\printnomenclature
+%\printnomenclature
+
+\printglossary[type=\acronymtype]
 
 % *************************************
 % **** Main Matter
 % ************************************* 
 
 \mainmatter
-
-\include{Nomenclature/Nomenclature}
 
 \include{Introduction/intro}
 %\include{Chapter1/chapter1}

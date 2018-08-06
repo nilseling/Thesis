@@ -195,10 +195,26 @@
 
 
 % ******************************* Nomenclature 
-\usepackage{nomencl}
-\renewcommand{\nomname}{Symbols}
-\makenomenclature
+%\usepackage{nomencl}
+%\renewcommand{\nomname}{Symbols}
+%\makenomenclature
 
+\usepackage[acronym, nopostdot, nonumberlist, style=super]{glossaries}
+%\newglossarystyle{longuc}%
+%{%
+%  \setglossarystyle{long}%
+%  \renewcommand{\glossentry}[2]{%
+%    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+%    \Glossentrydesc{##1}\glspostdescription\space ##2\tabularnewline
+%  }%
+%}
+
+%\setglossarystyle{longuc}
+%\setacronymstyle{long-short}
+
+\makeglossaries
+\glsdisablehyper
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
 
 % ********************************* Appendix 
 
