@@ -2,7 +2,7 @@
 % ------- PhD Thesis Nils Eling -------
 % *************************************
 
-\documentclass[a4paper,12pt,times,numbered,print]{Classes/PhDThesisPSnPDF}
+\documentclass[a4paper,12pt,times,numbered,print,chapter]{Classes/PhDThesisPSnPDF}
 
 % *************************************
 % **** Class Options 
@@ -97,7 +97,7 @@
 % The chapter mode allows user to only print particular chapters with references. Title, Contents, Frontmatter are disabled by default. Useful option to review a particular chapter or to send it to supervisior. To use choose `chapter' option in the document class
 
 \ifdefineChapter
- \includeonly{Introduction/intro}
+ \includeonly{Chapter3/chapter3}
 \fi
 
 % *************************************
@@ -113,7 +113,7 @@
 %\include{Dedication/dedication}
 %\include{Declaration/declaration}
 %\include{Acknowledgement/acknowledgement}
-\include{Abstract/abstract}
+%\include{Abstract/abstract}
 
 % *************************************
 % **** Adding TOC and List of Figures 
@@ -130,7 +130,7 @@
 
 %\printnomenclature
 
-\printglossary[type=\acronymtype]
+%\printglossary[type=\acronymtype]
 
 % *************************************
 % **** Main Matter
@@ -139,10 +139,10 @@
 \mainmatter
 
 
-\include{Introduction/intro}
+%\include{Introduction/intro}
 %\include{Chapter1/chapter1}
 %\include{Chapter2/chapter2}
-%\include{Chapter3/chapter3}
+\include{Chapter3/chapter3}
 %\include{Discussion/discussion}
 
 
