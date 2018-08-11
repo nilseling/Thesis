@@ -114,14 +114,14 @@ Transcription is initiated by TFs binding to specific regulatory DNA sequences f
 
 In bacteria, the intracellular physical distance between TF source and the promoter sequence influences expression variability. TF expression proximal to their target genes results in less noisy expression compared to regulator sources distant to the promoter sequence \citep{Goni-Moreno2017}. Once TFs bind to their target sequence, Carey \emph{et al.}, 2013 showed that mean expression to noise ratio is promoter dependent while in the majority of cases, noise negatively scales with mean expression \citep{Carey2013}. \\
 
-Similar to TF binding dynamics, the assembly of RNAPII complexes modulates transcriptional noise. An early study identified the connection between paused RNAPII and synchronous expression of target genes. Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. This finding has later been confirmed using scRNA-Seq data while increased variability was detected for genes with non-pause RNAPII across the full range of expression levels \citep{Day2016}.\\
+Similar to TF binding dynamics, the assembly of RNAPII complexes modulates transcriptional noise. An early study identified the connection between paused RNAPII and synchronous expression of target genes. Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. This finding has later been confirmed using scRNA-Seq data while increased variability was detected for genes with non-pause RNAPII across the full range of expression levels \textbf{(Fig.~\ref{fig0:RNAPII})} \citep{Day2016}.\\
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.7\textwidth]{Fig_8.png}
 \caption[RNAPII pausing reduces transcriptional noise]{\textbf{RNAPII pausing reduces transcriptional noise.}\\
 Left: Pre-loaded RNA polymerase II (RNAPII) allows direct transcription upon transcription factor (TF) binding. Right: RNAPII recruitment induces gene expression variability.}
-\label{fig0:DNA_features}
+\label{fig0:RNAPII}
 \end{figure} 
 
 \newpage
@@ -130,21 +130,21 @@ Left: Pre-loaded RNA polymerase II (RNAPII) allows direct transcription upon tra
 
 After synthesis, pre-RNAs are polyadenylated and spliced to form mRNA that relocates from the nucleus to the cytoplasm where translation occurs to synthesise proteins \cite{Glisovic2008}. On the post-transcriptional and translational level, mRNA localization, structure, degradation and translation have been shown to influence cell-to-cell variations in protein abundance.
 
-Upon transcriptional activation, RNAs are produced in burst-like patterns while burst frequency modulates mean expression and noise, and burst size influences solely mean expression \citep{Hornung2012}. While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \citep{Battich2015a}. Reduces cytoplasmatic noise has also been shown for two nuclearly retained genes in the mammalian liver. Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.\\
+Upon transcriptional activation, RNAs are produced in burst-like patterns while burst frequency modulates mean expression and noise, and burst size influences solely mean expression \citep{Hornung2012}. While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Battich2015a}. Reduces cytoplasmatic noise has also been shown for two nuclearly retained genes in the mammalian liver. Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.\\
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_9.png}
 \caption[Post-transcriptional regulation to control noisy expression]{\textbf{Post-transcriptional regulation to control noisy expression.}\\
 Bursty expression introduces nuclear variation in transcript abundance that is buffered due to retention at the nuclear membrane. Within the cytoplasm, micro RNAs degrade lowly expressed genes to reduce expression noise. Deletion of the ribsosome binding site as well as stem loop formation increase variability in protein abundance across cells. Arrows indicate either increased (red) or decreased noise (green) dependent on the regulatory mechanism.}
-\label{fig0:DNA_features}
+\label{fig0:posttranscriptional}
 \end{figure} 
 
 \newpage
 
-Within the cytoplasm, mRNAs are subject to translation or degradation. At this stage, stochasticity from bursty gene expression is propagated to variation in protein abundance. The availability of mRNAs for translation is not only dictated by their syntheses but also their degradation rate. mRNA degradation is accelerated by recognition of micro RNAs. This process has been shown to preferentially reduce noise levels for lowly expressed genes in mESCs to possibly retain cellular identity \citep{Schmiedel2015}. Similarly, temporal averaging of long-lived transcripts reduces noise in mRNA abundance. In that way, increased transcript stability compensates for noise introduced by the single-allele expression of genes on chromosome X \citep{Faure2017}.  \\
+Within the cytoplasm, mRNAs are subject to translation or degradation. At this stage, stochasticity from bursty gene expression is propagated to variation in protein abundance. The availability of mRNAs for translation is not only dictated by their syntheses but also their degradation rate. mRNA degradation is accelerated by recognition of micro RNAs. This process has been shown to preferentially reduce noise levels for lowly expressed genes in mESCs to possibly retain cellular identity \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Schmiedel2015}. Similarly, temporal averaging of long-lived transcripts reduces noise in mRNA abundance. In that way, increased transcript stability compensates for noise introduced by the single-allele expression of genes on chromosome X \citep{Faure2017}.  \\
 
-In addition to noise introduced by stochastic processes on the transcriptional level, the recognition and binding of ribosomes to mRNAs for translation initiation features a source for variations in protein abundance. Modulating translational efficiency by mutating the ribosome binding site and initiation codon showed an interaction between translation and variation in protein abundance \citep{Ozbudak2002}. Additionally, mRNA secondary structure formed by stem loops and ploy(G) motifs affects translation initiation and increases noise in protein levels \citep{Dacheux2017a}.
+In addition to noise introduced by stochastic processes on the transcriptional level, the recognition and binding of ribosomes to mRNAs for translation initiation features a source for variations in protein abundance. Modulating translational efficiency by mutating the ribosome binding site and initiation codon showed an interaction between translation and variation in protein abundance \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Ozbudak2002}. Additionally, mRNA secondary structure formed by stem loops and ploy(G) motifs affects translation initiation and increases noise in protein levels \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Dacheux2017a}.
 
 \subsection{Extrinsic noise}
 
@@ -152,15 +152,23 @@ Extrinsic noise within a cell population arises from cells being in different re
 
 \subsubsection{Cell cycle}
 
-Cell cycle has been widely discussed to form a crucial source of extrinsic noise \citep{Colman-Lerner2005a, Newman2006}). In yeast populations, differences in transcriptional activities between the G1 and S/G2/M phases of the cell cycle lead to large-scale transcriptional heterogeneity across cell populations \citep{Zopf2013}. Under nutrient-poor conditions, growth rate is reduced and noise is elevated due to cells being in different cell-cycle stages \citep{Keren2015}.  Even under optimal growth conditions for mESCs (2i media), cell cycle related genes show strong heterogeneity in expression across the cell population \citep{Kolodziejczyk2015cell}. Nonetheless, sorting cells into similar cell cycle stages did not drastically reduce noise levels \citep{Raser2004}. When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. Computational methods have been developed to correct for this confounding effect to enhance the underlying noise signal \citep{Buettner2015, Buettner2017}. 
+Cell cycle has been widely discussed to form a crucial source of extrinsic noise \citep{Colman-Lerner2005a, Newman2006}). In yeast populations, differences in transcriptional activities between the G1 and S/G2/M phases of the cell cycle lead to large-scale transcriptional heterogeneity across cell populations \textbf{(Fig.~\ref{fig0:extrinsic})} \citep{Zopf2013}. Under nutrient-poor conditions, growth rate is reduced and noise is elevated due to cells being in different cell-cycle stages \citep{Keren2015}.  Even under optimal growth conditions for mESCs (2i media), cell cycle related genes show strong heterogeneity in expression across the cell population \citep{Kolodziejczyk2015cell}. Nonetheless, sorting cells into similar cell cycle stages did not drastically reduce noise levels \citep{Raser2004}. When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. Computational methods have been developed to correct for this confounding effect to enhance the underlying noise signal \citep{Buettner2015, Buettner2017}. 
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.7\textwidth]{Fig_10.png}
+\caption[Differences in cell states induce extrinsic noise]{\textbf{Differences in cell states induce extrinsic noise.}\\
+Within a homogeneous population of cells (left), individual cells reside in different cellular states (e.g.~cell cycle, cell signalling, metabolism) and show differences in cellular volume.}
+\label{fig0:extrinsic}
+\end{figure} 
 
 \subsubsection{Cell volume}
 
-Cellular volume provides another explanation for global differences in mRNA content between individual cells introducing large-scale transcriptional heterogeneity. Even though cell volume changes during cell cycle progression, within each phase cell volume varied as much as across all phases. It has been shown that mRNA counts scale with cellular volume to maintain transcript concentrations within each cell \citep{Kempe2015, Padovan-Merhar2015, Zhurinsky2010}. To avoid this source of heterogeneity, normalization approaches correct for differences in mRNA content between individual cells \citep{Vallejos2017}.
+Cellular volume provides another explanation for global differences in mRNA content between individual cells introducing large-scale transcriptional heterogeneity \textbf{(Fig.~\ref{fig0:extrinsic})}. Even though cell volume changes during cell cycle progression, within each phase cell volume varied as much as across all phases. It has been shown that mRNA counts scale with cellular volume to maintain transcript concentrations within each cell \citep{Kempe2015, Padovan-Merhar2015, Zhurinsky2010}. To avoid this source of heterogeneity, normalization approaches correct for differences in mRNA content between individual cells \citep{Vallejos2017}.
 
 \subsubsection{Metabolism}
 
-The effect of metabolic fluctuations has been studied in \textit{E. coli} populations. Variations in biochemical reactions are induced by noise in the expression of their corresponding catalytic enzymes. Changes in metabolism are then coupled to varying growth rates of individual cells, which in turn introduces large-scale transcriptional heterogeneity in cell populations \citep{Kiviet2014}.  
+The effect of metabolic fluctuations has been studied in \textit{E. coli} populations. Variations in biochemical reactions are induced by noise in the expression of their corresponding catalytic enzymes. Changes in metabolism are then coupled to varying growth rates of individual cells, which in turn introduces large-scale transcriptional heterogeneity in cell populations \textbf{(Fig.~\ref{fig0:extrinsic})} \citep{Kiviet2014}.  
 
 \subsubsection{Expression capacity}
 
@@ -168,9 +176,17 @@ Fluctuations in the expression capacity of cells due to quantitative differences
 
 \subsubsection{Cell signalling}
 
-A different source of extrinsic noise is the intra- or inter-cellular signalling state of individual cells. Fluctuations in membrane bound or cytoplasmic proteins lead to inconsistent transmission of signalling stimuli as exemplified by variability in TRAIL-induced apoptosis \citep{Spencer2009}. Similarly, variations of regulators in the \gls{ERK} signalling pathway introduce downstream variability in nuclear response. The degree of which nuclear ERK response is varied depends on the position of the regulator in the topology of the signalling pathway \citep{Iwamoto2016}. In \textit{C. elegans}, perturbation of the Wnt signalling pathway displayed different degrees of variability in expression of the key Hox gene for Q neuroblast migration, \textit{mab-5}. It has been proposed that extrinsic noise, in this case the strength of the Wnt signal, modulates intrinsic variation in the expression of \textit{mab-5} \citep{Ji2013}. 
+A different source of extrinsic noise is the intra- or inter-cellular signalling state of individual cells. Fluctuations in membrane bound or cytoplasmic proteins lead to inconsistent transmission of signalling stimuli as exemplified by variability in TRAIL-induced apoptosis \citep{Spencer2009}. Similarly, variations of regulators in the \gls{ERK} signalling pathway introduce downstream variability in nuclear response \textbf{(Fig.~\ref{fig0:extrinsic})}. The degree of which nuclear ERK response is varied depends on the position of the regulator in the topology of the signalling pathway \citep{Iwamoto2016}. In \textit{C. elegans}, perturbation of the Wnt signalling pathway displayed different degrees of variability in expression of the key Hox gene for Q neuroblast migration, \textit{mab-5}. It has been proposed that extrinsic noise, in this case the strength of the Wnt signal, modulates intrinsic variation in the expression of \textit{mab-5} \citep{Ji2013}. 
 
 \subsubsection{Physical constrains}
 
-Physical constrains on cell growth and the direct population context influence the state of individual cells \citep{Battich2015a}. Snijder \textit{et al.}, 2009 performed detailed imaging based analysis of adherent human cells that were infected with different viruses. Clathrin mediated endocytosis was most variable with low cell density leading to inefficient mouse hepatits virus infection. Dengue virus preferentially infects edge cells while simian virus 40 infection was decreased with large cell density \citep{Snijder2009}. These experiments indicate the importance of local cellular microenvironment and cell-cell contacts leading to heterogeneity in cell states. 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering    
+\includegraphics[width=0.48\textwidth]{Fig_11.png}
+\caption[Physical constrains induce heterogeneous expression patterns.]{\textbf{Physical constrains induce heterogeneous expression patterns.} \\
+Cell density increases during the expansion of a homogeneous population of cell forming patches with high and low density and pushing cells to the edge of the population. Based on these physical constrains, cells change their transcriptional programme inducing variability across the population.}
+\label{fig0:constrains}
+\end{wrapfigure}
+
+Physical constrains on cell growth and the direct population context influence the state of individual cells \citep{Battich2015a}. Snijder \textit{et al.}, 2009 performed detailed imaging based analysis of adherent human cells that were infected with different viruses. Clathrin mediated endocytosis was most variable with low cell density leading to inefficient mouse hepatits virus infection. Dengue virus preferentially infects edge cells while simian virus 40 infection was decreased with large cell density \citep{Snijder2009}. These experiments indicate the importance of local cellular microenvironment and cell-cell contacts leading to heterogeneity in cell states \textbf{(Fig.~\ref{fig0:constrains})}. 
 
