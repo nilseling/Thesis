@@ -59,36 +59,52 @@ Moreover, the positioning of genes on the genome controls expression noise with 
 \begin{table}[hb	]
 \centering
 \caption{Epigenetic control of transcriptional noise}
-\label{table:effects_noise}
-\begin{tabular}{l l l}
+\label{table:epigenetic}
+\begin{tabular}{l l c c}
 \toprule
 \toprule
-System & Friend & Foe \\ 
+ & Feature & Noisy & Stable \\ 
 \midrule
 \midrule
-Unicellular organism & Bet-hedging & \\
+\multirow{3}{*}[-2pt]{DNA methylation} & CpG islands &  & \checkmark{} \\
+\cmidrule{2-4}
+& Short CpG islands & \checkmark{} &  \\
+\cmidrule{2-4}
+& Gene body methylation &  & \checkmark{} \\
 \midrule
-Development and & Probabilistic induction  & \\
-differentiation & of cell differentiation & \\
+\multirow{7}{*}[-2pt]{Histone modification} & H3K27me3 (TSS, promoter, gene body) & \checkmark{}  & \\
+\cmidrule{2-4}
+& H3K4me1 (TSS, promoter) & \checkmark{}  & \\
+\cmidrule{2-4}
+& H3K9me3 (promoter) & \checkmark{}  & \\
+\cmidrule{2-4}
+& H3K4me3 (gene bodies) &  & \checkmark{}\\
+\cmidrule{2-4}
+& H3K9ac (gene bodies) &  & \checkmark{} \\
+\cmidrule{2-4}
+& H3K36me3 (gene bodies) &  & \checkmark{} \\
+\cmidrule{2-4}
+& H3K27me3 and H3K4me3 & \checkmark{}  & \\
 \midrule
-Immune response & Plasticity in immune response & \\
- & Control of response strength &   \\
+\multirow{3}{*}[-2pt]{Nucleosome position} & Nucleosome rich promoters & \checkmark{} & \\
+\cmidrule{2-4}
+& Distant nucleosome rich regions &  & \checkmark{} \\
+\cmidrule{2-4}
+& Deletion of nucleosome remodelling complexes & \checkmark{}  & \\
 \midrule
-Tissue development  & Low cell differentiation rate & Non-uniform development \\ 
-and homeostasis &  & Uncontrolled tissue response \\
-\midrule
-Evolution & Adjustment to  & Non-uniform, stabilizing expression \\ 
-& fluctuating environment & Uncontrolled tissue responses \\
-\midrule
-Cancer &  & Phenotypic adaption to cancer state \\
-& & Fractional killing of cancer cells \\
-\midrule
-Aging &  & Unsynchronized immune response \\
-& & Increased stress signatures \\ 
+\multirow{7}{*}[-2pt]{Genome architecture} & CTCF knock-out & \checkmark{} & \\
+\cmidrule{2-4}
+& CTCF binding site depletion & \checkmark{} & \\
+\cmidrule{2-4}
+& Clustered genes &  & \checkmark{} \\
+\cmidrule{2-4}
+& Nuclear-lamina associated genes & \checkmark{} & \\
 \bottomrule
 \bottomrule
 \end{tabular}
 \end{table} 
+
+\newpage
 
 \subsubsection{Transcriptional features}
 
