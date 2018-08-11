@@ -114,7 +114,7 @@ Transcription is initiated by TFs binding to specific regulatory DNA sequences f
 
 In bacteria, the intracellular physical distance between TF source and the promoter sequence influences expression variability. TF expression proximal to their target genes results in less noisy expression compared to regulator sources distant to the promoter sequence \citep{Goni-Moreno2017}. Once TFs bind to their target sequence, Carey \emph{et al.}, 2013 showed that mean expression to noise ratio is promoter dependent while in the majority of cases, noise negatively scales with mean expression \citep{Carey2013}. \\
 
-Similar to TF binding dynamics, the assembly of RNAPII complexes modulates transcriptional noise. An early study identified the connection between paused RNAPII and synchronous expression of target genes. Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. This finding has later been confirmed using scRNA-Seq data while increased variability was detected for genes with non-pause RNAPII across the full range of expression levels \citep{Day2016}.
+Similar to TF binding dynamics, the assembly of RNAPII complexes modulates transcriptional noise. An early study identified the connection between paused RNAPII and synchronous expression of target genes. Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. This finding has later been confirmed using scRNA-Seq data while increased variability was detected for genes with non-pause RNAPII across the full range of expression levels \citep{Day2016}.\\
 
 \begin{figure}[!h]
 \centering
@@ -132,7 +132,17 @@ After synthesis, pre-RNAs are polyadenylated and spliced to form mRNA that reloc
 
 Upon transcriptional activation, RNAs are produced in burst-like patterns while burst frequency modulates mean expression and noise, and burst size influences solely mean expression \citep{Hornung2012}. While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \citep{Battich2015a}. Reduces cytoplasmatic noise has also been shown for two nuclearly retained genes in the mammalian liver. Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.\\
 
-Within the cytoplasm, mRNAs are subject to translation or degradation. At this stage, stochasticity from bursty gene expression is propagated to variation in protein abundance. The availability of mRNAs for translation is not only dictated by their syntheses but also their degradation rate. mRNA degradation is accelerated by recognition of micro RNAs. This process has been shown to preferentially reduce noise levels for lowly expressed genes in mESCs to possibly retain cellular identity \citep{Schmiedel2015}. Conversely, temporal averaging of long-lived transcripts reduces noise in mRNA abundance. In that way, increased transcript stability compensates for noise introduced by the single-allele expression of genes on chromosome X \citep{Faure2017}.  \\
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_9.png}
+\caption[Post-transcriptional regulation to control noisy expression]{\textbf{Post-transcriptional regulation to control noisy expression.}\\
+Bursty expression introduces nuclear variation in transcript abundance that is buffered due to retention at the nuclear membrane. Within the cytoplasm, micro RNAs degrade lowly expressed genes to reduce expression noise. Deletion of the ribsosome binding site as well as stem loop formation increase variability in protein abundance across cells. Arrows indicate either increased (red) or decreased noise (green) dependent on the regulatory mechanism.}
+\label{fig0:DNA_features}
+\end{figure} 
+
+\newpage
+
+Within the cytoplasm, mRNAs are subject to translation or degradation. At this stage, stochasticity from bursty gene expression is propagated to variation in protein abundance. The availability of mRNAs for translation is not only dictated by their syntheses but also their degradation rate. mRNA degradation is accelerated by recognition of micro RNAs. This process has been shown to preferentially reduce noise levels for lowly expressed genes in mESCs to possibly retain cellular identity \citep{Schmiedel2015}. Similarly, temporal averaging of long-lived transcripts reduces noise in mRNA abundance. In that way, increased transcript stability compensates for noise introduced by the single-allele expression of genes on chromosome X \citep{Faure2017}.  \\
 
 In addition to noise introduced by stochastic processes on the transcriptional level, the recognition and binding of ribosomes to mRNAs for translation initiation features a source for variations in protein abundance. Modulating translational efficiency by mutating the ribosome binding site and initiation codon showed an interaction between translation and variation in protein abundance \citep{Ozbudak2002}. Additionally, mRNA secondary structure formed by stem loops and ploy(G) motifs affects translation initiation and increases noise in protein levels \citep{Dacheux2017a}.
 
