@@ -130,7 +130,7 @@ Left: Pre-loaded RNA polymerase II (RNAPII) allows direct transcription upon tra
 
 \subsubsection{Post-transcriptional and translational features}
 
-After synthesis, pre-RNAs are polyadenylated and spliced to form mRNA that relocates from the nucleus to the cytoplasm where translation occurs to synthesise proteins \cite{Glisovic2008}. On the post-transcriptional and translational level, mRNA localization, structure, degradation and translation have been shown to influence cell-to-cell variations in protein abundance.\\
+After synthesis, pre-RNAs are polyadenylated and spliced to form mRNA that relocates from the nucleus to the cytoplasm where translation occurs to synthesise proteins \cite{Glisovic2008}. On the post-transcriptional and translational level, mRNA location, structure, degradation and translation have been shown to influence cell-to-cell variations in protein abundance.\\
 
 Upon transcriptional activation, RNAs are produced in burst-like patterns while burst frequency modulates mean expression and noise, and burst size influences solely mean expression \citep{Hornung2012}. While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Battich2015a}. Reduced cytoplasmatic noise has also been shown for two nuclearly retained genes in the mammalian liver. Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.\\
 
@@ -150,11 +150,11 @@ In addition to noise introduced by stochastic processes on the transcriptional l
 
 \subsection{Extrinsic noise}
 
-Extrinsic noise within a cell population arises from cells being in different regulatory states. Here, differences in cellular components introduce variation in mRNA and protein abundance. Examples for cell states in otherwise homogeneous populations are characterized by differences in metabolism, cell cycle, volume, cell-to-cell and environmental signalling as well as cell density. It has been shown that extrinsic noise forms a major contribution to variations in gene expression and that transcript distributions can be predicted from the cellular state, population context and microenvironment \citep{Battich2015a}.
+Extrinsic noise within a cell population arises from cells being in different regulatory states. Here, differences in cellular components introduce variation in mRNA and protein abundance. Examples for cell states in otherwise homogeneous populations are characterised by differences in metabolism, cell cycle, volume, cell-to-cell and environmental signalling as well as cell density. It has been shown that extrinsic noise forms a major contribution to variations in gene expression and that transcript distributions can be predicted from the cellular state, population context and microenvironment \citep{Battich2015a}.
 
 \subsubsection{Cell cycle}
 
-Cell cycle has been widely discussed to form a crucial source of extrinsic noise \citep{Colman-Lerner2005a, Newman2006}). In yeast populations, differences in transcriptional activities between the G1 and S/G2/M phases of the cell cycle lead to large-scale transcriptional heterogeneity across cell populations \textbf{(Fig.~\ref{fig0:extrinsic})} \citep{Zopf2013}. Under nutrient-poor conditions, growth rate is reduced and noise is elevated due to cells being in different cell-cycle stages \citep{Keren2015}.  Even under optimal growth conditions for mESCs (2i media), cell cycle related genes show strong heterogeneity in expression across the cell population \citep{Kolodziejczyk2015cell}. Nonetheless, sorting cells into similar cell cycle stages did not drastically reduce noise levels \citep{Raser2004}. When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. Computational methods have been developed to correct for this confounding effect to enhance the underlying noise signal \citep{Buettner2015, Buettner2017}. 
+Cell cycle has been widely discussed to form a crucial source of extrinsic noise \citep{Colman-Lerner2005a, Newman2006}. In yeast populations, differences in transcriptional activities between the G1 and S/G2/M phases of the cell cycle lead to large-scale transcriptional heterogeneity across cell populations \textbf{(Fig.~\ref{fig0:extrinsic})} \citep{Zopf2013}. Under nutrient-poor conditions, growth rate is reduced and noise is elevated due to cells being in different cell cycle stages \citep{Keren2015}.  Even under optimal growth conditions for mESCs (2i media), cell cycle related genes show strong heterogeneity in expression across the cell population \citep{Kolodziejczyk2015cell}. Nonetheless, sorting cells into similar cell cycle stages did not drastically reduce noise levels \citep{Raser2004}. When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. Computational methods have been developed to correct for this confounding effect to enhance the underlying noise signal \citep{Buettner2015, Buettner2017}. 
 
 \begin{figure}[!h]
 \centering
@@ -164,9 +164,11 @@ Within a homogeneous population of cells (left), individual cells reside in diff
 \label{fig0:extrinsic}
 \end{figure} 
 
+\vspace{-5mm}
+
 \subsubsection{Cell volume}
 
-Cellular volume provides another explanation for global differences in mRNA content between individual cells introducing large-scale transcriptional heterogeneity \textbf{(Fig.~\ref{fig0:extrinsic})}. Even though cell volume changes during cell cycle progression, within each phase cell volume varied as much as across all phases. It has been shown that mRNA counts scale with cellular volume to maintain transcript concentrations within each cell \citep{Kempe2015, Padovan-Merhar2015, Zhurinsky2010}. To avoid this source of heterogeneity, normalization approaches correct for differences in mRNA content between individual cells \citep{Vallejos2017}.
+Cellular volume provides another explanation for global differences in mRNA content between individual cells introducing large-scale transcriptional heterogeneity \textbf{(Fig.~\ref{fig0:extrinsic})}. Even though cell volume changes during cell cycle progression, within each phase, cell volume varied as much as across all phases. It has been shown that mRNA counts scale with cellular volume to maintain transcript concentrations within each cell \citep{Kempe2015, Padovan-Merhar2015, Zhurinsky2010}. To avoid this source of heterogeneity, normalisation approaches correct for differences in mRNA content between individual cells \citep{Vallejos2017}.
 
 \subsubsection{Metabolism}
 
