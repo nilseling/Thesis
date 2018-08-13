@@ -244,7 +244,7 @@ In this model, two random effects were added to model the technical and biologic
 \nu_j|s_j,\theta \sim \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.2cm} \rho_{ij}|\delta_i  \sim \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
 \end{equation} 
 
-Here, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells. \\
+Here, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells \textbf{(Fig.~\ref{fig0:BASiCS}A)}. \\
 
 Prior specifications for the model parameters are chosen as followed:
 
@@ -269,7 +269,7 @@ After integrating out the $\rho_{ij}$ to enhance mixing \citep{Vallejos2015BASiC
 \centering
 \includegraphics[width=\textwidth]{Fig_19.png}
 \caption[The BASiCS model]{\textbf{The BASiCS model.}\\
-\textbf{(A)} Hierarchical formulation of the negative-binomial model underlying BASiCS visualised for two cells (j and j') and two genes (i and i', gene i' represents a technical spike-in gene). Squared nodes indicate known quantities (observed expression counts and added number of spike-in molecules). Round nodes indicate unknown quantities. Red circles represent unknown model-parameters while black circles indicate the random effects that play intermediate roles effecting expression counts. Adapted from \citep{Vallejos2015BASiCS}, \textbf{(B)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$}
+\textbf{(A)} Hierarchical formulation of the negative-binomial model underlying BASiCS visualised for two cells (j and j') and two genes (i and i', gene i' represents a technical spike-in gene). Squared nodes indicate known quantities (observed expression counts and added number of spike-in molecules). Round nodes indicate unknown quantities. Red circles represent unknown model-parameters while black circles indicate the random effects that play intermediate roles effecting expression counts. Adapted from \citep{Vallejos2015BASiCS}, \textbf{(B)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$.}
 \label{fig0:BASiCS}
 \end{figure}
 
@@ -288,7 +288,7 @@ This formulation can be used to obtain normalized counts. Furthermore, the coeff
 
 As discussed in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, the CV$^2$ is inversely proportional to the mean expression $\mu_i$. Furthermore, $\delta_i$ can be interpreted as the residual CV$^2$ after removing Poisson sampling and residual technical over-dispersion \citep{Vallejos2015BASiCS, Vallejos2016}. We will therefore use $\delta_i$ as a proxy for the biological part of transcriptional variability when modelling scRNA-Seq data.\\
 
-Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see section \ref{sec0:posterior_inference}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These include: normalisation of expression counts, variance decomposition into biological and technical noise, detection of highly and lowly variable genes and differential mean and differential over-dispersion testing. The later is done by computing the tail posterior propabilities of the difference in mean expression or over-dispersion between two conditions ($p$ and $p'$) is larger than an evidence threshold $\tau_0$ or $\omega_0$ (see section \ref{sec0:decision}, and \citep{Bochkina2007, Vallejos2016}):
+Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see section \ref{sec0:posterior_inference}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These include: normalisation of expression counts, variance decomposition into biological and technical noise, detection of highly and lowly variable genes and differential mean and differential over-dispersion testing. The later is done by computing the tail posterior probabilities of the difference in mean expression or over-dispersion between two conditions ($p$ and $p'$) is larger than an evidence threshold $\tau_0$ or $\omega_0$ (see section \ref{sec0:decision}, and \citep{Bochkina2007, Vallejos2016}):
 
 \begin{align*}
 \pi_{ipp'}(\tau_0)&\equiv{}P(|log(\mu_i^{(p)}/\mu_i^{(p')})|>\tau_0|D)>\alpha_m\\
@@ -301,7 +301,20 @@ As in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, estimates of the over-d
 
 \subsection{Scalability of Bayesian inference}
 
-With the development of droplet based scRNA-Seq approaches \citep{Macosko2015, Klein2015} and large scale microwell techniques \citep{Han2018}, the amount of cells that can be assayed in one experiment scaled from hundreds to hundreds of thousands \citep{Svensson2018}. To learn model parameters of a generative model across all cells and all genes became computationally challenging when considering a full Bayesian MCMC based approach. To address this problem, a model framework called single-cell variational inference (scVI) has been developed that uses stochastic optimization within a variational autoencoder network to approximate posterior distributions of model parameters and latent factors \citep{Lopez2018}. In scVI transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. The latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a zero-inflated negative binomial model. For this, the transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as:
+With the development of droplet based scRNA-Seq approaches \citep{Macosko2015, Klein2015} and large scale microwell techniques \citep{Han2018}, the amount of cells that can be assayed in one experiment scaled from hundreds to hundreds of thousands \citep{Svensson2018}. To learn model parameters of a generative model across all cells and all genes became computationally challenging when considering a full Bayesian MCMC based approach. To address this problem, a model framework called single-cell variational inference (scVI) has been developed that uses stochastic optimization within a variational autoencoder network to approximate posterior distributions of model parameters and latent factors \citep{Lopez2018}. In scVI transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. 
+
+\newpage
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering    
+\includegraphics[width=0.48\textwidth]{Fig_20.png}
+\caption[The scVI model.]{\textbf{The scVI model.} \\
+Hierarchical representation of the scVI model. Shaded nodes indicate observed quantities. White nodes indicated latent random variables. Shaded diamonds represent constants which were set \emph{a priori}. White diamonds indicate variables shared across all genes and all cells. Edges show conditional dependency. Adapted from \citep{Lopez2018}.}
+\label{fig0:constrains}
+\vspace{-60mm}
+\end{wrapfigure}
+
+The latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a zero-inflated negative binomial model. For this, the transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as:
 
 \begin{align*}
 x_{n,g} & = 
@@ -319,7 +332,7 @@ l_n & \sim \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
 z_n & \sim \textnormal{Normal}(0,I)
 \end{align*}
 
-\todo{add graphical model}\\
+\vspace{1cm}
 
 In this model, the negative binomial distribution is realized as a hierarchical formulation of $y_{n,g}$ being Poisson distributed around the latent random variable $l_n$ with an additional random effect $w_{n,g}$. Additionally, the zero-inflation of the model is controlled by the latent variable $h_{n,g}$. $l_n$ is a random variable that represents nuisance variation due to differences in capture efficiency and sequencing depth and correlates with log-library size. $l_n$ is log-normal distributed parametrized by $l_\mu,l_\sigma\in\mathbb{R}^B_+$ which are empirical mean and variance estimates of the log-library size per batch in $B$ and which are therefore constants in the model \textbf{(Fig.~\ref{fig0:scVI}A)}.\\
 
