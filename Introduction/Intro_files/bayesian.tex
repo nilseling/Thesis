@@ -9,7 +9,7 @@ In the last decade, an array of tools to process and analyse scRNA-Seq data has 
 
 \subsection{The basics of Bayesian inference}
 
-The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference, model parameters represent an fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior believes about the distribution of $\omega$ are summarized in form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution $\pi^*(\omega|D)$  is updated to form the posterior distribution of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Canton1763}:
+The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference, model parameters represent an fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior believes about the distribution of $\omega$ are summarized in form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution $\pi^*(\omega|D)$  is updated to form the posterior distribution of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Bayes1763}:
 
 \begin{equation} \label{eq0:Bayes_theorem}
 \pi^*(\omega|D,\cdot)=\frac{L(D|\omega)\pi(\omega)}{L_\omega(D)}.
@@ -102,7 +102,7 @@ The implementation of Gibbs sampling is straightforward when the full conditiona
 
 \textbf{\textit{Metropolis-Hastings}}
 
-One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
+One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, Hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
 Let $q(\theta_i,\theta_i')$ be a transition probability density function given a current state $\theta_i^t=\theta_i$, then the vector $\theta_i'$ represents a proposed possible value for $\theta_i^{t+1}$ \citep{Bernardo2000}. Furthermore, with some probability $\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$ the proposed value $\theta_i'$ is accepted as $\theta_i^{t+1}=\theta_i'$ and otherwise rejected: $\theta_i^{t+1}=\theta_i^t$ \cite{Roberts1994, Hastings1970}. In practice, the update is found as follows:
 
 \begin{enumerate}
