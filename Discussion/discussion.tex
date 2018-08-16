@@ -7,12 +7,18 @@
 
 \vspace{-5mm}
 
-My work focused on the statistical quantification and dissection of transcriptional noise in biological systems such as the activation response of CD4\plus{} T cells. Firstly, in collaboration with Celia P. Martinez-Jimenez, I used scRNA-Seq data of CD4\plus{} T cells to identify an age-related increase in transcriptional noise within a set of immune response genes (see \textbf{Chapter 2}).   
-While technological and computational advances of the recent years facilitate the quantification of biological noise across a range of cell types and tissues, major challenges remain regarding robust measurement, mathematical modelling and experimental validation. 
+My work focused on the statistical quantification of transcriptional noise in biological systems such as the activation response of CD4\plus{} T cells. Firstly, in collaboration with Celia P. Martinez-Jimenez, I used scRNA-Seq data of CD4\plus{} T cells to identify an age-related increase in transcriptional noise within a set of immune response genes (see \textbf{Chapter 2}).   
+While technological and computational advances of the recent years facilitate the quantification of biological noise across a range of cell types and tissues, major challenges remain regarding robust measurement, mathematical modelling and experimental validation. Here, I will discuss the my work in the light of current challenges in the field of scRNA-Seq when measuring biological variation across multiple cells.
 
-\section{Biological role of noise}
+\newpage
 
-So far, quantification of expression noise on a genome wide scale is only possible by single-cell RNA sequencing. This raises the question if noise that is detected on the mRNA level propagates to fluctuations in proteins, which in turn cause phenotypic variations between individual cells. To build the connection between mRNA and protein noise as well as chromatin state and mRNA noise, multi-omics technologies need to advance in precision and scalability.
+\section{Technologies to study the biological role of noise}
+
+We explored the effect of ageing on transcriptional noise during immune activation. Early immune activation induces a transcriptional switch from stochastic to regulated gene expression coupled with a reduction in transcriptional variability. These dynamics and, more importantly, a set of immune-related response genes are conserved during evolution. While ageing only shows subtle effects on the overall transcriptomic profiles of individual cells, we observe a strong increase in expression variability in the core set of immune response genes during ageing. Therefore, transcriptional variability is a largely unexplored factor of organismal ageing. This finding has been validated by several studies \citep{Enge2017, Angelidis2018, Cheung2018} adding the increase in transcriptional noise to the list of ageing-associated physiological effects.\\
+
+Our study uncovered transcriptional noise to disturb the dynamic response of an otherwise tightly regulated system. The systematic analysis of how transcriptional noise globally influences other cellular systems such as the developing embryo or disease onset is still lacking. The discovery of heterogeneous gene expression lead to the identification of an underlying cell fate commitment process in the 4-cell stage embryo \citep{Goolam2016}. Mohammed \emph{et al.}, 2017 identified global changes in transcriptional noise during early mouse embryo development that correlate with the plasticity of cell populations. Pluripotent cells tend to display noisier gene expression compared to committed cells \citep{Mohammed2017}. Nevertheless, technical limitations restricted the analysis to few hundreds of cells and specific tissues per embryo. With newly developed combinatorial indexing approaches, hundreds of thousands of transcriptomes can be generated in parallel \citep{Cao2017}. This allows an unbiased detection of all major cell-types during (e.g.) embryonic development which in turn offers a great resource to perform systematic comparisons of transcriptional noise between tissues and time-points. Major drawbacks of this approach would be the reduced sequencing depth and the inability to validate the global change in variability as discussed below.\\
+
+So far, quantification of expression noise on a genome wide scale is only possible by scRNA-Seq. This raises the question if noise that is detected on the mRNA level propagates to form fluctuations in proteins which are the final driver for phenotypic variations between individual cells. Reports have been published that show a reduction of transcriptional noise during nuclear export of mRNAs \citep{Battich2015a, BaharHalpern2015a} indicating the possibility that studying biological noise on the mRNA level is further buffered in the cytoplasm by mechanisms such as miRNA-based degradation \citep{Schmiedel2015}. In recent years, technologies have been developed to measure protein abundance in single cells in high-throughput and high-content based approaches. \Gls{CyTOF} has been introduced as a single-cell technology to measure multiple proteins within hundreds of thousands of cells. For this, antibodies against membrane bound and intracellular proteins are labelled with transition element isotopes and quantified via mass spectroscopy. So far, the main application of CyTOF has been to identify immune cell dynamics \citep{Bendall2011}. To add the spatial component to mass cytometry, Giesen \emph{et al.}, 2014 developed imaging mass cytometry to obtain spatial distributions of 32 proteins in breast cancer samples \citep{Giesen2014}. A similar approach has been introduced by Gut \emph{et al.}, 2018 where off-the shelf antibodies are used to spatially resolve protein expression. During 20 rounds of primary and fluorescently-labelled secondary antibody staining, multiplexed read-outs of protein positions can be obtained from individual cells \citep{Gut2018}. The spatial detection of proteins has been extended by simultaneously measuring mRNA transcripts by isotope tagging \cite{Schulz2018}. These approaches allow (i) quantification of protein expression noise, (ii) spatially-resolved inter- and intra-cellular variations of protein abundance and (iii) the assessment of noise propagation from the mRNA to protein level. To further enhance the connection between mRNA and protein noise, and chromatin state and mRNA noise, multi-omics technologies need to advance in precision and scalability.
 
 \section{Confounding effects when measuring noise}
 
@@ -22,6 +28,9 @@ On the experimental side, cell isolation and sorting as well as culturing condit
 Technical noise
 As discussed above, a variety of measures exist to quantify variability in mRNA and protein abundance for populations of single cells. Due to low starting amounts in sequencing based technologies, technical noise is a major contributor to overall variation in the data. This effect is pronounced for lowly expressed genes making it harder to estimate correct noise parameters for these genes. Without multiple replicates per condition, robust assessment and testing of changes in variability is impossible.\\
 
+Sequencing depth\\
+Replication\\
+
 \section{Measures to quantify noise}
 
  The distribution of pairwise distances between cells has therefore been used to describe this property(Mohammed et al. 2017). More robust measurements are nevertheless still missing.
@@ -30,7 +39,12 @@ As discussed above, a variety of measures exist to quantify variability in mRNA 
 
 \section{Experimental validation and manipulation of noise}
 
-Classically, unicellular systems were employed to study noise. In these systems, genetic alterations allowed the modulation of transcriptional and translational variability(Raser O’Shea 2005; Ozbudak et al. 2002; Hornung et al. 2012). Specifically, changing promoter architecture shows strong alterations of expression noise(Jones et al. 2014; Sharon et al. 2014). Furthermore, different ways of general and targeted perturbation of transcriptional noise in cell populations has been discussed in Dueck et al.(Dueck et al. 2016). So far, perturbation of biological noise in higher organisms has not been experimentally described yet.
+Classically, unicellular systems were employed to study noise. In these systems, genetic alterations allowed the modulation of transcriptional and translational variability(Raser O’Shea 2005; Ozbudak et al. 2002; Hornung et al. 2012). Specifically, changing promoter architecture shows strong alterations of expression noise(Jones et al. 2014; Sharon et al. 2014). Furthermore, different ways of general and targeted perturbation of transcriptional noise in cell populations has been discussed in Dueck et al.(Dueck et al. 2016). So far, perturbation of biological noise in higher organisms has not been experimentally described yet.\\
+
+
+Specific targeting of mRNAs on a post-transcriptional level.\\
+
+Inability to change global variability. \\
 
 
 \section{Future approaches for Bayesian models in scRNA-Seq data}
