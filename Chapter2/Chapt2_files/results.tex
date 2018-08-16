@@ -382,6 +382,7 @@ Model parameters were estimated using the regression and non-regression BASiCS m
 \newpage
 
 \subsection{Stabilization of posterior inference}
+\label{sec2:parameter_stabilization}
 
 Next, we asked whether or not the shrinkage introduced by the regression BASiCS model improves posterior inference. To assess this, we compared estimates for gene-specific parameters across (i) different sample sizes and (ii) different gene expression levels. Both, the sample size and the level of expression influence posterior estimation of model parameters due to loss of power when few cells are used to estimate parameters for lowly expressed genes. More concretely, we used a large dataset containing 939 CA1 pyramidal neurons \citep{Zeisel2015} to artificially generate smaller datasets by randomly sub-sampling 50-500 cells. For each sample size, parameter estimates were then obtained using both the regression and non-regression BASiCS models. 
 Based on parameter estimates using the non-regression model, we split the genes into three sets: lowly expressed ($\mu_i<1.89$), medium expressed ($1.89<\mu_i<5.37$) and highly expressed ($\mu_i>5.37$). These cut-off values were chosen such that roughly a third of genes classifies into each category. The distribution of these estimates is summarised in \textbf{Fig.~\ref{fig2:parameter_stabilization}}. \\

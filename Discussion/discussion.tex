@@ -40,12 +40,18 @@ As shown in \textbf{Section \ref{variability_over_PT}}, quantification of transc
 
 \subsection{Technical confounding factors}
 
+\Gls{scRNA-Seq} is prone to high technical noise due to the low starting amounts of RNA transcripts that are first captures, reverse transcribed, pre-amplified, prepared for sequencing and sequenced. Only around 10\%-20\% of all transcripts are captured in each individual cell leading to high levels of technical noise. Furthermore, amplification biases exponentially enhance noise introduced by variation in capture efficiency. These biases are minimized by the introduction of \glspl{UMI} that allow the direct quantification of transcript abundance \cite{Islam2014}. In preliminary analyses to study parameter robustness as displayed in \textbf{Section \ref{sec2:parameter_stabilization}}, we observed that the UMI data \citep{Zeisel2015} resulted in generally more rubust estimates compared to non-UMI data (e.g.~CD4\plus T cells, \citep{Martinez-jimenez2017}).\\
+
+The incorporation of UMIs into droplet-based scRNA-Seq technologies facilitates a robust estimation of transcriptional variability. On the other hand, these high-throughput methods came at the price of reduced sequencing depth, the inability to quantify technical noise via RNA spike-ins and often reduced replication. 
+
 Technical noise
 As discussed above, a variety of measures exist to quantify variability in mRNA and protein abundance for populations of single cells. Due to low starting amounts in sequencing based technologies, technical noise is a major contributor to overall variation in the data. This effect is pronounced for lowly expressed genes making it harder to estimate correct noise parameters for these genes. Without multiple replicates per condition, robust assessment and testing of changes in variability is impossible.\\
 
 Sequencing depth\\
 Replication\\
 Doublets
+
+To summarise, it is therefore crucial to ...
 
 \section{Measures to quantify noise}
 
