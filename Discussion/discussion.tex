@@ -41,26 +41,22 @@ As shown in \textbf{Section \ref{variability_over_PT}}, quantification of transc
 
 \Gls{scRNA-Seq} is prone to high technical noise due to the low starting amounts of RNA transcripts that are first captures, reverse transcribed, pre-amplified, prepared for sequencing and sequenced. Only around 10\%-20\% of all transcripts are captured in each individual cell leading to high levels of technical noise. Furthermore, amplification biases exponentially enhance noise introduced by variation in capture efficiency. These biases are minimized by the introduction of \glspl{UMI} that allow the direct quantification of transcript abundance \cite{Islam2014}. In preliminary analyses to study parameter robustness as displayed in \textbf{Section \ref{sec2:parameter_stabilization}}, we observed that the UMI data \citep{Zeisel2015} resulted in generally more rubust estimates compared to non-UMI data (e.g.~CD4\plus T cells, \citep{Martinez-jimenez2017}).\\
 
-The incorporation of UMIs into droplet-based scRNA-Seq technologies facilitates a robust estimation of transcriptional variability. On the other hand, these high-throughput methods came at the price of reduced sequencing depth, the inability to quantify technical noise via RNA spike-ins and often reduced replication. 
-
-Technical noise
-As discussed above, a variety of measures exist to quantify variability in mRNA and protein abundance for populations of single cells. Due to low starting amounts in sequencing based technologies, technical noise is a major contributor to overall variation in the data. This effect is pronounced for lowly expressed genes making it harder to estimate correct noise parameters for these genes. Without multiple replicates per condition, robust assessment and testing of changes in variability is impossible.\\
-
-Sequencing depth\\
-Replication\\
-Doublets
-
-To summarise, it is therefore crucial to ...
-
-\section{Measures to quantify noise}
-
- The distribution of pairwise distances between cells has therefore been used to describe this property(Mohammed et al. 2017). More robust measurements are nevertheless still missing.
- 
- Besides empirical estimations of noise in biological systems (e.g. CV2), the development of theoretical models to describe intrinsic and extrinsic noise advanced in recent years(Fu Pachter 2016). Nevertheless, these models have not been extended to learn transcription parameters (burst size and burst frequency) or to incorporate cellular consequences of noise (e.g. cell fate decisions).
+The incorporation of UMIs into droplet-based scRNA-Seq technologies facilitates a robust estimation of transcriptional variability. On the other hand, these high-throughput methods came at the price of reduced sequencing depth, the inability to quantify technical noise via RNA spike-ins and often reduced replication. A recent study addressed the question how to allocate a given sequencing budget to scRNA-Seq experiments. One can either choose to sequence more cells at lower depth or to  deeply sequence few cells. More reads in fewer cells reduce the technical noise when estimating the cellular transcription state while more cells capture the full variance observed in the cell population. The authors propose that the optimal trade-off between number off cells and sequencing depth considering a fixed sequencing budget is $\sim$1 UMI per cell for the biologically relevant genes \citep{Zhang2018}. This trade-off was found by simulations and sub-sampling experiment similar to the ones displayed in \textbf{Chapter 3}. Further to the considerations of Zhang \emph{et al.}, 2018 replications of droplet-based scRNA-Seq experiments are important to robustly quantify and validate measures of transcriptional variability. \\
 
 \section{Experimental validation and manipulation of noise}
 
-Classically, unicellular systems were employed to study noise. In these systems, genetic alterations allowed the modulation of transcriptional and translational variability(Raser O’Shea 2005; Ozbudak et al. 2002; Hornung et al. 2012). Specifically, changing promoter architecture shows strong alterations of expression noise(Jones et al. 2014; Sharon et al. 2014). Furthermore, different ways of general and targeted perturbation of transcriptional noise in cell populations has been discussed in Dueck et al.(Dueck et al. 2016). So far, perturbation of biological noise in higher organisms has not been experimentally described yet.\\
+While the results throughout this thesis indicate the functional role of transcriptional variability in dynamic biological systems, one the main experimental challenges is to alter transcriptional noise for validating the hypothesised role. Classically, unicellular systems were employed to study the sources of transcriptional noise. In these systems, genetic alterations allowed the modulation of transcriptional and translational variability \cite{Raser2004, Raser2005, Ozbudak2002, Hornung2012}. Specifically, changing promoter architecture shows strong alterations of expression noise \cite{Jones2014, Sharon2014}. These simple approaches are not feasible in multicellular organisms to, for example, alter transcriptional noise during embryogenesis. While several regulatory factors on the genomic, epigenetic, transcriptional and translational level influence transcriptional noise, it is impossible to introduce a targeted alteration of certain regulatory factors while simultaneously avoiding down-stream effects other than alterations of transcriptional noise of one or few genes.\\
+
+Dueck \emph{et al.}, 2016 proposed experimental designs to perturb expression variability in cellular systems \citep{Dueck2016}. Generally, these approaches can be grouped into targeted and general perturbations of transcriptional noise \citep{Dueck2016}.
+
+\subsection{General perturbation of transcriptional noise} 
+
+Dueck \emph{et al.}, 2016 introduced the concept of increasing global transcriptional noise by utilizing the off-traget effects of \glspl{siRNA}. 
+
+\subsection{Targeted perturbation of transcriptional noise} 
+
+
+Furthermore, different ways of general and targeted perturbation of transcriptional noise in cell populations has been discussed in Dueck et al.(Dueck et al. 2016). 
 
 
 Specific targeting of mRNAs on a post-transcriptional level.\\
@@ -68,7 +64,7 @@ Specific targeting of mRNAs on a post-transcriptional level.\\
 Inability to change global variability. \\
 
 
-\section{Future approaches for Bayesian models in scRNA-Seq data}
+\section{Future approaches to model scRNA-Seq data}
 
 One solution for this includes error propagation approaches used in Bayesian statistics(Vallejos et al. 2016). Furthermore, these single gene measures are not optimal to quantify the global noise status of a whole population of cells.
 
