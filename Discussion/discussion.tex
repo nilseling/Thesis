@@ -18,18 +18,34 @@ We explored the effect of ageing on transcriptional noise during immune activati
 
 Our study uncovered transcriptional noise to disturb the dynamic response of an otherwise tightly regulated system. The systematic analysis of how transcriptional noise globally influences other cellular systems such as the developing embryo or disease onset is still lacking. The discovery of heterogeneous gene expression lead to the identification of an underlying cell fate commitment process in the 4-cell stage embryo \citep{Goolam2016}. Mohammed \emph{et al.}, 2017 identified global changes in transcriptional noise during early mouse embryo development that correlate with the plasticity of cell populations. Pluripotent cells tend to display noisier gene expression compared to committed cells \citep{Mohammed2017}. Nevertheless, technical limitations restricted the analysis to few hundreds of cells and specific tissues per embryo. With newly developed combinatorial indexing approaches, hundreds of thousands of transcriptomes can be generated in parallel \citep{Cao2017}. This allows an unbiased detection of all major cell-types during (e.g.) embryonic development which in turn offers a great resource to perform systematic comparisons of transcriptional noise between tissues and time-points. Major drawbacks of this approach would be the reduced sequencing depth and the inability to validate the global change in variability as discussed below.\\
 
+In \textbf{Section \ref{sec2:droplet}}, I tested for changes in expression variability between the pre-somitic and the somitic mesoderm of the developing mouse embryo. Interestingly, this analysis revealed heterogeneous up-regulation of lineage-associated genes that are later on expressed in defined tissues. This shows that testing for changes in expression variability can lead to the identification of uncharacterised, early commitment processes during embryogenesis. Nevertheless, scRNA-Seq data does not allow to assay the underlying transcriptional regulation that induces heterogeneous expression of these genes. It is therefore impossible to say whether heterogeneity in expression is induced by molecular noise or driven by deterministic processes.\\
+
 So far, quantification of expression noise on a genome wide scale is only possible by scRNA-Seq. This raises the question if noise that is detected on the mRNA level propagates to form fluctuations in proteins which are the final driver for phenotypic variations between individual cells. Reports have been published that show a reduction of transcriptional noise during nuclear export of mRNAs \citep{Battich2015a, BaharHalpern2015a} indicating the possibility that studying biological noise on the mRNA level is further buffered in the cytoplasm by mechanisms such as miRNA-based degradation \citep{Schmiedel2015}. In recent years, technologies have been developed to measure protein abundance in single cells in high-throughput and high-content based approaches. \Gls{CyTOF} has been introduced as a single-cell technology to measure multiple proteins within hundreds of thousands of cells. For this, antibodies against membrane bound and intracellular proteins are labelled with transition element isotopes and quantified via mass spectroscopy. So far, the main application of CyTOF has been to identify immune cell dynamics \citep{Bendall2011}. To add the spatial component to mass cytometry, Giesen \emph{et al.}, 2014 developed imaging mass cytometry to obtain spatial distributions of 32 proteins in breast cancer samples \citep{Giesen2014}. A similar approach has been introduced by Gut \emph{et al.}, 2018 where off-the shelf antibodies are used to spatially resolve protein expression. During 20 rounds of primary and fluorescently-labelled secondary antibody staining, multiplexed read-outs of protein positions can be obtained from individual cells \citep{Gut2018}. The spatial detection of proteins has been extended by simultaneously measuring mRNA transcripts by isotope tagging \cite{Schulz2018}. These approaches allow (i) quantification of protein expression noise, (ii) spatially-resolved inter- and intra-cellular variations of protein abundance and (iii) the assessment of noise propagation from the mRNA to protein level. To further enhance the connection between mRNA and protein noise, and chromatin state and mRNA noise, multi-omics technologies need to advance in precision and scalability.
+
+\newpage
 
 \section{Confounding effects when measuring noise}
 
-Experimental noise
+We used the BASiCS analysis framework to quantify and compare measures of transcriptional noise in the immune response of CD4\plus{} T cells. By incorporating reads of synthetic RNA spike-in molecules, BASiCS quantifies and removed technical noise from the total transcriptional variation. Throughout this thesis, we used the over-dispersion parameter $\delta_i$ to capture biological variability in expression after removal of unwanted technical variation. Furthermore, to account for experimental designs where cells were captured in multiple replicates, BASiCS scales technical noise batch-specifically  \citep{Vallejos2015BASiCS}. We described a genes' mean expression as an additional factor that confounds testing changes in over-dispersion. Therefore, we extended the BASiCS framework to derive residual over-dispersion estimates that show no correlation to mean expression (see \textbf{Chapter 3}). \\
+
+By applying this model to capture changes in variability over the differentiation time-course of spermatogenesis, I observed that the strength of transcriptional changes over time introduce an additional confounding factor that, so far, has not been accounted for. I will therefore discuss a variety of confounding factors that influence the quantification of transcriptional noise grouped into experimental and technical effects.
+
+\subsection{Experimental confounding factors}
+
+Transcriptional noise as defined in \textbf{Box 1} can only be measured in truly homogeneous populations of cells. Previous studies that quantified transcriptional variability from scRNA-Seq data either sequenced mESCs (e.g.~\citep{Kolodziejczyk2015cell}), primary chicken erythroid progenitor cells \citep{Richard2016}, a murine multipotent hematopoietic precursor cell line \citep{Mojtahedi2016} or CD4\plus T cells \citep{Martinez-jimenez2017}. With the development of technologies that capture thousands of cells in an unbiased way, structured heterogeneity presents the major source of cell-to-cell variations in expression. As shown in \textbf{Section \ref{sec2:droplet}}, one relies on clustering approaches to identify homogeneous populations of cells that can be compared when testing for changes in transcriptional variability. It is therefore also crucial to understand the underlying biology that causes structured heterogeneity to avoid including low quality cells into the analysis. For example, Ibarra-Soria \emph{et al.} identified a small intermediate population between pre-somitic and somitic mesoderm with unknown identity \citep{Ibarra-Soria2018}. It is recommended to remove such cells from analysis to avoid any unknown biological heterogeneity that confounds biological noise.\\
+ 
 On the experimental side, cell isolation and sorting as well as culturing conditions can influence the level of heterogeneity in cell populations. It is therefore difficult to disentangle intrinsic contribution to noise from extrinsic sources due to cells committing to alternative fates (structured heterogeneity).  \\
+
+Structured but also differentiation related
+
+\subsection{Technical confounding factors}
 
 Technical noise
 As discussed above, a variety of measures exist to quantify variability in mRNA and protein abundance for populations of single cells. Due to low starting amounts in sequencing based technologies, technical noise is a major contributor to overall variation in the data. This effect is pronounced for lowly expressed genes making it harder to estimate correct noise parameters for these genes. Without multiple replicates per condition, robust assessment and testing of changes in variability is impossible.\\
 
 Sequencing depth\\
 Replication\\
+Doublets
 
 \section{Measures to quantify noise}
 
@@ -51,7 +67,7 @@ Inability to change global variability. \\
 
 One solution for this includes error propagation approaches used in Bayesian statistics(Vallejos et al. 2016). Furthermore, these single gene measures are not optimal to quantify the global noise status of a whole population of cells.
 
-Multi-view learning\\
+Multi-view learning, MOFA\\
 Variational approaches\\
 Incoporation of translational dynamics into generative models
 
