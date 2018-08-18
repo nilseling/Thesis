@@ -5,11 +5,11 @@
 
 \section{Bayesian approaches to model scRNA-Seq data}
 
-In the last decade, an array of tools to process and analyse scRNA-Seq data has been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been done in details depending on the type of analysis that needs to be performed \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters to propagate uncertainty into downstream analysis. 
+In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters, thus allowing uncertainty to be propagated into downstream analysis. 
 
 \subsection{The basics of Bayesian inference}
 
-The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference, model parameters represent a fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior believes about the distribution of $\omega$ are summarized in form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated to form the posterior distribution $\pi^*(\omega|D)$ of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Bayes1763}:
+The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference model parameters represent a fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior beliefs about the distribution of $\omega$ are summarized in the form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated to form the posterior distribution $\pi^*(\omega|D)$ of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Bayes1763}:
 
 \begin{equation} \label{eq0:Bayes_theorem}
 \pi^*(\omega|D,\cdot)=\frac{L(D|\omega)\pi(\omega)}{L_\omega(D)}.
@@ -23,13 +23,13 @@ Bayes theorem in equation \ref{eq0:Bayes_theorem} can be simplified to:
 \pi^*(\omega|D)=c(D)L(D|\omega)\pi(\omega)\propto{}L(D|\omega)\pi(\omega)
 \end{equation} 
 
-where $c(D)$ represents the proportionality constant $L_\omega(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega$ and integrates to one when $\pi^*(\omega|D)$ is conjugate to the kernel function $L(D|\omega)\pi(\omega)$ \citep{Bernardo2003, Raiffa1961}. The definition of conjugate distributions is explained below.  
+where $c(D)$ represents the proportionality constant $L_\omega(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. This integrates to one when $\pi^*(\omega|D)$ is conjugate to the kernel function $L(D|\omega)\pi(\omega)$ \citep{Bernardo2003, Raiffa1961}. The definition of conjugate distributions is explained below.  
 
 \newpage
 
 \subsection{Prior distributions}
 
-The role of the prior distribution is to incorporate prior knowledge of the model parameters which is then guided by the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form a analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. To find this distribution, the likelihood can be factorized into two terms: one that contains all constants independent of the model parameter $\omega$ and one factor that depends on the model parameter. A conjugate prior is of the same family of distributions as the factor depending on the model parameter. \citep{Fink1997}. In this case, conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}}.
+The role of the prior distribution is to incorporate prior knowledge of the model parameters which is then guided by the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form an analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. To find this distribution, the likelihood can be factorized into two terms: one that contains all constants independent of the model parameter $\omega$ and one factor that depends on the model parameter. A conjugate prior is of the same family of distributions as the factor depending on the model parameter. \citep{Fink1997}. In this case, conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}}.
 
 \begin{table}[hb	]
 \centering
@@ -47,7 +47,7 @@ Poisson & Gamma  & Gamma \\
 Negative Binomial & Beta & Beta \\
 \midrule
 \midrule
-\textbf{Continous} & & \\
+\textbf{Continuous} & & \\
 \midrule
 \midrule
 \textbf{Data generation process} & \textbf{Prior} & \textbf{Posterior} \\ 
@@ -61,17 +61,17 @@ Exponential &  Gamma  & Gamma \\
 \end{tabular}
 \end{table} 
 
-When prior knowledge of the model parameters is not available, non-informative or objective priors are used. The idea is that the "data should speak for itself" and therefore, these priors are chosen to have a minimal effect, relative to the data, on the posterior inference \citep{Bernardo2000}. The most commonly used non-informative prior is the Jeffreys prior \citep{Jeffreys1946} and the use of non-informative priors can lead to improper posterior distributions. Furthermore, when $\int_\omega\pi(\omega)d\omega$ is infinite, the prior is called \emph{improper prior} and does not lead to a closed-form posterior distribution \citep{Bernardo2003}.
+When prior knowledge of the model parameters is not available, non-informative or objective priors are used. The idea is that the "data should speak for itself" and therefore, these priors are chosen to have a minimal effect, relative to the data, on the posterior inference \citep{Bernardo2000}. The most commonly used non-informative prior is the Jeffreys prior \citep{Jeffreys1946}. Furthermore, when $\int_\omega\pi(\omega)d\omega$ is infinite, the prior is called an \emph{improper prior} and does not lead to a closed-form posterior distribution \citep{Bernardo2003}.
 
 \subsection{Posterior inference} \label{sec0:posterior_inference}
 
 Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
 
-Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, Markov Chain Monte Carlo} \citep{Bernardo2000}. At this point, I focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
+Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, and Markov Chain Monte Carlo} \citep{Bernardo2000}. At this point, I focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
 
 \subsubsection{Markov Chain Monte Carlo}
 
-The idea behind MCMC is to generate a sample of the posterior distribution $\pi^*(\omega|D)$ for $\omega\in\Omega$ when the distribution cannot be obtained directly. For this, a Markov chain with state space $\Omega$ is simulated over $n$ iterations whose equilibrium distribution is $\pi^*(\omega|D)$ \citep{Bernardo2000}. Extensive research lead to the development of algorithms that generate this equilibrium distribution \citep{Casella1992, Gelfand1990, Greyer1992, Besag1993, Gelman1992}.
+The idea behind MCMC is to generate a sample of the posterior distribution $\pi^*(\omega|D)$ for $\omega\in\Omega$ when the distribution cannot be obtained directly. For this, a Markov chain with state space $\Omega$ is simulated over $n$ iterations whose equilibrium distribution is $\pi^*(\omega|D)$ \citep{Bernardo2000}. Extensive research led to the development of algorithms that generate this equilibrium distribution \citep{Casella1992, Gelfand1990, Greyer1992, Besag1993, Gelman1992}.
 The following two examples of MCMC are commonly used for a range of applications in Bayesian statistics \citep{Bernardo2000}.\\
 
 \textbf{\textit{Gibbs sampling}}\\
@@ -85,18 +85,18 @@ We consider a complex model where $\bm{\theta}$ represents the vector of unknown
 This defines the density of the individual component $\theta_i$ given the data and specified values (current updates) of all other components $\theta_j$ \cite{Geman1984} and can easily be identified from the part of the posterior distribution depending on $\theta_i$ \citep{Bernardo2000}. In each iteration $t$ with $t=1,...,n$ every component $\theta_i,\,{}i=1,...,k$ is updated as followed:
 
 \begin{align*}
-\textnormal{draw} \quad  \theta_1^{(t+1}) \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
-\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_1^{(t)},\theta_3^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_1^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_1^{(t+1)},\theta_3^{(t)},...\theta_k^{(t)})\\
 &.\\
 &.\\
 &.\\
-\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi^*(\theta|D, \theta_1^{(t)},...\theta_{k-1}^{(t)})
+\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi^*(\theta|D, \theta_1^{(t+1)},...\theta_{k-1}^{(t+1)})
 \end{align*}
 
-For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1,...,\theta_k)$ converges against the posterior distribution of $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. The transitions probability density function is defined as:
+For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1,...,\theta_k)$ converge towards the posterior distribution of $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. The probability density function of the transition is defined as:
 
 \begin{equation}
-p(\theta^t,\theta^{t+1})=\prod_{l=1}^k{}\pi(\theta_l^{t+1}|\theta_j^t,j>l,\theta_j^{t+1},j<l,D)
+p(\theta^t,\theta^{t+1})=\prod_{l=1}^k{}\pi(\theta_l^{t+1}|(\theta_j^t,j>l),(\theta_j^{t+1},j<l),D)
 \end{equation}
 
 The implementation of Gibbs sampling is straightforward when the full conditionals have a known form. For other distributions, stochastic simulation techniques can be used.\\
@@ -122,23 +122,23 @@ For this algorithm, the transition probability density $q(\theta_i,\theta_i')$ n
 
 \textbf{\textit{Practical considerations}}\\
 
-Once the sampler is chosen to generate as approximation of the posterior density, one needs to validate the convergence of the chain. For this, the initial draws of the distribution are discarded (\emph{burn-in}). Within the burn-in period, the autocovariance of the chain decay to a negligible level \citep{Greyer1992}. After burn-in, on can compute the autocorrelation of the chain to assess convergence. The standard deviation of the chain (a first order autoregressive process) is defined as:
+Once the sampler is chosen, one needs to validate the convergence of the chain. For this, the initial draws of the distribution are discarded (\emph{burn-in}). Within the burn-in period, the autocovariance of the chain decays to a negligible level \citep{Greyer1992}. After burn-in, one can compute the autocorrelation of the chain to assess convergence. The standard deviation of the chain (a first order autoregressive process) is defined as:
 
 \begin{equation}
 \sigma=\frac{\sigma^*}{\sqrt{n}}\sqrt{\frac{1+\rho}{1-\rho}}
 \end{equation}
 
-where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduces by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain did not reach the equilibrium yet \citep{Geweke1992}.
+where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduces by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not reach the equilibrium yet \citep{Geweke1992}.
 
 \subsection{Variational Bayes}
 
-When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference is quicker to derive an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence (KL):
+When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference is a quicker approach that allows derivation of an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence (KL):
 
 \begin{equation}
 q^\ast(\bm{\theta})=\underset{q(\bm{\theta})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\bm{\theta})||\pi^*(\bm{\theta}|D))
 \end{equation}
 
-The posterior distribution is approximated with the optimized member of the family $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC while MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed. A common approach to minimize the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
+The posterior distribution is approximated with the optimized member of the family $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC, albeit MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed. A common approach to minimize the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
 
 \begin{equation}
 \textnormal{ELBO}(q)=\mathbb{E}[\log(L(D|\bm{\theta})\pi(\bm{\theta}))] - \mathbb{E}[\log(q(\bm{\theta}))]
@@ -147,7 +147,7 @@ The posterior distribution is approximated with the optimized member of the fami
 Another principle of variational Bayesian approaches is to assume that model parameters are mutually independent so that the \emph{mean-field variational family} of distributions can be chosen for $q(\bm{\theta})$:
 
 \begin{equation}
-q(\bm{\theta})=\prod_{j=1}^m{}q_j(\theta_j)
+q(\bm{\theta})=\prod_{j=1}^k{}q_j(\theta_j)
 \end{equation}
 
 Here, each model parameter $\theta_j$ is governed by its own variational factor \citep{Blei2017}. One commonly used technique to maximise the ELBO is \emph{\gls{CAVI}}. Similar to Gibbs sampling, CAVI maximises the ELBO for one parameter while keeping all other parameters constant. This is done iteratively until the ELBO converges against a local maximum \citep{Blei2017}. 
@@ -160,7 +160,7 @@ We assume the data $D$ have arisen under one of the hypotheses $H_1$ or $H_0$ ac
 B_{10}=\frac{\pi^*(H_1|D)}{\pi^*(H_0|D)}/{}\frac{\pi(H_1)}{\pi(H_0)}=\frac{L(D|H_1)}{L(D|H_0)}
 \end{equation}  
 
-When the hypotheses $H_1$ and $H_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $H_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|H_1)$ and $L(D|H_0)$ with represents the integrals of the likelihood over all model parameters. When improper priors are used, these marginal likelihoods are intractable and this measure is difficult to compute. \\
+When the hypotheses $H_1$ and $H_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $H_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|H_1)$ and $L(D|H_0)$, which represents the integrals of the likelihood over all model parameters. When improper priors are used, these marginal likelihoods are intractable and this measure is difficult to compute. \\
 
 Alternatively, when improper priors are used, \emph{tail posterior probabilities} can be computed as a selection rule regarding $H_1$ and $H_0$. Posterior tail probabilities were introduced to test the difference $\delta_g$ in log-expression of gene $i$ between condition $A$ and condition $B$ \citep{Bochkina2007}. Here, the posterior tail probability of $\delta_g$ being larger than a given threshold $\delta_g^{(\alpha)}$ is defined as:
 
@@ -175,7 +175,7 @@ In the case of testing changes in mean expression, the difference $\delta_g$ rep
 Several models have been proposed to estimate model parameters based on scRNA-Seq data. A common approach is to model the count data as \gls{NB} distributed \citep{Vallejos2015BASiCS, Risso2018, Lopez2018}. The NB distribution is defined as:
 
 \begin{equation}
-f_{NB}(y;\mu,\theta)=\frac{(y+\theta)}{(y+1)(\theta)}\left(\frac{\theta}{\theta + \mu}\right)^\theta\left(\frac{\mu}{\mu + \theta}\right)^y
+f_{NB}(y;\mu,\theta)=\frac{\Gamma(y+\theta)}{\Gamma(\theta)y!}\left(\frac{\theta}{\theta + \mu}\right)^\theta\left(\frac{\mu}{\mu + \theta}\right)^y
 \end{equation}
 
 Here, the dispersion of the NB is $\delta=\theta^{-1}$ \cite{Risso2018}. In the case of a hierarchical generative model, the NB can be decomposed into a Poisson distribution with Gamma random effect \cite{Vallejos2015BASiCS}:
@@ -230,7 +230,7 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 
 Throughout this thesis, I will use the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
 
-In BASiCS, the expression count of of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  the $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
+In BASiCS, the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  remaining $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
 
 \begin{equation} 
  X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \sim
@@ -260,7 +260,7 @@ Here, $\phi_j$ represents a cell-specific normalization parameter to correct for
 \label{fig0:BASiCS}
 \end{figure}
 
-Prior specifications for the model parameters are chosen as followed:
+Prior specifications for the model parameters are chosen as follows:
 
 \begin{align*}
 \mu_i&\sim\textnormal{log-N}(0,a_\mu^2) \quad \textnormal{for}\;{}i=1,...,q_0\\
@@ -293,7 +293,7 @@ This formulation can be used to obtain normalized counts. Furthermore, the coeff
 
 As discussed in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, the CV$^2$ is inversely proportional to the mean expression $\mu_i$. Furthermore, $\delta_i$ can be interpreted as the residual CV$^2$ after removing Poisson sampling and residual technical over-dispersion \citep{Vallejos2015BASiCS, Vallejos2016}. We will therefore use $\delta_i$ as a proxy for the biological part of transcriptional variability when modelling scRNA-Seq data.\\
 
-Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see \textbf{Section \ref{sec0:posterior_inference}}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These include: normalisation of expression counts, variance decomposition into biological and technical noise, detection of highly and lowly variable genes and differential mean and differential over-dispersion testing. The later is done by computing the tail posterior probabilities of the difference in mean expression or over-dispersion between two conditions ($p$ and $p'$) being larger than an evidence threshold $\tau_0$ or $\omega_0$ (see \textbf{Section \ref{sec0:decision}}, and \citep{Bochkina2007, Vallejos2016}):
+Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampling (see \textbf{Section \ref{sec0:posterior_inference}}) \citep{Vallejos2015BASiCS, Vallejos2016}. Once posterior distributions are obtained, down-stream analyses can be performed. These include: normalisation of expression counts, variance decomposition into biological and technical noise, detection of highly and lowly variable genes and differential mean and differential over-dispersion testing. The latter is done by computing the tail posterior probabilities of the difference in mean expression or over-dispersion between two conditions ($p$ and $p'$) being larger than an evidence threshold $\tau_0$ or $\omega_0$ (see \textbf{Section \ref{sec0:decision}}, and \citep{Bochkina2007, Vallejos2016}):
 
 \begin{align*}
 \pi_{ipp'}(\tau_0)&\equiv{}P(|\log(\mu_i^{(p)}/\mu_i^{(p')})|>\tau_0|D)>\alpha_m\\
