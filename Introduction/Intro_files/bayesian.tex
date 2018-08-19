@@ -5,31 +5,24 @@
 
 \section{Bayesian approaches to model scRNA-Seq data}
 
-In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include preliminary tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. At this point, I want to focus on Bayesian methods that were developed to estimate posterior distributions for model parameters, thus allowing uncertainty to be propagated into downstream analysis. 
+In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. In this thesis, I will focus on the application and development of Bayesian statistical methodologies designed to characterise cellular heterogeneity using scRNA-Seq data. This section describes key concepts of Bayesian inference and related previous work that serve as a foundation for the results in later chapters.
 
 \subsection{The basics of Bayesian inference}
 
-The main difference between classical and Bayesian inference is the distributional assumption of the model parameters. While in classical inference model parameters represent a fixed but unknown value, Bayesian approaches treat parameters as random variables to incorporate the uncertainty of parameter estimation \citep{Bernardo2003}. The aim of Bayesian inference is to find a \emph{posterior distribution} that captures the uncertainty of the model parameter $\omega$. Prior beliefs about the distribution of $\omega$ are summarized in the form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated to form the posterior distribution $\pi^*(\omega|D)$ of the model parameter $\omega$. This is a simplified explanation of the Bayes Theorem \cite{Bayes1763}:
+The main difference between classical and Bayesian inference is the treatment of model parameters. While classical inference considers model parameters as fixed but unknown values, Bayesian approaches treat parameters as random variables for which probability distributions quantify uncertainty \citep{Bernardo2003}. In this context, prior beliefs about the distribution of the model parameter $\omega$ are summarized in the form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated using the Bayes theorem \cite{Bayes1763} to form the posterior distribution $\pi^*(\omega|D)$:
 
 \begin{equation} \label{eq0:Bayes_theorem}
-\pi^*(\omega|D,\cdot)=\frac{L(D|\omega)\pi(\omega)}{L_\omega(D)}.
+\pi^*(\omega|D)=\frac{L(D|\omega)\pi(\omega)}{L(D)}\text{, where }L(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega 
 \end{equation}
 
-Here, $L(D|\omega)$ is the likelihood of observing the data given the parameter $\omega$ and $L_\omega(D)$ is the marginal likelihood when integrating out the parameter $\omega$.\\
-
-Bayes theorem in equation \ref{eq0:Bayes_theorem} can be simplified to:
-
-\begin{equation}
-\pi^*(\omega|D)=c(D)L(D|\omega)\pi(\omega)\propto{}L(D|\omega)\pi(\omega)
-\end{equation} 
-
-where $c(D)$ represents the proportionality constant $L_\omega(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. This integrates to one when $\pi^*(\omega|D)$ is conjugate to the kernel function $L(D|\omega)\pi(\omega)$ \citep{Bernardo2003, Raiffa1961}. The definition of conjugate distributions is explained below.  
+Here, $L(D|\omega)$ is the likelihood of observing the data given the parameter $\omega$ and $L(D)$ is the marginal likelihood after integrating out the parameter $\omega$. As discussed in \textbf{Section \ref{sec0:prior}}, $L(D)$ does not have a closed form, except for specific prior choices. Despite this, the numerical methods described in \textbf{Section \ref{sec0:posterior_inference}} enable estimating the posterior distribution $\pi^*(\omega|D)$ without the need of calculating $L(D)$.
 
 \newpage
 
 \subsection{Prior distributions}
+\label{sec0:prior}
 
-The role of the prior distribution is to incorporate prior knowledge of the model parameters which is then guided by the data to form the posterior distribution. For this, a prior distribution needs to be chosen that adequately describes the experimenter's prior knowledge of the unknown parameters. For practical use, the prior distribution can be chosen to form an analytically tractable solution for the integration of $\int_\omega{}L(D|\omega)\pi(\omega)d\omega$. To find this distribution, the likelihood can be factorized into two terms: one that contains all constants independent of the model parameter $\omega$ and one factor that depends on the model parameter. A conjugate prior is of the same family of distributions as the factor depending on the model parameter. \citep{Fink1997}. In this case, conjugate prior distributions are prior distributions of the same family as the posterior distribution. The choice of conjugate prior distributions also lead to a closed-form posterior distribution which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}}.
+The role of the prior distribution is to incorporate prior knowledge about the model parameters. Using the Bayes theorem, this is then combined with the data to form the posterior distribution. For this purpose, a prior distribution should ideally describe the experimenter's prior knowledge regarding the unknown parameters (e.g.~based on previous experiments). For practical use, the prior distribution can be chosen to form an analytically tractable solution for the integral that is required to calculate $L(D)$. This is achieved by using conjugate prior distributions, for which the prior is of the same family as the posterior distribution. As such, conjugate prior distributions lead to a closed form posterior distribution, which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}}.
 
 \begin{table}[hb	]
 \centering
@@ -61,13 +54,15 @@ Exponential &  Gamma  & Gamma \\
 \end{tabular}
 \end{table} 
 
-When prior knowledge of the model parameters is not available, non-informative or objective priors are used. The idea is that the "data should speak for itself" and therefore, these priors are chosen to have a minimal effect, relative to the data, on the posterior inference \citep{Bernardo2000}. The most commonly used non-informative prior is the Jeffreys prior \citep{Jeffreys1946}. Furthermore, when $\int_\omega\pi(\omega)d\omega$ is infinite, the prior is called an \emph{improper prior} and does not lead to a closed-form posterior distribution \citep{Bernardo2003}.
+When prior knowledge of the model parameters is not available, non-informative or objective priors may be used (e.g.~the Jeffreys prior \citep{Jeffreys1946}). However, a detailed discussion regarding such priors is outside the scope of this thesis.
+
+\newpage
 
 \subsection{Posterior inference} \label{sec0:posterior_inference}
 
 Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
 
-Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, and Markov Chain Monte Carlo} \citep{Bernardo2000}. At this point, I focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
+Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, and Markov Chain Monte Carlo} \citep{Bernardo2000}. At this point, I will focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
 
 \subsubsection{Markov Chain Monte Carlo}
 
@@ -103,7 +98,7 @@ The implementation of Gibbs sampling is straightforward when the full conditiona
 
 \textbf{\textit{Metropolis-Hastings}}\\
 
-One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, Hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
+Another commonly used technique is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, Hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
 
 Let $q(\theta_i,\theta_i')$ be a transition probability density function given a current state $\theta_i^t=\theta_i$, then the vector $\theta_i'$ represents a proposed possible value for $\theta_i^{t+1}$ \citep{Bernardo2000}. Furthermore, with some probability $\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$ the proposed value $\theta_i'$ is accepted as $\theta_i^{t+1}=\theta_i'$ and otherwise rejected: $\theta_i^{t+1}=\theta_i^t$ \cite{Roberts1994, Hastings1970}. In practice, the update is found as follows:
 
@@ -128,7 +123,7 @@ Once the sampler is chosen, one needs to validate the convergence of the chain. 
 \sigma=\frac{\sigma^*}{\sqrt{n}}\sqrt{\frac{1+\rho}{1-\rho}}
 \end{equation}
 
-where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduces by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not reach the equilibrium yet \citep{Geweke1992}.
+where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduced by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not yet reached equilibrium \citep{Geweke1992}.
 
 \subsection{Variational Bayes}
 
