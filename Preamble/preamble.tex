@@ -203,32 +203,7 @@
 %\makenomenclature
 
 \usepackage[acronym, nopostdot, nonumberlist, style=super]{glossaries}
-%\newglossarystyle{longuc}%
-%{%
-%  \setglossarystyle{long}%
-%  \renewcommand{\glossentry}[2]{%
-%    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
-%    \Glossentrydesc{##1}\glspostdescription\space ##2\tabularnewline
-%  }%
-%}
-
 \setlength{\glsdescwidth}{5in}
-
-%\newglossarystyle{clong}{%
-% \renewenvironment{theglossary}%
-%     {\begin{longtable}{p{.3\linewidth}p{\glsdescwidth}}}%
-%     {\end{longtable}}%
-%  \renewcommand*{\glossaryheader}{}%
-%  \renewcommand*{\glsgroupheading}[1]{}%
-%  \renewcommand*{\glossaryentryfield}[5]{%
-%    \glstarget{##1}{##2} & ##3\glspostdescription\space ##5\\}%
-%  \renewcommand*{\glossarysubentryfield}[6]{%
-%     & \glstarget{##2}{\strut}##4\glspostdescription\space ##6\\}%
-  %\renewcommand*{\glsgroupskip}{ & \\}%
-%}
-
-%\setglossarystyle{longuc}
-%\setacronymstyle{long-short}
 
 \makeglossaries
 \glsdisablehyper
