@@ -5,11 +5,11 @@
 
 \section{Bayesian approaches to model scRNA-Seq data}
 
-In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalization, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. In this thesis, I will focus on the application and development of Bayesian statistical methodologies designed to characterise cellular heterogeneity using scRNA-Seq data. This section describes key concepts of Bayesian inference and related previous work that serve as a foundation for the results in later chapters.
+In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalisation, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. In this thesis, I will focus on the application and development of Bayesian statistical methodologies designed to characterise cellular heterogeneity using scRNA-Seq data. This section describes key concepts of Bayesian inference and related previous work that serve as a foundation for the results in later chapters.
 
 \subsection{The basics of Bayesian inference}
 
-The main difference between classical and Bayesian inference is the treatment of model parameters. While classical inference considers model parameters as fixed but unknown values, Bayesian approaches treat parameters as random variables for which probability distributions quantify uncertainty \citep{Bernardo2003}. In this context, prior beliefs about the distribution of the model parameter $\omega$ are summarized in the form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated using the Bayes theorem \cite{Bayes1763} to form the posterior distribution $\pi^*(\omega|D)$:
+The main difference between classical and Bayesian inference is the treatment of model parameters. While classical inference considers model parameters as fixed but unknown values, Bayesian approaches treat parameters as random variables for which probability distributions quantify uncertainty \citep{Bernardo2003}. In this context, prior beliefs about the distribution of the model parameter $\omega$ are summarised in the form of a \emph{prior distribution} $\pi(\omega)$. Once the data $D$ is observed, the prior distribution is updated using the Bayes theorem \cite{Bayes1763} to form the posterior distribution $\pi^*(\omega|D)$:
 
 \begin{equation} \label{eq0:Bayes_theorem}
 \pi^*(\omega|D)=\frac{L(D|\omega)\pi(\omega)}{L(D)}\text{, where }L(D)=\int_\omega{}L(D|\omega)\pi(\omega)d\omega 
@@ -123,17 +123,17 @@ Once the sampler is chosen, one needs to validate the convergence of the chain. 
 \sigma=\frac{\sigma^*}{\sqrt{n}}\sqrt{\frac{1+\rho}{1-\rho}}
 \end{equation}
 
-where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimized when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduced by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not yet reached equilibrium \citep{Geweke1992}.
+where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimised when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduced by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not yet reached equilibrium \citep{Geweke1992}.
 
 \subsection{Variational Bayes}
 
-When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference is a quicker approach that allows derivation of an approximate posterior distribution by optimization. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimizing the Kullback-Leibler divergence (KL):
+When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference is a quicker approach that allows derivation of an approximate posterior distribution by optimisation. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimising the \gls{KL}:
 
 \begin{equation}
 q^\ast(\bm{\theta})=\underset{q(\bm{\theta})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\bm{\theta})||\pi^*(\bm{\theta}|D))
 \end{equation}
 
-The posterior distribution is approximated with the optimized member of the family $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC, albeit MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed. A common approach to minimize the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
+The posterior distribution is approximated with the optimised member of the family $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC, albeit MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed. A common approach to minimise the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
 
 \begin{equation}
 \textnormal{ELBO}(q)=\mathbb{E}[\log(L(D|\bm{\theta})\pi(\bm{\theta}))] - \mathbb{E}[\log(q(\bm{\theta}))]
@@ -201,7 +201,7 @@ h & \sim \textnormal{Bernoulli}(\cdot)\\
 \nu|\alpha,\beta&\sim{}\textnormal{Gamma}(\alpha,\beta)
 \end{align*}
 
-Other approaches model scRNA-Seq counts as log-normal distributed \citep{Azizi2017,Pierson2015}. \Gls{ZIFA} assumes that the data $Y=[y_1,...,y_N]$, where $N$ is the number of samples with $D$ genes, are generated from an unobserved low-dimensional space $Z=[z_1,...,z_N]$ with dimension $K,\,{}K\ll{}D$ \citep{Pierson2015}. The generation process is a linear transformation with added Gaussian noise from the latent space ($N\times{}K$) into the latent high-dimensional gene expression space with dimension $N\times{}D$. Addtionally, with some probability being a function of the latent expression level of gene $j$ in cell $i$ $x_{ij}$: $p_0=\exp(-\lambda{}x_{ij}^2)$, a dropout is observed \citep{Pierson2015}. The full model is defined as:
+Other approaches model scRNA-Seq counts as log-normal distributed \citep{Azizi2017,Pierson2015}. \Gls{ZIFA} assumes that the data $Y=[y_1,...,y_N]$, where $N$ is the number of samples with $D$ genes, are generated from an unobserved low-dimensional space $Z=[z_1,...,z_N]$ with dimension $K,\,{}K\ll{}D$ \citep{Pierson2015}. The generation process is a linear transformation with added Gaussian noise from the latent space ($N\times{}K$) into the latent high-dimensional gene expression space with dimension $N\times{}D$. Additionally, with some probability being a function of the latent expression level of gene $j$ in cell $i$ $x_{ij}$: $p_0=\exp(-\lambda{}x_{ij}^2)$, a dropout is observed \citep{Pierson2015}. The full model is defined as:
 
 \begin{align*}
 y_{ij} & = 
@@ -223,7 +223,7 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 \label{sec0:BASiCS}
 
-Throughout this thesis, I will use the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalization, differential expression testing).\\
+Throughout this thesis, I will use the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalisation, differential expression testing).\\
 
 In BASiCS, the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  remaining $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
 
@@ -243,7 +243,7 @@ In this model, two random effects were added to model the technical and biologic
 \nu_j|s_j,\theta \sim \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.2cm} \rho_{ij}|\delta_i  \sim \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
 \end{equation} 
 
-Here, $\phi_j$ represents a cell-specific normalization parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells \textbf{(Fig.~\ref{fig0:BASiCS}A)}. 
+Here, $\phi_j$ represents a cell-specific normalisation parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells \textbf{(Fig.~\ref{fig0:BASiCS}A)}. 
 
 \newpage
 
@@ -280,7 +280,7 @@ Given the NB model, the expected biological counts take the form:
 \mathbb{E}(X_{ij}|\mu_i,\delta_i,\phi_j,s_j,\theta)=\phi_js_j\mu_i
 \end{equation}
 
-This formulation can be used to obtain normalized counts. Furthermore, the coefficient of variation is defined as:
+This formulation can be used to obtain normalised counts. Furthermore, the coefficient of variation is defined as:
 
 \begin{equation}
 \textnormal{CV}^2(X_{ij}|\mu_i,\delta_i,\phi_j,s_j,\theta)=\frac{1}{\phi_js_j\mu_i} + \theta + \delta_i(\theta + 1)
