@@ -60,104 +60,93 @@ When prior knowledge of the model parameters is not available, non-informative o
 
 \subsection{Posterior inference} \label{sec0:posterior_inference}
 
-Before the availability of computers, research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are needed when objective priors are used or for models with large complexity. When the model contains multiple parameters, it could be of interest to find univariate marginal posterior densities or multivariate joint marginal posterior densities of model parameters.\\
+Before the wide availability of computers, Bayesian research centred around finding pairs of likelihood functions and prior distributions that produce well-defined and tractable solutions for posterior distributions (conjugate priors). More recently, the increase in computing power supported the development of numerical methods to approximate the integrals needed to form posterior distributions \citep{Fink1997}. Numerical approximations are frequently needed when objective priors are used or for models with large complexity. Here, I will focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970}, one of the most popular strategies to approximate posterior distributions. The idea behind MCMC is to generate a random sample of the posterior distribution $\pi^*(\omega|D)$ when this distribution cannot be obtained in closed form. For this, a Markov chain is simulated over $n$ iterations whose equilibrium distribution is $\pi^*(\omega|D)$ \citep{Bernardo2000}. Extensive research led to the development of algorithms that generate this equilibrium distribution \citep{Casella1992, Gelfand1990, Greyer1992, Besag1993, Gelman1992}. The following two examples of MCMC are commonly used for a range of applications in Bayesian statistics \citep{Bernardo2000}.
 
-Multiple numerical approximation strategies have been described including: \emph{Laplace Approximation, Iterative Quadrature, Importance Sampling, Sampling-importance-resampling, and Markov Chain Monte Carlo} \citep{Bernardo2000}. At this point, I will focus on \gls{MCMC} \citep{Metropolis1953, Hastings1970} as a sampling strategy to approximate posterior distributions.
+\subsubsection{Gibbs sampling}
 
-\subsubsection{Markov Chain Monte Carlo}
-
-The idea behind MCMC is to generate a sample of the posterior distribution $\pi^*(\omega|D)$ for $\omega\in\Omega$ when the distribution cannot be obtained directly. For this, a Markov chain with state space $\Omega$ is simulated over $n$ iterations whose equilibrium distribution is $\pi^*(\omega|D)$ \citep{Bernardo2000}. Extensive research led to the development of algorithms that generate this equilibrium distribution \citep{Casella1992, Gelfand1990, Greyer1992, Besag1993, Gelman1992}.
-The following two examples of MCMC are commonly used for a range of applications in Bayesian statistics \citep{Bernardo2000}.\\
-
-\textbf{\textit{Gibbs sampling}}\\
-
-We consider a complex model where $\bm{\theta}$ represents the vector of unknown parameters in Bayes theorem. The joint posterior $\pi^*(\bm{\theta}|D)=\pi^*(\theta_1,...,\theta_k|D)$ is not tractable and needs to be numerically approximated. To obtain posterior distributions for each model parameter $\theta_i$, one defines the \emph{full conditional} distribution:
+Consider a statistical model for which $\bm{\theta}=(\theta_1,...,\theta_K)$ represents a vector of unknown parameters. If the joint posterior $\pi^*(\bm{\theta}|D)=\pi^*(\theta_1,...,\theta_K|D)$ is not tractable, it may be numerically approximated. For each model parameter $\theta_k$, one defines the \emph{full conditional} distribution as:
 
 \begin{equation}
-\pi^*(\theta_i|D,\theta_j,j\neq{}i), \quad i=1,...,k
+\pi^*(\theta_k|D,\theta_{k'},k'\neq{}k), \quad k=1,...,K
 \end{equation}
 
-This defines the density of the individual component $\theta_i$ given the data and specified values (current updates) of all other components $\theta_j$ \cite{Geman1984} and can easily be identified from the part of the posterior distribution depending on $\theta_i$ \citep{Bernardo2000}. In each iteration $t$ with $t=1,...,n$ every component $\theta_i,\,{}i=1,...,k$ is updated as followed:
+This is the density of the individual component $\theta_k$, given the data and specified values of all other components $\theta_{k'}$ \cite{Geman1984} For each iteration $t$ with $t=1,...,T$:
 
 \begin{align*}
-\textnormal{draw} \quad  \theta_1^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_2^{(t)},...\theta_k^{(t)})\\
-\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_1^{(t+1)},\theta_3^{(t)},...\theta_k^{(t)})\\
+\textnormal{draw} \quad  \theta_1^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_2^{(t)},...\theta_K^{(t)})\\
+\textnormal{draw} \quad  \theta_2^{(t+1)} \quad \textnormal{from} \quad & \pi^*(\theta|D, \theta_1^{(t+1)},\theta_3^{(t)},...\theta_K^{(t)})\\
 &.\\
 &.\\
 &.\\
-\textnormal{draw} \quad  \theta_k^{(t+1)} \quad \textnormal{from}  \quad& \pi^*(\theta|D, \theta_1^{(t+1)},...\theta_{k-1}^{(t+1)})
+\textnormal{draw} \quad  \theta_K^{(t+1)} \quad \textnormal{from}  \quad& \pi^*(\theta|D, \theta_1^{(t+1)},...\theta_{K-1}^{(t+1)})
 \end{align*}
 
-For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1,...,\theta_k)$ converge towards the posterior distribution of $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. The probability density function of the transition is defined as:
+For $t\rightarrow{}\infty$ the joint distribution of $(\theta_1^{(t)},...,\theta_k^{(t)})$ converge to the posterior distribution $\pi^*(\bm{\theta}|D)$ \citep{Roberts1994, Geman1984}. The implementation of Gibbs sampling is straightforward when the full conditionals have a known form. Alternatively, stochastic simulation techniques can be used to generate draws from one or more full conditionals.
 
-\begin{equation}
-p(\theta^t,\theta^{t+1})=\prod_{l=1}^k{}\pi(\theta_l^{t+1}|(\theta_j^t,j>l),(\theta_j^{t+1},j<l),D)
-\end{equation}
+\subsubsection{Metropolis-Hastings}
 
-The implementation of Gibbs sampling is straightforward when the full conditionals have a known form. For other distributions, stochastic simulation techniques can be used.\\
+One of these techniques is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, Hastings1970} which constructs a Markov chain $\theta_k^{(1)},...,\theta_k^{(T)}$ as follows:\\
 
-\textbf{\textit{Metropolis-Hastings}}\\
-
-Another commonly used technique is the \emph{Metropolis-Hastings algorithm} \citep{Metropolis1953, Hastings1970} which constructs a Markov chain $\theta_i^1,...,\theta_i^n$ with state space $\Theta$ as follows:\\
-
-Let $q(\theta_i,\theta_i')$ be a transition probability density function given a current state $\theta_i^t=\theta_i$, then the vector $\theta_i'$ represents a proposed possible value for $\theta_i^{t+1}$ \citep{Bernardo2000}. Furthermore, with some probability $\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$ the proposed value $\theta_i'$ is accepted as $\theta_i^{t+1}=\theta_i'$ and otherwise rejected: $\theta_i^{t+1}=\theta_i^t$ \cite{Roberts1994, Hastings1970}. In practice, the update is found as follows:
+For each iteration $t=1,...,T$, let $q(\theta_k^{(t)},\theta_k')$ be a proposal distribution for which, given a current draw $\theta_k^{(t)}$, a candidate value $\theta_k'$ is proposed. Subsequently, with some probability $\alpha(\theta_k^{(t)},\theta_k'|\theta_{k'}^{(t)},k'\neq{}k)$ the proposed value $\theta_k'$ is accepted (i.e.~$\theta_k^{(t+1)}=\theta_k'$) and otherwise rejected ($\theta_k^{(t+1)}=\theta_k^{(t)}$) \cite{Roberts1994, Hastings1970}. In practice, the update is performed as follows:
 
 \begin{enumerate}
-\item Sample $\nu\sim\textnormal{Unif(0,1)}$ and a candidate $\theta_i'$ from $q(\theta_i,\theta_i')$.
+\item Sample $\nu\sim\textnormal{Unif(0,1)}$ and a candidate $\theta_k'$ from $q(\theta_k^{(t)},\theta_k')$.
 \item Define
 
 \begin{equation}
-\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)=\min\left\lbrace{}1,\frac{\pi^*(\theta_i'|D,\theta_j,j\neq{}i)q(\theta_i',\theta_i)}{\pi^*(\theta_i|D,\theta_j,j\neq{}i)q(\theta_i,\theta_i')}\right\rbrace
+\alpha(\theta_k^{(t)},\theta_k'|\theta_{k'}^{(t)},k'\neq{}k)=\min\left\lbrace{}1,\frac{\pi^*(\theta_k'|D,\theta_{k'}^{(t)},k'\neq{}k)q(\theta_k',\theta_k^{(t)})}{\pi^*(\theta_k^{(t)}|D,\theta_{k'}^{(t)},k'\neq{}k)q(\theta_k^{(t)},\theta_k')}\right\rbrace
 \end{equation}
 
-\item If $\nu\leq{}\alpha(\theta_i,\theta_i'|\theta_j,j\neq{}i)$, return $\theta_i'$ otherwise return $\theta_i^t$
+\item If $\nu\leq{}\alpha(\theta_k^{(t)},\theta_k'|\theta_{k'}^{(t)},k'\neq{}k)$, set $\theta_k^{(t+1)}=\theta_k'$ otherwise set $\theta_k^{(t+1)}=\theta_k^{(t)}$
 \end{enumerate}
 
-For this algorithm, the transition probability density $q(\theta_i,\theta_i')$ needs to be chosen. A common choice is a Normal distribution centred at $\theta_i$ where the variance needs to be selected to have some level of optimality in the performance of the algorithm \citep{Roberts2001}. An automated tuning process for the variance of the proposal distribution $q(\theta_i,\theta_i')$ was introduced by Roberts and Rosenthal, 2009 \citep{Roberts2009}. This \emph{adaptive Metropolis-Hastings} algorithm is often used in combination with Gibbs sampling (\emph{adaptive Metropolis-within-Gibbs sampling}) to approximate the posterior distribution of model parameters for complex models \citep{Roberts2009}.\\
+For this algorithm, the proposal distribution $q(\theta_k^{(t)},\theta_k')$ needs to be chosen. A common choice is a Normal distribution centred at $\theta_k^{(t)}$, where the variance needs to be selected to have some level of optimality in the performance of the algorithm \citep{Roberts2001}. An automated tuning process for the variance of the proposal distribution $q(\theta_k^{(t)},\theta_k')$ was introduced by Roberts and Rosenthal, 2009 \citep{Roberts2009}. This \emph{adaptive Metropolis-Hastings} algorithm is often used in combination with Gibbs sampling (\emph{adaptive Metropolis-within-Gibbs sampling}) to approximate the posterior distribution of model parameters for complex models \citep{Roberts2009}.\\
 
-\textbf{\textit{Practical considerations}}\\
+\subsubsection{Practical considerations}
 
-Once the sampler is chosen, one needs to validate the convergence of the chain. For this, the initial draws of the distribution are discarded (\emph{burn-in}). Within the burn-in period, the autocovariance of the chain decays to a negligible level \citep{Greyer1992}. After burn-in, one can compute the autocorrelation of the chain to assess convergence. The standard deviation of the chain (a first order autoregressive process) is defined as:
+When an MCMC sampler is chosen, one needs to assess the convergence of the chain. For this purpose, the initial iterations of the MCMC algorithm are typically discarded (\emph{burn-in}). Within the burn-in period, the autocorrelation of the chain is expected to decay to a negligible level \citep{Greyer1992}. After burn-in, one can compute the autocorrelation of the chain to assess how well the chain mixed. High autocorrelation suggest that subsequent MCMC draws are similar, and therefore the chain explores the parameter space slowly (i.e.~it may take a long time before the chain converges). The standard deviation of the chain (as a measure of statistical uncertainty) is defined as:
 
 \begin{equation}
-\sigma=\frac{\sigma^*}{\sqrt{n}}\sqrt{\frac{1+\rho}{1-\rho}}
+\sigma=\frac{\sigma^*}{\sqrt{T}}\sqrt{\frac{1+\rho}{1-\rho}}
 \end{equation}
 
-where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $n$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ is minimised when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing every 10 or 100 samples reduces autocorrelation of the chain and increases mixing over the parameter space \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduced by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, the chain has not yet reached equilibrium \citep{Geweke1992}.
+where $\sigma^*$ is the posterior standard deviation of $\pi^*(\omega|D)$, $T$ is the sample size and $\rho$ the autocorrelation \citep{Tierney1991}. Therefore, $\sigma$ decreases when $\rho$ is small. This also supports finding an optimal run length until sufficient mixing is achieved. In practice, storing only every 10 or 100 samples (thinning) reduces autocorrelation of the chain and reduces storage requirements \citep{Greyer1992}. One formal way of assessing the convergence of the chain was introduced by Geweke, 1992. Here, the means of the first 10\% and the last 50\% of the samples are compared. If the means are different, this test suggests that the chain has not yet reached equilibrium \citep{Geweke1992}. Alternatively, graphical summaries, such as traceplots, can be used to formally assess convergence.
 
 \subsection{Variational Bayes}
 
-When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Variational inference is a quicker approach that allows derivation of an approximate posterior distribution by optimisation. The principle of variational inference is to select a member of a family of approximate densities $Q$ by minimising the \gls{KL}:
+When datasets are large and models are complex, the above described MCMC sampling methods are slow to derive posterior distributions. Instead, variational inference can derive an approximate posterior distribution using optimisation, rather than sampling. The principle of variational inference is to select a member of a family of densities $Q$ by minimising the \gls{KL}:
 
 \begin{equation}
 q^\ast(\bm{\theta})=\underset{q(\bm{\theta})\in{}Q}{\textnormal{argmin\,{}KL}}(q(\bm{\theta})||\pi^*(\bm{\theta}|D))
 \end{equation}
 
-The posterior distribution is approximated with the optimised member of the family $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC, albeit MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences is preferred when datasets are large and exact samples are not needed. A common approach to minimise the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
-
-\begin{equation}
-\textnormal{ELBO}(q)=\mathbb{E}[\log(L(D|\bm{\theta})\pi(\bm{\theta}))] - \mathbb{E}[\log(q(\bm{\theta}))]
-\end{equation}
-
-Another principle of variational Bayesian approaches is to assume that model parameters are mutually independent so that the \emph{mean-field variational family} of distributions can be chosen for $q(\bm{\theta})$:
+A common choice in variational Bayesian approaches is to assume that model parameters are mutually independent so that the \emph{mean-field variational family} of distributions can be chosen for $q(\bm{\theta})$:
 
 \begin{equation}
 q(\bm{\theta})=\prod_{j=1}^k{}q_j(\theta_j)
 \end{equation}
 
-Here, each model parameter $\theta_j$ is governed by its own variational factor \citep{Blei2017}. One commonly used technique to maximise the ELBO is \emph{\gls{CAVI}}. Similar to Gibbs sampling, CAVI maximises the ELBO for one parameter while keeping all other parameters constant. This is done iteratively until the ELBO converges against a local maximum \citep{Blei2017}. 
+Here, each model parameter $\theta_j$ is governed by its own variational factor \citep{Blei2017}.\\
+
+The posterior distribution is then approximated by $q^\ast(\bm{\theta})$\citep{Blei2017}. In general, variational inference tends to be faster than MCMC, albeit MCMC allows producing exact samples from the target density \citep{Blei2017}. Therefore, variational inferences may be preferred when datasets are large and exact samples are not needed. A common approach to minimise the KL is to maximise the \gls{ELBO} (see e.g.~\citep{Beal2003}) which is defined as:
+
+\begin{equation}
+\textnormal{ELBO}(q)=\mathbb{E}[\log(L(D|\bm{\theta})\pi(\bm{\theta}))] - \mathbb{E}[\log(q(\bm{\theta}))]
+\end{equation}
+
+One commonly used technique to maximise the ELBO is \emph{\gls{CAVI}}. Similar to Gibbs sampling, CAVI maximises the ELBO for one parameter while keeping all other parameters constant. This is done iteratively until the ELBO converges against a local maximum \citep{Blei2017}. 
 
 \subsection{Bayesian decision theory} \label{sec0:decision}
 
-We assume the data $D$ have arisen under one of the hypotheses $H_1$ or $H_0$ according to $L(D|H_1)$ or $L(D|H_0)$. The data produce posterior probabilities $\pi^*(H_1|D)$ and $\pi^*(H_0|D)$ from prior distributions $\pi(H_1)$ and $\pi(H_0)$. The Bayes factor $B_{10}$ \citep{Jeffreys1961} is defined as the ratio of the posterior odds of $H_1$ to its prior odds:
+Assume the data $D$ have arisen under one of the models $M_1$ or $M_0$. The posterior probabilities for each model are denoted as $\pi^*(M_1|D)$ and $\pi^*(M_0|D)$. Similarly, prior probabilities for each model are denoted as $\pi(M_1)$ and $\pi(M_0)$. The Bayes factor $B_{10}$ \citep{Jeffreys1961} is defined as the ratio of the posterior odds of $M_1$ to its prior odds:
 
 \begin{equation}
-B_{10}=\frac{\pi^*(H_1|D)}{\pi^*(H_0|D)}/{}\frac{\pi(H_1)}{\pi(H_0)}=\frac{L(D|H_1)}{L(D|H_0)}
+B_{10}=\frac{\pi^*(M_1|D)}{\pi^*(M_0|D)}/{}\frac{\pi(M_1)}{\pi(M_0)}=\frac{L(D|M_1)}{L(D|M_0)}
 \end{equation}  
 
-When the hypotheses $H_1$ and $H_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $H_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|H_1)$ and $L(D|H_0)$, which represents the integrals of the likelihood over all model parameters. When improper priors are used, these marginal likelihoods are intractable and this measure is difficult to compute. \\
+When the models $M_1$ and $M_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $M_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|M_1)$ and $L(D|M_0)$ (see equations \eqref{eq0:Bayes_theorem}). Typically, these marginal likelihoods are intractable and this measure is difficult to compute. \\
 
-Alternatively, when improper priors are used, \emph{tail posterior probabilities} can be computed as a selection rule regarding $H_1$ and $H_0$. Posterior tail probabilities were introduced to test the difference $\delta_g$ in log-expression of gene $i$ between condition $A$ and condition $B$ \citep{Bochkina2007}. Here, the posterior tail probability of $\delta_g$ being larger than a given threshold $\delta_g^{(\alpha)}$ is defined as:
+Alternatively, \emph{tail posterior probabilities} can be computed as a selection rule regarding $M_1$ and $M_0$ when these models are defined by restrictions in the parameter space (e.g.~$M_1:\theta\in\Theta$ versus $M_0:\theta\notin\Theta$). For example, posterior tail probabilities were introduced to test the difference $\delta_g$ in log-expression of gene $i$ between condition $A$ and condition $B$ \citep{Bochkina2007}. Here, the posterior tail probability of $\delta_g$ being larger than a given threshold $\delta_g^{(\alpha)}$ is defined as:
 
 \begin{equation}
 \pi(\delta_g,\delta_g^{(\alpha)})=P\left\lbrace|\delta_g|>\delta_g^{(\alpha)}|D\right\rbrace
@@ -173,7 +162,7 @@ Several models have been proposed to estimate model parameters based on scRNA-Se
 f_{NB}(y;\mu,\theta)=\frac{\Gamma(y+\theta)}{\Gamma(\theta)y!}\left(\frac{\theta}{\theta + \mu}\right)^\theta\left(\frac{\mu}{\mu + \theta}\right)^y
 \end{equation}
 
-Here, the dispersion of the NB is $\delta=\theta^{-1}$ \cite{Risso2018}. In the case of a hierarchical generative model, the NB can be decomposed into a Poisson distribution with Gamma random effect \cite{Vallejos2015BASiCS}:
+Here, the dispersion of the NB is $\delta=\theta^{-1}$ \cite{Risso2018}. In terms of a hierarchical model, the NB can be decomposed as a Poisson distribution with a Gamma random effect \cite{Vallejos2015BASiCS}:
 
 \begin{align*}
 y|\cdot&\sim{}\textnormal{Poisson}(\nu\mu)\\
@@ -186,7 +175,7 @@ In some cases \citep{Risso2018, Lopez2018} the NB is extended to account for dro
 f_{ZINB}(y;\mu,\theta,\pi)=\pi\delta_0(y) + (1-\pi)f_{NB}(y;\mu,\theta) 
 \end{equation}
 
-where $\delta_0(\cdot)$ is the Dirac function and $\pi\in[0,1]$ is the probability that 0 is observed instead of the count $y$ \citep{Risso2018}. In a hierarchical formulation this can be modelled by adding a Bernoulli distributed random effect:
+where $\delta_0(\cdot)$ is the Dirac function and $\pi\in[0,1]$ is the probability that 0 is observed instead of the count $y$ \citep{Risso2018}. Nevertheless, it has been shown that the zero inflation is not needed to capture expression dropouts as it can be modelled by the over-dispersion in the NB distribution \citep{Lopez2018}. In a hierarchical formulation this model writes as:
 
 \begin{align*}
 y|\cdot & = 
@@ -201,7 +190,7 @@ h & \sim \textnormal{Bernoulli}(\cdot)\\
 \nu|\alpha,\beta&\sim{}\textnormal{Gamma}(\alpha,\beta)
 \end{align*}
 
-Other approaches model scRNA-Seq counts as log-normal distributed \citep{Azizi2017,Pierson2015}. \Gls{ZIFA} assumes that the data $Y=[y_1,...,y_N]$, where $N$ is the number of samples with $D$ genes, are generated from an unobserved low-dimensional space $Z=[z_1,...,z_N]$ with dimension $K,\,{}K\ll{}D$ \citep{Pierson2015}. The generation process is a linear transformation with added Gaussian noise from the latent space ($N\times{}K$) into the latent high-dimensional gene expression space with dimension $N\times{}D$. Additionally, with some probability being a function of the latent expression level of gene $j$ in cell $i$ $x_{ij}$: $p_0=\exp(-\lambda{}x_{ij}^2)$, a dropout is observed \citep{Pierson2015}. The full model is defined as:
+Other approaches model scRNA-Seq counts as log-normally distributed \citep{Azizi2017,Pierson2015}. \Gls{ZIFA} assumes that the data $Y=[y_1,...,y_N]$, where $N$ is the number of samples with $D$ genes, are generated from an unobserved low-dimensional space $Z=[z_1,...,z_N]$ with dimension $K,\,{}K\ll{}D$ \citep{Pierson2015}. The generation process is a linear transformation with added Gaussian noise from the latent space ($N\times{}K$) into the latent high-dimensional gene expression space with dimension $N\times{}D$. Additionally, with some probability being a function of the latent expression level of gene $j$ in cell $i$ $x_{ij}$: $p_0=\exp(-\lambda{}x_{ij}^2)$, a dropout is observed \citep{Pierson2015}. The full model is defined as:
 
 \begin{align*}
 y_{ij} & = 
@@ -223,9 +212,9 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 \label{sec0:BASiCS}
 
-Throughout this thesis, I will use the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from homogeneous populations of cells and use posterior estimates of the model parameters for down-stream analysis (e.g. normalisation, differential expression testing).\\
+Throughout this thesis, I will use and extend the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from seemingly homogeneous populations of cells (i.e.~where no distinct sub-populations are found) to perform down-stream analysis (e.g. normalisation, differential expression testing).\\
 
-In BASiCS, the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  remaining $q-q_0$ genes are technical. The expression counts are modelled as NB using a hierarchical formulation:
+In BASiCS, the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is treated as a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  remaining $q-q_0$ genes are technical.
 
 \begin{equation} 
  X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \sim
@@ -243,7 +232,7 @@ In this model, two random effects were added to model the technical and biologic
 \nu_j|s_j,\theta \sim \textnormal{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.2cm} \rho_{ij}|\delta_i  \sim \textnormal{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
 \end{equation} 
 
-Here, $\phi_j$ represents a cell-specific normalisation parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes. Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells \textbf{(Fig.~\ref{fig0:BASiCS}A)}. 
+Note that this formulation relates to the hierarchical representation of the NB distribution, but this model is more general as two sets of random effects are incorporated. Here, $\phi_j$ represents a cell-specific normalisation parameter to correct for differences in mRNA content between cells and $s_j$ models cell-specific scale differences affecting all biological and technical genes (e.g.~amplification biases or RNA capture biases). Moreover, the random effect $\nu_j$ captures unexplained technical noise that is not accounted for by the normalisation. The strength of this noise is then quantified by a global parameter $\theta$ (shared across all genes and cells). Heterogeneous gene expression across cells is captured by $\rho_{ij}$, whose strength is controlled by gene-specific over-dispersion parameters $\delta_i$. These quantify the excess of variability that is observed with respect to Poisson sampling noise, after accounting for technical noise. Finally, gene-specific parameters $\mu_i$ represent average expression of a gene across cells \textbf{(Fig.~\ref{fig0:BASiCS}A)}. 
 
 \newpage
 
@@ -251,7 +240,7 @@ Here, $\phi_j$ represents a cell-specific normalisation parameter to correct for
 \centering
 \includegraphics[width=\textwidth]{Fig_19.png}
 \caption[The BASiCS model]{\textbf{The BASiCS model.}\\
-\textbf{(A)} Hierarchical formulation of the negative-binomial model underlying BASiCS visualised for two cells (j and j') and two genes (i and i', gene i' represents a technical spike-in gene). Squared nodes indicate known quantities (observed expression counts and added number of spike-in molecules). Round nodes indicate unknown quantities. Red circles represent unknown model-parameters while black circles indicate the random effects that play intermediate roles effecting expression counts. Adapted from \citep{Vallejos2015BASiCS}, \textbf{(B)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$.}
+\textbf{(A)} Hierarchical formulation of the statistical model underlying BASiCS visualised for two cells (j and j') and two genes (i and i', gene i' represents a technical spike-in gene). Squared nodes indicate known quantities (observed expression counts and added number of spike-in molecules). Round nodes indicate unknown quantities. Red circles represent unknown model-parameters while black circles indicate the random effects that play intermediate roles effecting expression counts. Adapted from \citep{Vallejos2015BASiCS}, \textbf{(B)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$.}
 \label{fig0:BASiCS}
 \end{figure}
 
@@ -265,7 +254,7 @@ s_j&\sim\textnormal{Gamma}(a_s,b_s), \quad j=1,...,n\\
 \Phi&\sim{}n\textnormal{Dirichlet}(a_\Phi), \quad \Phi=(\phi_1,...,\phi_n)
 \end{align*}
 
-After integrating out the $\rho_{ij}$ to enhance mixing \citep{Vallejos2015BASiCS} the likelihood is defined as:
+After integrating out the $\rho_{ij}$ to enhance mixing of the MCMC algorithm that was adopted to perform posterior inference \citep{Vallejos2015BASiCS} the likelihood is defined as:
 
 \begin{align} 
 \Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
@@ -297,4 +286,4 @@ Posterior inference is implemented using adaptive Metropolis-within-Gibbs sampli
 
 If the tail posterior probability is larger than a given propability threshold $\alpha_m$ or $\alpha_d$, the gene is considered to be differentially expressed or differentially over-dispersed \citep{Vallejos2016}. The evidence threshold is usually fixed \emph{a priori} and the probability threshold is defined to control the \gls{EFDR} to (e.g.) 5\% \cite{Newton2004, Vallejos2016}.\\
 
-As in Vallejos \emph{et al.}, 2016 \citep{Vallejos2016}, estimates of the over-dispersion parameters $\delta_i$ are negatively correlated to mean expression $\mu_i$ \textbf{(Fig.~\ref{fig0:BASiCS}B)} indicating that in homogeneous populations of cells, highly expressed genes tend to be less noisy than lowly expressed genes. This effect confounds differential over-dispersion testing when mean expression changes. Therefore, when assessing changes in over-dispersion, only genes with no changes in mean expression are considered (see Vallejos \emph{et al.}, 2016 \citep{Vallejos2016} and \textbf{Section \ref{sec1:variability}}).  
+In this model \citep{Vallejos2016}, estimates of the over-dispersion parameters $\delta_i$ are negatively correlated to mean expression $\mu_i$ \textbf{(Fig.~\ref{fig0:BASiCS}B)} indicating that in homogeneous populations of cells, highly expressed genes tend to be less noisy than lowly expressed genes. This effect confounds differential over-dispersion testing between two populations when mean expression changes. Therefore, when assessing changes in over-dispersion, only genes with no changes in mean expression are considered (see Vallejos \emph{et al.}, 2016 \citep{Vallejos2016} and \textbf{Section \ref{sec1:variability}}).  
