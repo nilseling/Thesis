@@ -5,14 +5,15 @@
 
 \chapter{Computational methods} 
 
-\section{Addressing the mean confounding effect for differential variability testing}
+\section{Addressing the mean confounding effect \\ for differential variability testing}
+\markboth{Computational methods}{B.1 Addressing the mean confounding effect for differential variability testing}
 \label{appB.1}
 
-\subsection{Prior specifications of extended BASiCS model}
+\subsection{Prior specifications of the extended BASiCS model}
 
 \begin{align*}
 \mu_i &\ind \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
-\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta &\ind \text{log-N}\left( \text{f}(\mu_i),\frac{\sigma^2}{\lambda_i} \right)\\
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta &\ind \text{log-Normal}\left( \text{f}(\mu_i),\frac{\sigma^2}{\lambda_i} \right)\\
 \lambda_i|\eta &\ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right)\\
 \beta|\sigma^2 & \sim \textnormal{Normal}(m_\beta,\sigma^2V_\beta),\\
 \sigma^2 & \sim  \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
@@ -21,25 +22,22 @@ s_j & \iid  \textnormal{Gamma}(a_s,b_s) \\
 \theta & \sim  \textnormal{Gamma}(a_\theta,b_\theta)
 \end{align*}
 
+\newpage
+
 \subsection{Starting values for hyper-parameter}
 \label{appB.1.hyper}
 
-\todo{list hyper-parameter values}
 \begin{align*}
 m_{\beta} & = \mathbf{0}_L \hspace{0.2cm} \text{(an $L$-dimensional vector of zeroes)}\\
 V_{\beta} & = \mathbf{I}_L \hspace{0.2cm} \text{(an $L$-dimensional identity matrix)}\\
 a_{\sigma^2} & = 2\\
 b_{\sigma^2} & = 2\\
-s^2_{\mu}& =  \\
-m_\beta& =  \\
-V_\beta& =  \\
-a_{\sigma^2}& =  \\
-b_{\sigma^2}& =  \\
-a_s& =  \\
-b_s& =  \\
-a_\phi& =  \\
-a_\theta& =  \\
-b_\theta& = 
+s^2_{\mu}& =  0.5\\
+a_s& = 1\\
+b_s& = 1\\
+a_\phi& =  \mathbf{1}_n\\
+a_\theta& = 1\\
+b_\theta& = 1
 \end{align*}
 
 \subsection{Likelihood of extended BASiCS model}
@@ -54,7 +52,9 @@ The likelihood function of the extended BASiCS model takes the form:
 \subsection{Derivation of full conditionals for extended BASiCS model}
 \label{appB.1.derivation}
 
-To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). $q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. $L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.\\ 
+To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). $q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. $L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.
+
+\newpage 
 
 \subsubsection{Helper functions}
 
@@ -63,7 +63,7 @@ For simplicity, the distributions of the joint prior specification, the product 
 \begin{align*}
 \text{log-Normal}(\text{f}(\mu_i),\frac{\sigma^2}{\lambda_i})&\propto{}(\frac{\lambda_i}{\sigma^2})^{\frac{1}{2}}\exp\lbrace-\frac{\lambda_i}{2\sigma^2}(\log(\delta_i)-x_{i,\ast}^T\beta)^2\rbrace\\
 \prod_{i=1}^{q_o}\text{log-Normal}(\text{f}(\mu_i),\frac{\sigma^2}{\lambda_i})&\propto{}(\frac{1}{\sigma^2})^{\frac{q_0}{2}}(\prod_{i=1}^{q_0}\lambda_i)^{\frac{1}{2}}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)^T\Lambda(Y-X\beta)\\
-\textnormal{N}(m_\beta,\sigma^2V_\beta)&\propto{}(\frac{1}{\sigma^2})^{\frac{k}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)^TV_\beta^{-1}(\beta-m_\beta)\rbrace\\
+\textnormal{Normal}(m_\beta,\sigma^2V_\beta)&\propto{}(\frac{1}{\sigma^2})^{\frac{k}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)^TV_\beta^{-1}(\beta-m_\beta)\rbrace\\
 \end{align*}
 
 Here, $x_{i,\ast}^T$ is the transposed vector of the $i$th row in the model matrix $X$.
