@@ -119,9 +119,15 @@
 % **** Adding TOC and List of Figures 
 % *************************************
 
+\cleardoublepage
+
 \tableofcontents
 
+\cleardoublepage
+
 \listoffigures
+
+\cleardoublepage
 
 \listoftables
 
@@ -129,8 +135,9 @@
 %\printnomenclature[3em]
 
 %\printnomenclature
-
-\printglossary[type=\acronymtype]
+\renewcommand{\glossarypreamble}{\vspace{-2cm}}
+\printglossary[type=\acronymtype, toctitle=Acronyms, title=\textcolor{Mahogany}{\LARGE{\textbf{\textsc{Acronyms}}}}]
+\addcontentsline{toc}{chapter}{Acronyms}
 
 % *************************************
 % **** Main Matter

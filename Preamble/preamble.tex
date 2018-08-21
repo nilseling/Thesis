@@ -175,11 +175,25 @@
 % ************************* User Defined Commands ******************************
 % ******************************************************************************
 
-% *********** To change the name of Table of Contents / LOF and LOT ************
+% **** To change the name of Table of Contents / LOF and LOT 
+\usepackage{tocloft}
+\setlength\cftaftertoctitleskip{0pt}
+\setlength\cftafterloftitleskip{0pt}
+\setlength\cftafterlottitleskip{0pt}
+\renewcommand\cfttoctitlefont{\LARGE\bfseries\scshape\color{Mahogany}}
+\renewcommand\cftloftitlefont{\LARGE\bfseries\scshape\color{Mahogany}}
+\renewcommand\cftlottitlefont{\LARGE\bfseries\scshape\color{Mahogany}}
 
-%\renewcommand{\contentsname}{My Table of Contents}
-%\renewcommand{\listfigurename}{My List of Figures}
-%\renewcommand{\listtablename}{My List of Tables}
+%\renewcommand{\glossarysection}[2][\theglstoctitle]{%
+%  \def\theglstoctitle{#2}%
+%  \vspace{\cftbeforelottitleskip}%
+%  \par\noindent
+%  \addcontentsline{toc}{chapter}{\numberline{}#1}%
+%}
+
+%\renewcommand{\contentsname}{\textcolor{Mahogany}{\LARGE \textbf{\textsc{Table of contents}}}}
+%\renewcommand{\listfigurename}{\textcolor{Mahogany}{\LARGE \textbf{\textsc{List of figures}}}}
+%\renewcommand{\listtablename}{\textcolor{Mahogany}{\LARGE \textbf{\textsc{List of tables}}}}
 
 % Math abbreviations
 \newcommand{\iid}{\stackrel{\mbox{iid}}{\sim}}

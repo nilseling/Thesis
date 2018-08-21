@@ -8,6 +8,10 @@
 %% Authors: Krishna Kumar                                                     %%
 %% License: MIT License (c) 2016 Krishna Kumar                                %%
 %% GitHub Repo: https://github.com/kks32/phd-thesis-template/                 %%
+%%
+%% This template has been altered by me, Nils Eling
+%%
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ************************** Class Identification ******************************
@@ -252,7 +256,7 @@ supported!}
 \RequirePackage{ifpdf}    % Check for pdfLaTeX
 \RequirePackage{ifxetex}  % XeLaTeX
 
-% *********************** Table of Contents & Appendices ***********************
+% ***** Table of Contents & Appendices 
 % add Bibliography, List of figures and tables to contents
 \RequirePackage[nottoc]{tocbibind}
 % Add appendices
@@ -904,11 +908,11 @@ wish to left align your text}
 }
 
 
-% ******************************************************************************
-% *************************** Front Matter Layout ******************************
-% ******************************************************************************
+% *************************
+% **** Front Matter Layout 
+% *************************
 
-% ******************************** Title Page **********************************
+% **** Title Page 
 \renewcommand{\maketitle}{
 
 % To compute the free vertical space in Title page
@@ -975,7 +979,7 @@ wish to left align your text}
 \end{singlespace}
 }
 
-% ********************************* Dedication *********************************
+% **** Dedication 
 % The dedication environment makes sure the dedication gets its
 % own page, centered
 
@@ -990,14 +994,15 @@ wish to left align your text}
 
 
 
-% ******************************* Declaration **********************************
+% **** Declaration
 % The declaration environment puts a large, bold, centered
 % "Declaration" label at the top of the page.
 
 \newenvironment{declaration}{
 \cleardoublepage
 \setsinglecolumn
-\textcolor{Mahogany}{\section*{\LARGE \textsc{Declaration}}}
+\textcolor{Mahogany}{\LARGE \textbf{\textsc{Declaration}}}
+\vspace{5mm}
 \thispagestyle{empty}
 }{
 \flushright
@@ -1008,20 +1013,21 @@ wish to left align your text}
 
 
 
-% ****************************** Acknowledgements ********************************
+% **** Acknowledgements 
 % The acknowledgements environment puts a large, bold, centered
 % "Acknowledgements" label at the top of the page.
 
 \newenvironment{acknowledgements}{
 \cleardoublepage
 \setsinglecolumn
-\textcolor{Mahogany}{\section*{\LARGE \textsc{Acknowledgements}}}
+\textcolor{Mahogany}{\LARGE \textbf{\textsc{Acknowledgements}}}
+\vspace{5mm}
 \thispagestyle{empty}
 }
 
 
 
-% ******************************* Nomenclature *********************************
+% **** Nomenclature 
 \RequirePackage[intoc]{nomencl}
 \makenomenclature
 \renewcommand{\nomgroup}[1]{%
@@ -1082,7 +1088,7 @@ wish to left align your text}
     \defineChapterfalse
 \fi
 
-% ******************************** Abstract ************************************
+% **** Abstract 
 % The abstract environment puts a large, bold, centered "Abstract" label at
 % the top of the page. Defines both abstract and separate abstract environment
 
@@ -1116,7 +1122,8 @@ wish to left align your text}
 % Normal abstract in the thesis
   \cleardoublepage
   \setsinglecolumn
-  \textcolor{Mahogany}{\section*{\LARGE \textsc{Abstract}}}
+  \textcolor{Mahogany}{\LARGE \textbf{\textsc{Abstract}}}
+  \vspace{5mm}
   \thispagestyle{empty}
 \fi
 }
