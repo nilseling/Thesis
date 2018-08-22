@@ -66,15 +66,6 @@ The identification of miRNA-driven modulation of transcriptional noise further o
 I introduced BASiCS as a Bayesian framework to quantify transcriptional noise from scRNA-Seq data with the main benefit of propagating statistical uncertainty from the data to down-stream differential variability testing.
 With the development of droplet-based scRNA-Seq approaches \citep{Macosko2015, Klein2015} and large-scale microwell techniques \citep{Han2018}, the amount of cells that can be assayed in one experiment scaled from hundreds to hundreds of thousands \citep{Svensson2018}. To learn model parameters of a generative model such as BASiCS across all cells and all genes became computationally challenging when considering a full Bayesian MCMC-based approach. To address this problem, a model framework called \gls{scVI} has been developed that uses stochastic optimisation within a variational autoencoder network to approximate posterior distributions of model parameters and latent factors \citep{Lopez2018}. In scVI transcriptomes of each cell are encoded through a non-linear transformation into a low-dimensional latent vector of normal random variables. \\
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-\centering    
-\includegraphics[width=0.48\textwidth]{Fig_1.png}
-\caption[The scVI model.]{\textbf{The scVI model.} \\
-Hierarchical representation of the scVI model. Shaded nodes indicate observed quantities. White nodes indicated latent random variables. Shaded diamonds represent constants which were set \emph{a priori}. White diamonds indicate variables shared across all genes and all cells. Edges show conditional dependency. Adapted from \citep{Lopez2018}.}
-\label{fig0:scVI}
-\vspace{-60mm}
-\end{wrapfigure}
-
 The latent representation is non-linearly transformed to generate a posterior distribution of model parameters based on a ZINB. For this, the transcript count $x_{n,g}$ of gene $g$ in cell $n$ is modelled as:\\
 
 \begin{align*}
@@ -93,7 +84,16 @@ l_n & \sim \textnormal{log-Normal}(l_{\mu},l^2_{\sigma})\\
 z_n & \sim \textnormal{Normal}(0,I)
 \end{align*}
 
-\vspace{1cm}
+\newpage
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering    
+\includegraphics[width=0.48\textwidth]{Fig_1.png}
+\caption[The scVI model.]{\textbf{The scVI model.} \\
+Hierarchical representation of the scVI model. Shaded nodes indicate observed quantities. White nodes indicated latent random variables. Shaded diamonds represent constants which were set \emph{a priori}. White diamonds indicate variables shared across all genes and all cells. Edges show conditional dependency. Adapted from \citep{Lopez2018}.}
+\label{fig0:scVI}
+%\vspace{-60mm}
+\end{wrapfigure}
 
 In this model, the NB distribution is realised as a hierarchical formulation of $y_{n,g}$ being Poisson distributed around the latent random variable $l_n$ with an additional random effect $w_{n,g}$. Additionally, the zero-inflation of the model is controlled by the latent variable $h_{n,g}$. $l_n$ is a random variable that represents nuisance variation due to differences in capture efficiency and sequencing depth and correlates with log-library size. $l_n$ is log-normal distributed parametrised by $l_\mu,l_\sigma\in\mathbb{R}^B_+$ which are empirical mean and variance estimates of the log-library size per batch in $B$ and which are therefore constants in the model \textbf{(Fig.~\ref{fig0:scVI}A)}.\\
 

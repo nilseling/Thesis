@@ -2,7 +2,7 @@
 % ------- PhD Thesis Nils Eling -------
 % *************************************
 
-\documentclass[a4paper,12pt,times,numbered,print,draftclassic]{Classes/PhDThesisPSnPDF}
+\documentclass[a4paper,12pt,times,numbered,print]{Classes/PhDThesisPSnPDF}
 
 % *************************************
 % **** Class Options 
@@ -131,10 +131,6 @@
 
 \listoftables
 
-% \printnomenclature[space] space can be set as 2em between symbol and description
-%\printnomenclature[3em]
-
-%\printnomenclature
 \renewcommand{\glossarypreamble}{\vspace{-2cm}}
 \printglossary[type=\acronymtype, toctitle=Acronyms, title=\textcolor{Mahogany}{\LARGE{\textbf{\textsc{Acronyms}}}}]
 \addcontentsline{toc}{chapter}{Acronyms}
@@ -152,35 +148,17 @@
 \include{Chapter3/chapter3}
 \include{Discussion/discussion}
 
-
-% *************************************
-% **** Back Matter 
-% *************************************
-
-% Backmatter should be commented out, if you are using appendices after References
-%\backmatter
-
 % *************************************
 % **** Bibliography 
 % *************************************
 
 \begin{spacing}{0.9}
 
-% To use the conventional natbib style referencing
-% Bibliography style previews: http://nodonn.tipido.net/bibstyle.php
-% Reference styles: http://sites.stat.psu.edu/~surajit/present/bib.htm
 
-%\bibliographystyle{apalike}
 \bibliographystyle{unsrt} % Use for unsorted references  
-%\bibliographystyle{plainnat} % use this to have URLs listed in References
+
 \cleardoublepage
-%\bibliography{References/library} % Path to your References.bib file
-
-
-% If you would like to use BibLaTeX for your references, pass `custombib' as an option in the document class. The location of 'reference.bib' should be specified in the preamble.tex file in the custombib section. Comment out the lines related to natbib above and uncomment the following line.
-
-%\printbibliography[heading=bibintoc, title={References}]
-
+\bibliography{References/library} 
 
 \end{spacing}
 

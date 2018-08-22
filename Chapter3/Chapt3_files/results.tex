@@ -50,6 +50,7 @@ P35 & do17827 & 3160 & 3160 & 3004 & 49002 & 10683 \\
 \bottomrule   
 \end{tabular}
 \end{table}
+\addcontentsline{lot}{table}{\ref{tab3:QC_scRNAseq} \hspace{2.5mm} Quality filtering of scRNA-Seq data.}
 
 To process droplet-based scRNA-Seq data after sequencing, 10X Genomics\texttrademark{} developed a set of processing pipelines termed \textit{Cell Ranger}. We obtained gene-specific transcript counts using the Cell Ranger \emph{count} function with default settings. This pipeline aligns reads against the \emph{Mus musculus} genome (GRCm38) and counts UMIs per transcript and sample. This software retains cells with similar UMI distributions \citep{Zheng2017}. We use this default threshold to obtain high-quality cells with large numbers of UMIs. For further quality control and after merging cells of all samples, we filtered out cells that express less than 1000 genes. Additionally, we exclude cells with more than 10\% of reads mapping to the mitochondrial genome. The number of remaining cells per sample can be seen in \textbf{Table \ref{tab3:QC_scRNAseq}}.\\
 
@@ -234,8 +235,6 @@ We first explored how expression of histone variants changed throughout early sp
 
 When profiling the expression of canonical histones, we detected increased expression of \textit{Hist1h2bp} and \textit{Hist1h4a}, with a distinct up-regulation during early and mid-spermiogenesis \textbf{(Fig.~\ref{fig3:spermiogenesis}C)}. Canonical histones are typically transcribed in a replication-dependent manner during S phase \citep{Marzluff2002}, thus the atypical expression during spermiogenesis could suggest important roles as replacement histones during chromatin remodelling. Nevertheless, canonical histones appeared to be the set of annotated histones that is least correlated to the developmental trajectory \textbf{(Fig.~\ref{fig3:spermiogenesis}A)}.
 
-\newpage
-
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.85\textwidth]{Fig_9.png}
@@ -348,9 +347,7 @@ As described above, spermatogenesis is a unidirectional and continuous different
 
 \subsection{Using BASiCS on continuous data}
 
-Here, I use BASiCS to estimate residual over-dispersion parameters for homogeneous cell populations along the differentiation time-course. Different approaches of identifying homogeneous populations exist. First, ordered cells can be split into populations of equal size (e.g.~200 cells per group). This approach produces heterogeneous cell populations when cell state transitions occur within the population. I therefore rely on the clustering performed in \textbf{Section \ref{sec3:clustering}} which splits the full cell population along the differentiation trajectory. For each cluster from S1 to S14, the regression BASiCS model was run for 40,000 iterations with 20,000 iterations of burn-in and a thinning value of 20. 
-
-\newpage
+Here, I use BASiCS to estimate residual over-dispersion parameters for homogeneous cell populations along the differentiation time-course. Different approaches of identifying homogeneous populations exist. First, ordered cells can be split into populations of equal size (e.g.~200 cells per group). This approach produces heterogeneous cell populations when cell state transitions occur within the population. I therefore rely on the clustering performed in \textbf{Section \ref{sec3:clustering}} which splits the full cell population along the differentiation trajectory. For each cluster from S1 to S14, the regression BASiCS model was run for 40,000 iterations with 20,000 iterations of burn-in and a thinning value of 20. \\
 
 For each gene in each of the 14 spermatid populations, BASiCS generates a posterior distribution estimating the residual over-dispersion parameter in form of an MCMC chain \textbf{(Fig.~\ref{fig3:variability_schematic}A)}. These measures are independent of mean expression (see previous chapter) and can therefore be used to study changes in variability which are not confounded by changes in mean expression throughout the differentiation of sperm. I chose two approaches to profile and test temporal changes of transcriptional variability during spermiogenesis. \\
 
