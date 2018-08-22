@@ -5,7 +5,7 @@
 
 \section{Bayesian approaches to model scRNA-Seq data}
 
-In the last decade, an array of tools to process and analyse scRNA-Seq data have been developed. These methods include tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalisation, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. In this thesis, I will focus on the application and development of Bayesian statistical methodologies designed to characterise cellular heterogeneity using scRNA-Seq data. This section describes key concepts of Bayesian inference and related previous work that serve as a foundation for the results in later chapters.
+In the last decade, an array of tools to process and analyse scRNA-Seq data has been developed. These methods include tools for data acquisition (e.g.~alignment, de-duplication, quantification), data filtering (e.g.~quality control, normalisation, imputation), cell labelling (e.g.~clustering, classification, ordering) and gene-level analysis (e.g.~differential expression, detection of expression patterns) \citep{Zappia2018}. Extensive comparisons of these methods have been performed for each stage of the analysis pipeline \citep{Saelens2018, Soneson2018}. In this thesis, I will focus on the application and development of Bayesian statistical methodologies designed to characterise cellular heterogeneity using scRNA-Seq data. This section describes key concepts of Bayesian inference and related previous work that serve as a foundation for the results in later chapters.
 
 \subsection{The basics of Bayesian inference}
 
@@ -22,7 +22,7 @@ Here, $L(D|\omega)$ is the likelihood of observing the data given the parameter 
 \subsection{Prior distributions}
 \label{sec0:prior}
 
-The role of the prior distribution is to incorporate prior knowledge about the model parameters. Using the Bayes theorem, this is then combined with the data to form the posterior distribution. For this purpose, a prior distribution should ideally describe the experimenter's prior knowledge regarding the unknown parameters (e.g.~based on previous experiments). For practical use, the prior distribution can be chosen to form an analytically tractable solution for the integral that is required to calculate $L(D)$. This is achieved by using conjugate prior distributions, for which the prior is of the same family as the posterior distribution. As such, conjugate prior distributions lead to a closed form posterior distribution, which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}} which was taken from \citep{Fink1997}.
+The role of the prior distribution is to incorporate prior knowledge about the model parameters. Using the Bayes theorem, this is then combined with the data to form the posterior distribution. For this purpose, a prior distribution should ideally describe the experimenter's prior knowledge regarding the unknown parameters (e.g.~based on previous experiments). For practical use, the prior distribution can be chosen to form an analytically tractable solution for the integral that is required to calculate $L(D)$. This is achieved by using conjugate prior distributions, for which the prior is of the same family as the posterior distribution. As such, conjugate prior distributions lead to a closed form posterior distribution, which facilitates posterior inference. A list of commonly used conjugate prior distributions can be seen in \textbf{Table \ref{tab0:priors}} which was taken from Fink \emph{et al.}, 1997 \citep{Fink1997}.
 
 \begin{table}[hb	]
 \centering
@@ -141,7 +141,7 @@ Assume the data $D$ have arisen under one of the models $M_1$ or $M_0$. The post
 B_{10}=\frac{\pi^*(M_1|D)}{\pi^*(M_0|D)}/{}\frac{\pi(M_1)}{\pi(M_0)}=\frac{L(D|M_1)}{L(D|M_0)}
 \end{equation}  
 
-When the models $M_1$ and $M_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $M_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|M_1)$ and $L(D|M_0)$ (see equations \eqref{eq0:Bayes_theorem}). Typically, these marginal likelihoods are intractable and this measure is difficult to compute. \\
+When the models $M_1$ and $M_0$ are equally probable \emph{a priori}, the Bayes factor is equal to the posterior odds in favour of $M_1$ \citep{Kass1995}. To compute the Bayes factor, one needs to find the marginal likelihoods $L(D|M_1)$ and $L(D|M_0)$ (see equation \eqref{eq0:Bayes_theorem}). Typically, these marginal likelihoods are intractable and this measure is difficult to compute. \\
 
 Alternatively, \emph{tail posterior probabilities} can be computed as a selection rule regarding $M_1$ and $M_0$ when these models are defined by restrictions in the parameter space (e.g.~$M_1:\theta\in\Theta$ versus $M_0:\theta\notin\Theta$). For example, posterior tail probabilities were introduced to test the difference $\delta_g$ in log-expression of gene $i$ between condition $A$ and condition $B$ \citep{Bochkina2007}. Here, the posterior tail probability of $\delta_g$ being larger than a given threshold $\delta_g^{(\alpha)}$ is defined as:
 
@@ -149,11 +149,11 @@ Alternatively, \emph{tail posterior probabilities} can be computed as a selectio
 \pi(\delta_g,\delta_g^{(\alpha)})=P\left\lbrace|\delta_g|>\delta_g^{(\alpha)}|D\right\rbrace
 \end{equation}
 
-In the case of testing changes in mean expression, the difference $\delta_g$ represents the log-fold change in mean expression $\log(\frac{\mu^{(B)}}{\mu^{(A)}})$. In practice, for each iteration of the MCMC, this difference is computed and the tail posterior probability is the fraction of the absolute distance being larger than the threshold. If the tail posterior probability is larger than an evidence threshold (e.g. 80\%) one would reject the null hypothesis $|\delta_g|\leq\delta_g^{(\alpha)}$ \citep{Vallejos2016}. 
+In the case of testing changes in mean expression, the difference $\delta_g$ represents the log-fold change in mean expression ($\log(\frac{\mu^{(B)}}{\mu^{(A)}})$). In practice, for each iteration of the MCMC, this difference is computed and the tail posterior probability is the fraction of the absolute distance being larger than the threshold. If the tail posterior probability is larger than an evidence threshold (e.g. 80\%) one would reject the null hypothesis $|\delta_g|\leq\delta_g^{(\alpha)}$ \citep{Vallejos2016}. 
 
 \subsection{Modelling scRNA-Seq data}
 
-Several models have been proposed to estimate model parameters based on scRNA-Seq data. A common approach is to model the count data as \gls{NB} distributed \citep{Vallejos2015BASiCS, Risso2018, Lopez2018}. The NB distribution is defined as:
+Several approaches have been proposed to estimate model parameters based on scRNA-Seq data. Commonly, the count data is modelled as \gls{NB} distributed \citep{Vallejos2015BASiCS, Risso2018, Lopez2018}. The NB distribution is defined as:
 
 \begin{equation}
 f_{NB}(y;\mu,\theta)=\frac{\Gamma(y+\theta)}{\Gamma(\theta)y!}\left(\frac{\theta}{\theta + \mu}\right)^\theta\left(\frac{\mu}{\mu + \theta}\right)^y
@@ -207,7 +207,7 @@ Here, $\bm{A}$ denotes a $D\times{}K$ factor loadings matrix, $\bm{\mu}$ a $D\ti
 \subsection{BASiCS: Bayesian Inference of Single-Cell Sequencing data} 
 \label{sec0:BASiCS}
 
-Throughout this thesis, I will use and extend the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016} to model scRNA-Seq data generated from seemingly homogeneous populations of cells (i.e.~where no distinct sub-populations are found) to perform down-stream analysis (e.g. normalisation, differential expression testing).\\
+Throughout this thesis, I will use and extend the \gls{BASiCS} framework \citep{Vallejos2015BASiCS, Vallejos2016}. BASiCS models scRNA-Seq data generated from seemingly homogeneous populations of cells (i.e.~where no distinct sub-populations are found) to perform down-stream analysis (e.g. normalisation, differential expression testing).\\
 
 In BASiCS, the expression count of gene $i$ ($ \in \{1, \ldots, q\}$) in cell $j$ ($\in \{ 1, \ldots ,n\}$) $X_{ij}$ is treated as a random variable. Compared to bulk RNA-Seq, scRNA-Seq is inherently noisy due to low starting amounts of RNA \citep{Brennecke2013}. To control for technical noise, BASiCS incorporates reads from synthetic RNA spike-ins \citep{Jiang2011}. Here, the first $q_0$ genes are biological and the  remaining $q-q_0$ genes are technical.
 

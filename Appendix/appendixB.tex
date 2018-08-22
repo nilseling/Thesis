@@ -24,7 +24,7 @@ s_j & \iid  \textnormal{Gamma}(a_s,b_s) \\
 
 \newpage
 
-\subsection{Starting values for hyper-parameter}
+\subsection{Starting values for hyper-parameters}
 \label{appB.1.hyper}
 
 \begin{align*}
@@ -40,7 +40,7 @@ a_\theta& = 1\\
 b_\theta& = 1
 \end{align*}
 
-\subsection{Likelihood of extended BASiCS model}
+\subsection{Likelihood of the extended BASiCS model}
 
 The likelihood function of the extended BASiCS model takes the form:
 
@@ -49,7 +49,7 @@ The likelihood function of the extended BASiCS model takes the form:
 &\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right].
 \end{align} 
 
-\subsection{Derivation of full conditionals for extended BASiCS model}
+\subsection{Derivation of full conditionals for the extended BASiCS model}
 \label{appB.1.derivation}
 
 To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). $q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. $L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.
