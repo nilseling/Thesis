@@ -1,419 +1,568 @@
-%!TEX root = ../chapter3.tex
+%!TEX root = ../chapter2.tex
 %******************************
 %	 Results 
 %*****************************
 
-\section{Data generation and processing strategies}
+\section{Extending the  BASiCS model}
 
-To fully dissect mouse spermatogenesis, we performed three sets of experiments: 1. droplet-based scRNA-Seq of juvenile and adult animals, 2. bulk RNA-Seq of multiple time points during the first wave of spermatogenesis and 3. \gls{CUTRUN} to profile chromatin marks in juvenile mice. The following section will give an overview on the data generation and processing approaches. Detailed analysis steps are explained throughout the chapter. The full experimental set-up can be seen in \textbf{Fig.~\ref{fig3:experimental_design}}.
+Unlike bulk RNA sequencing, scRNA-Seq provides information about cell-to-cell expression heterogeneity within a population of cells. Past works have used a variety of measures to quantify this heterogeneity. Among others, this includes the \gls{CV2} \citep{Brennecke2013} and entropy measures \citep{Richard2016}. The BASiCS model \citep{Vallejos2015BASiCS, Vallejos2016}, which was introduced in \textbf{Section \ref{sec0:BASiCS}}, focuses on biological \textit{over-dispersion} as a proxy for transcriptional heterogeneity. This is defined as the excess of variability that is observed with respect to what would be predicted by Poisson sampling noise, after accounting for technical variation. 
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width=\textwidth]{Fig_2.png}
-\caption[Experimental design to dissect mouse spermatogenesis]{\textbf{Experimental design to dissect mouse spermatogenesis.}\\
-Overview of the experimental design yielding bulk RNA-Seq, droplet-based scRNA-Seq and chromatin profiling on FACS-purified cells using CUT\&{}RUN from one testis while using the contralateral testis for matched histology.}
-\label{fig3:experimental_design}
-\end{figure}
+\subsection{The BASiCS model}
 
-\subsection{scRNA-Seq using the 10X Genomics\texttrademark{} system}
+Let $X_{ij}$ be a random variable representing the expression count of gene $i \in \{1, \ldots, q\}$ in cell $j \in \{ 1, \ldots ,n\}$.  To control for technical noise, we employ reads from synthetic RNA spike-ins (see \citep{Jiang2011}). We assume the first $q_0$ genes to be biological followed by the $q-q_0$ spike-in genes. BASiCS assumes a hierarchical Poisson formulation: 
 
-Droplet based scRNA-Seq was performed using the 10X Genomics\texttrademark{} technology \citep{Zheng2017}. For this, testes from specifically staged juvenile (between postnatal days 6 and 35) and adult (8-9 weeks) C57BL/6J (B6) mice were dissociated. Single-cell suspensions were loaded into one channel of the 10X Chromium\texttrademark{} Single Cell A Chip, aiming for a recovery of 4000-5000 high-quality cells. Further information on the experimental strategy can be found in \textbf{Appendix \ref{appA.2}} and \textbf{Table \ref{tab3:QC_scRNAseq}} summarises the cells captured per sample.
+\begin{equation} \label{eq::PoissonBASiCS}
+ X_{ij}|\mu_i,\phi_j,\nu_j,\rho_{ij} \ind
+ \left\lbrace
+  \begin{aligned}
+    &\text{Poisson}(\phi_j\nu_j\mu_i\rho_{ij}), && i=1,...,q_0,j=1,...n;  \\ 
+    &\text{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n,    	    
+  \end{aligned}
+\right.
+\end{equation} 
 
-\newpage
+where, to account for technical ($\nu_j$) and biological ($\rho_{ij}$) factors that affect the variance of the transcript counts, we incorporate two random effects: 
 
-\begin{table}[ht]
-\centering
-\caption[Quality filtering of scRNA-Seq data.]{Quality filtering of scRNA-Seq data. \\
-Quality metrics of droplet-based scRNA-Seq. \textbf{Sample:} Stage information for all samples, \textbf{Library:} sample identifier, \textbf{CellRanger filter:} Number of retained cells after default thresholding using the CellRanger \emph{counts} function,  \textbf{After QC:} Number of cells obtained after \gls{QC}, \textbf{Assigned Cell Type:} Number of cells that fall into annotated clusters (removing outlying cells), \textbf{EmptyDrops filter:} Number of cells retained after using the \emph{emptyDrops} function controlling the FDR to 1\%, \textbf{EmptyDrops QC:} Number of cells obtained after QC of the \emph{emptyDrops} filtered cells.
-}
-\label{tab3:QC_scRNAseq}
-\begin{tabular}{lllllll}
-\toprule
-\textbf{Sample} & \textbf{Library} & \textbf{CellRanger} & \textbf{After} & \textbf{Assigned} & \textbf{EmptyDrops} & \textbf{EmptyDrops} \\
-& & \textbf{filter} & \textbf{QC} & \textbf{Cell Type} & \textbf{filter} & \textbf{QC} \\
-\midrule
-Adult & do17815 & 1157 & 1157 & 1123 & 4467 & 3400 \\
-\midrule
-Adult & do17816 & 2198 & 2198 & 2092 & 6145 & 4603 \\
-\midrule
-P10 & do17821 & 3229 & 3213 & 3212 & 4976 & 4202 \\
-\midrule
-P15 & do18195 & 4258 & 4258 & 4014 & 14050 & 13168 \\
-\midrule
-P20 & do17824 & 1775 & 1775 & 1662 & 9400 & 7491 \\
-\midrule
-P25 & do18196 & 4334 & 4334 & 4130 & 8038 & 6802 \\
-\midrule
-P30 & do17825 & 2278 & 2278 & 2211 & 5393 & 4958 \\
-\midrule
-P35 & do17827 & 3160 & 3160 & 3004 & 49002 & 10683 \\                 
-\bottomrule   
-\end{tabular}
-\end{table}
-\addcontentsline{lot}{table}{\ref{tab3:QC_scRNAseq} \hspace{2.5mm} Quality filtering of scRNA-Seq data.}
+\begin{equation} \label{eq::RandomEffectsBASiCS}
+\nu_j|s_j,\theta \ind \text{Gamma}\left(\frac{1}{\theta},\frac{1}{s_j\theta}\right), \hspace{0.5cm} \rho_{ij}|\delta_i  \ind \text{Gamma}\left(\frac{1}{\delta_i},\frac{1}{\delta_i}\right)\\
+\end{equation} 
 
-To process droplet-based scRNA-Seq data after sequencing, 10X Genomics\texttrademark{} developed a set of processing pipelines termed \textit{Cell Ranger}. We obtained gene-specific transcript counts using the Cell Ranger \emph{count} function with default settings. This pipeline aligns reads against the \emph{Mus musculus} genome (GRCm38) and counts UMIs per transcript and sample. This software retains cells with similar UMI distributions \citep{Zheng2017}. We use this default threshold to obtain high-quality cells with large numbers of UMIs. For further quality control and after merging cells of all samples, we filtered out cells that express less than 1000 genes. Additionally, we exclude cells with more than 10\% of reads mapping to the mitochondrial genome. The number of remaining cells per sample can be seen in \textbf{Table \ref{tab3:QC_scRNAseq}}.\\
-
-The Cell Ranger \emph{count} pipeline performs thresholding on the number of UMIs per cell to exclude empty droplets or droplets with low-quality cells. This default threshold is unable to distinguish between smaller cells with lower transcriptional complexity from more heterogeneous milieu of background mRNAs. We therefore used the \emph{emptyDrops} function provided in the \emph{DropletUtils} Bioconductor package to statistically distinguish empty droplets from genuine cells (controlling the FDR to 1\%) \citep{Lun2018}. After applying \emph{emptyDrops}, further quality control needs to be performed and after merging all remaining cells across all samples, we filtered out cells with less than 500 genes expressed. Furthermore, we excluded cells with more than 10\% of mitochondrial genes expressed \textbf{(Table \ref{tab3:QC_scRNAseq})}.\\
- 
-The transcriptomes of quality filtered cells were normalised using the \emph{scran} package \citep{Lun2016pooling}. For this, cells with similar transcriptomic complexity were pre-clustered using a graph-based approach (as implemented in the \emph{quickCluster} function). Size factors were
-calculated within each cluster before being scaled between clusters using the \emph{computeSumFactors} function. Throughout this paper, the log$_2$-transformed, normalised counts (after adding one pseudocount) are displayed. For down-stream analysis, lowly expressed genes (averaged log$_2$-transformed, normalised expression < 0.1) were excluded. After quality control and filtering, we retained more than 20,000 high-quality single cells and over 46,000 cells including those with lower transcriptional complexity \textbf{(Table \ref{tab3:QC_scRNAseq})}. These cells were used to dissect molecular processes during spermatogenesis and to profile under-represented and transcriptionally inactive cell types in mouse testes. 
-
-\subsection{Bulk RNA-Seg from juvenile animals}
-
-Additionally, we generated whole-tissue bulk RNA-Seq libraries from time points during the first wave of spermatogenesis (\textbf{Appendix \ref{appA.2.bulk}}). More specifically, we sampled (with biological replicates) testes from mice at \gls{P}6 (2x), P8, P10 (2x), P12 (2x), P14 (2x), P16, P18 (2x), P20 (2x), P22 (2x), P24 (2x), P26 (2x), P28 (2x), P30 (2x), P32, P34, P35 and from adult animals (2x). Detailed experimental methods can be found in \textbf{Appendix \ref{appA.2.bulk}}. 
-\\
-
-Sequenced reads were aligned against the \textit{Mus musculus} genome (GRCm38) using the \emph{STAR} aligner with default settings \citep{Dobin2013}. Gene-level transcript counts were obtained using \emph{HTSeq} \citep{Anders2014} with the –s option set to “reverse” and using the GRCm38.88 genomic annotation file. We visualised several features of the aligned and counted data (number of intronic/exonic reads, number of multi-mapping reads, low-quality reads and total library size) and did not detect any low-quality RNA-Seq libraries. Next, we used the size factor normalisation approach implemented in DESeq2 \citep{Love2014} for data normalisation. For down-stream analysis and visualisation, lowly expressed genes (averaged counts < 10) were excluded. With this, we generated 30 bulk RNA-Seq libraries that will be used for developmental staging of cell types and to dissect X chromosome expression dynamics.
-
-\subsection{CUT\&{}RUN from juvenile animals}
-
-To map chromatin states in purified cell populations we used CUT\&{}RUN \citep{Skene2018}. In brief, spermatocytes and spermatids were sorted as described in \textbf{Appendix \ref{appA.2.sorting}} and attached to concanavalin A–coated magnetic beads. After permeabilisation, anti-bodies against H3K9me3 and H3K4me3 were incubated with the cells. Inactive micrococcal nuclease linked to protein A was added to the mix and cooled to 0$^\circ$C. Protein A binds to the antibodies and upon activation the nuclease digests DNA next to the histones where the antibody bound. Cleaved DNA fragments diffused out of the nucleus and were prepared for sequencing. This technique allows targeted chromatin profiling for specific marks at a genome wide level and requires minimal cell input relative to conventional ChIP-Seq \citep{Skene2018}. Detailed experimental methods can be found in \textbf{Appendix \ref{appA.2.CnR}}.\\
-
-Sequenced reads were aligned to the \textit{Mus musculus} genome (GRCm38) using \textit{Bowtie2} with the following settings: -{}-local -{}-very-sensitive-local -{}-no-unal -q -{}-phred33. Paired end reads were counted in specified regions using the \textit{regionCounts} function implemented in the \textit{csaw} Bioconductor package \citep{Lun2015}. For this, duplicated reads, reads that mapped more than 1000 bp apart and reads mapping to blacklisted regions (available at: \url{http://mitra.stanford.edu/kundaje/akundaje/release/blacklists/mm10-mouse/mm10.blacklist.bed.gz}) were removed. Regions of interest included: promoters (obtained using the \textit{promoters} function of the \textit{GenomicFeatures} package), 1000 bp windows across the chromosome (using the \textit{windowCounts} function of \textit{csaw}) and whole chromosomes. Counts per region were normalised based on library size by computing \gls{CPM} for promoter regions and 1000 bp windows. Additionally, when considering entire chromosomes, the length of the chromosome was accounted for by computing the \gls{FPKM}. 
+Here, $\phi_j$ represents a cell-specific normalisation parameter to correct for differences in mRNA content between cells. Gene-specific parameters $\mu_i$ represent average expression of a gene across cells. The strength of the technical noise $\nu_j$ is quantified by a global parameter $\theta$ (shared across all genes and cells). $s_j$ models cell-specific differences in efficiency to capture RNA spike-in transcripts affecting all biological and technical genes. The strength of heterogeneous gene expression across cells $\rho_{ij}$ is controlled by gene-specific over-dispersion parameters $\delta_i$ which we used as a proxy for biological expression variability in the previous chapter. As shown in the previous chapter, over-dispersion as a measure of variability can be used to identify genes whose transcriptional heterogeneity differs between groups of cells (defined by experimental conditions or cell types). However, the strong relationship that is typically observed between variability and mean estimates (see \textbf{Section \ref{sec0:BASiCS}} and \citep{Brennecke2013}) can hinder the interpretation of these results. 
 
 \newpage
 
-\subsection{Identification of germ cell types across all scRNA-Seq samples}
-\label{sec3:clustering}
+\subsection{Approaches to correct the mean-variability confounding effect}
 
-After data generation and pre-processing steps, we next characterised the detectable cell types across all scRNA-Seq samples. We assume that cell types sampled from juvenile animals are also found among the cell types sampled from adult animals. To detect cell types consistently across all scRNA-Seq samples, we first performed batch correction. To remove batch-specific effects that arise when samples are prepared and sequenced in different experiments \textbf{(Tables \ref{tab3:QC_scRNAseq})}, we used the \emph{mnnCorrect} function implemented in the \emph{scran} package \citep{Haghverdi2018}. We used the top 1000 genes with highest biological variation across all samples as informative genes for batch correction. The \emph{mnnCorrect} function takes transcriptional profiles of cells isolated from adult B6 mice as the first input and uses this dataset as a reference for cell mapping \textbf{(Fig.~\ref{fig3:cell_types}A)}.\\
+A simple solution to avoid the confounding effect of mean expression was used in \textbf{Chapter 2} by restricting the assessment of differential variability to genes with equal mean expression across populations \textbf{(Fig.~\ref{fig2:Schematic_model}A and Section \ref{sec1:BASiCS})}. However, this is sub-optimal, particularly in the case of naive and activated CD4\plus{} T cells where large sets of genes are differentially regulated upon immune activation. With the current model, immune response genes (e.g.~cytokines, nuclear receptors, transcription factors) are excluded from differential variability testing. An alternative approach is to directly adjust variability measures to remove this confounding. For example, Kolodziejczyk \emph{et al.}, 2015 computed the empirical distance between the \gls{CV2} to a rolling median along expression levels --- referred to as the DM method \citep{Newman2006, Kolodziejczyk2015cell}.  \\
 
-To identify cell types across all samples, batch corrected transcriptomes were clustered using a graph-based approach. A \gls{SNN} graph \citep{Xu2015} was constructed considering 3 shared nearest neighbours using the \emph{buildSNNGraph} function in \emph{scran}. In the next step, a multi-level modularity optimisation algorithm was used to find community structure in the graph \citep{Blondel2008} as implemented in the \emph{igraph} R package. Cells in small clusters that had ambiguous identities were excluded from down-stream analysis. In total, we identified 28 clusters. To correctly label cell clusters based on their cell type, we identified marker genes for all germ cell types in the adult B6 samples. To this end, we performed differential expression testing using multiple pairwise comparisons. To detect cluster-specific marker genes, the \emph{findMarkers} function implemented in \emph{scran} was applied to the log$_2$-transformed normalised counts while providing the cluster labels \textbf{(Fig.~\ref{fig3:cell_types}B)}. \\
+In line with this idea, our method extends the statistical model implemented in BASiCS \citep{Vallejos2015BASiCS, Vallejos2016} to meaningfully assess changes in transcriptional heterogeneity when genes exhibit shifts in mean expression \textbf{(Fig.~\ref{fig2:Schematic_model}B)}. For this, we infer a regression trend between over-dispersion ($\delta_i$) and gene-specific mean parameters ($\mu_i$), by introducing a joint informative prior to capture the dependence between these parameters. A latent gene-specific \textit{residual over-dispersion} parameter $\epsilon_i$ describes departures from this trend \textbf{(Fig~\ref{fig2:Schematic_model}C)}. The value of $\epsilon_i$ indicates whether a gene exhibits more (positive) or less (negative) variation than expected relative to genes with similar expression levels. Importantly, this measure is not confounded by mean expression \textbf{(Fig.~\ref{fig2:Schematic_model}D)}. \\
 
-By visualising the expression of detected marker genes, we identified the following cell types: spermatogonia (SG, based on \textit{Dmrt1} expression, \citep{Matson2010}), spermatocytes (SC, \textit{Piwil1}, \citep{Deng2002}), round and elongating spermatids (S, \textit{Tex21} and \textit{Tnp1}, respectively, \citep{Fujii2002}), as well as the main somatic cell types of the testis, Sertoli (\textit{Cldn11}, \citep{Mazaud-Guittot2010}) and Leydig cells (\textit{Fabp3}, \citep{Oresti2013}) \textbf{(Fig.~\ref{fig3:cell_types}B)}. Using a dimensionality reduction technique for visualisation (tSNE, \textbf{Fig.~\ref{fig3:cell_types}C}), the germ cell types from spermatocytes to elongating spermatids formed a continuum, which recapitulated the known developmental trajectory.
+The hierarchical Bayesian approach infers full posterior distributions for the gene-specific latent residual over-dispersion parameters $\epsilon_i$. As a result, we can directly use a probabilistic approach to identify genes with large absolute differences in residual over-dispersion between two groups of cells. When the posterior samples of $\epsilon_i$ in condition A are very different from posterior samples of $\epsilon_i$ in condition B, the majority of values for $|\epsilon_i^A - \epsilon_i^B|$ are larger than a given threshold $\psi_0>0$. In this case, the gene is found to be differentially variable between the two conditions  \textbf{(Fig.~\ref{fig2:Schematic_model}E and Section \ref{sec0:decision})}. In contrast, mean-corrected point estimates for residual noise parameters (such as those obtained by the DM method) cannot be directly used to perform gene-specific statistical testing between two conditions as no measure of the uncertainty in the estimate is available.\\
 
 \newpage
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_3.png}
-\caption[Droplet based scRNA-Seq of juvenile and adult mouse spermatogenesis]{\textbf{Droplet based scRNA-Seq of juvenile and adult mouse spermatogenesis.}\\
-\textbf{(A)} tSNE representation of juvenile cells that were mapped to cells isolated from adult mice. Grey dots indicate all cells from adult animals that were used as a reference for cell mapping. Coloured dots represent cells isolated at each sampled stage during the first wave of spermatogenesis. Clustering has been perfomed across all cells after cell mapping. SG: Spermatogonia, M: Metaphase, IL: Imature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Marcophages, \textbf{(B)} tSNE representation of scRNA-Seq data from adult B6 mice with the colour gradient representing the expression of known marker genes for two somatic cell types and the main germ cell types. The x- and y-axis represent the first and second dimension of tSNE respectively. The colour legend shows log$_2$-transformed, normalised expression counts, \textbf{(C)} Graph-based clustering identifies different sub-stages within major germ cell populations form adult B6 animals. 
-}
-\label{fig3:cell_types}
-\end{figure}
-
-\newpage
-
-\section{Developmental staging of mouse spermatogenesis}
-
-Historically, sub-staging of the major cell types within the testis was based on changes in nuclear or cellular morphology \citep{Oakberg1956,  Oakberg1956a}. Previous attempts to complement morphology with molecular signatures have been limited to FACS-based and sedimentation assays. Their resolution was not sufficient to differentiate between sub-cell types \citep{Bastos2005, Gaysinskaya2014, Lam1970, Meistrich1977, Romrell1976, Soumillon2013}. While a mixture of all spermatogenic cell types co-exists in the adult, the first wave of spermatogenesis during juvenile development is more synchronised. Starting around mouse postnatal day P4, spermatogonia begin to differentiate, forming the first generation of spermatocytes as early as P10, round spermatids by P20, and completing the first wave of spermatogenesis with the production of mature spermatozoa between P30 and P35 \textbf{(Fig.~\ref{fig3:cell_staging}B and \ref{fig3:1st_wave}A)} \citep{Bellve1977, Janca1986, Nebel1961}. In this section, we define well-known developmental transitions during spermatogenesis by (i) mapping cells sampled from defined epithelial stages during the first wave of spermatogenesis to cells sampled from adult testes and (ii) classifying the cell types identified above using bulk RNA-Seq sampled from juvenile testes every two days during the first wave of spermatogenesis. 
-
-\subsection{Cell type characterisation using the first wave of spermatogenesis}
- 
-We exploited the synchronised development of cell types throughout the first wave of spermatogenesis to define major and morphologically described check-points of the differentiation process. For this, we sampled multiple time points from juvenile animals to identify the most mature (differentiated) cell types. At any given time point during the first wave of spermatogenesis, there exist a defined number of known cell types in juvenile testis depending on the timing of the developmental cycle \textbf{(Fig.~\ref{fig3:cell_staging}B)}. Based on known sperm developmental transitions, we chose six time points between P10 and P35 for generation of single-cell RNA-Seq libraries \textbf{(Fig.~\ref{fig3:1st_wave}A and Table \ref{tab3:QC_scRNAseq})}. As described above, we mapped the transcriptomes of juvenile samples onto the adult B6 sample \textbf{(Fig.~\ref{fig3:cell_types}A)}. For each juvenile experiment, we found that the population of developing germ cells was strongly enriched at the expected developmental stage, as quantified by the percentage of cells in each cell type cluster \textbf{(Fig.~\ref{fig3:1st_wave}C)}. By associating the known cell types from juvenile animals with the corresponding cell types in the adult trajectory, we unambiguously assigned molecular and histological signatures to cells during adult spermatogenesis.
-
-\newpage
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=0.95\textwidth]{Fig_4.png}
-\caption[Staging of cell types during mouse spermatogenesis]{\textbf{Staging of cell types during mouse spermatogenesis (full legend on next page).}}
-\label{fig3:1st_wave}
+\includegraphics[width=0.9\textwidth]{Fig_1.png}
+\caption[Addressing the mean confounding effect in scRNA-Seq data]{\textbf{Addressing the mean confounding effect in scRNA-Seq data (full legend on next page).}\\}
+\label{fig2:Schematic_model}
 \end{figure}
 
 \newpage
 
 \captionsetup[figure]{list=no}
 \addtocounter{figure}{-1}   
-\captionof{figure}{\textbf{Staging of cell types during mouse spermatogenesis (continued).}\\
-\textbf{(A)} Schematic representation of the major germ cell types and their corresponding developmental processes. Spermatogonia differentiate undergoing mitotic cell divisions before forming spermatocytes that divide by meiotic division. Following meiosis, spermatids differentiate throughout spermiogenesis to form mature sperm. The timeline in the lower panel indicates at which point during the first wave of spermatogenesis samples were harvested for the generation of scRNA-Seq (X) or bulk RNA-Seq (B) data, \textbf{(B)} Representative images of seminiferous tubules from animals harvested at different postnatal (P) time points during the first wave of spermatogenesis. The approximate timing of the stage and cycle of the tubule is illustrated below in the form of a circle (see \textbf{Fig.~\ref{fig3:cell_staging}B}), \textbf{(C)} After cell mapping and clustering, the percentage of cells in each cluster can be calculated for each sample. The size of squares corresponds to this percentage and the colours indicate the cluster labels depicted in \textbf{Fig.~\ref{fig3:cell_types}C}. tSNEs on the right-hand side of each panel (juvenile samples only) illustrate progress through spermatogenesis. SG: Spermatogonia, M: Metaphase, \textbf{(D)} Probabilistic mapping of bulk RNA-Seq libraries to the cell clusters identified in the adult scRNA-Seq data using a random forest approach. The colour gradient indicates the probability with which a bulk sample can be assigned to the specific cell cluster.  \\}
+\captionof{figure}{\textbf{Addressing the mean confounding effect in scRNA-Seq data (continued).}\\
+\textbf{(A and B)} Illustration of changes in expression variability for a single gene between two cell populations without (left) and with (right) changes in mean expression, \textbf{(C and D)} The extended BASiCS model infers a regression trend between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression $\mu_i$. Residual over-dispersion parameters $\epsilon_i$ are defined by departures from the regression trend (red arrow). The colour code within the scatterplots is used to represent areas with high (yellow/red) and low (blue) concentration of genes. For illustration purposes, the data introduced by Antolovi\'{c} \emph{et al.}, 2017 \cite{Antolovic2017} has been used, \textbf{(C)} Illustration of the typical confounding effect that is observed between gene-specific estimates of over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$. Genes that are not detected in at least 2 cells are indicated by purple points, \textbf{(D)} Gene-specific estimates of residual over-dispersion parameters $\epsilon_i$ are independent of mean expression parameters $\mu_i$, \textbf{(E)} Illustration of how posterior uncertainty is used to highlight changes in residual over-dispersion. Two example genes with (upper panels) and without (lower panels) changes in residual over-dispersion are shown. Left panels illustrate the posterior density associated to residual over-dispersion parameters $\epsilon_i$ for a gene in two groups of cells (group A: light blue, group B: dark blue). The coloured area in the right panels represents the posterior probability of observing an absolute difference $|\epsilon^A_{i} - \epsilon^B_{i}|$ that is larger than the minimum tolerance threshold $\psi_0$.\\}
 \captionsetup[figure]{list=yes}
 
-In adults, we detect a homogeneous distribution of cells across the germ cell types ranging from spermatogonia to S14 spermatids \textbf{(Fig.~\ref{fig3:1st_wave}C)}. To characterise germ cell types, we focused on samples taken from P15-P35 animals since at P10, the majority of cell types do not show germ cell properties \textbf{(Fig.~\ref{fig3:cell_types}A)}. In earlier stages, cells are enriched for the most mature cell type in each cycle. For instance, at P15 the majority of cells are spermatogonia and spermatocytes progressing through the mid-pachytene stage \citep{Turner2004}. Interestingly, less mature cell types that exist prior to the mid-pachytene stage are also present at this (and later) time points. This supports recent reports that the first wave of spermatogenesis is less synchronised than previously anticipated \citep{Snyder2010}. At P20, we detect an enrichment for spermatocytes, cells undergoing meiotic cell division, and a small group of early round spermatids. This population structure is in line with matched histology, which shows a large number of tubules in late stages IX-XII and the first occurrence of early round spermatids \citep{Bellve1977}. It has been shown that spermatids first reach the elongating state, which occurs from S10 spermatids onwards, between P24 and P26 \citep{Janca1986}. At P25, we observed that cells mapped to our first ten clusters of spermatids, which we then labelled according to morphologically-defined spermatid substages S1 – S10 \textbf{(Fig.~\ref{fig3:1st_wave}C)}. At P30 and P35, we observed a relatively even distribution of cells across all groups, closely resembling the adult distribution up to S14, indicating that the first wave of spermatogenesis is complete. With this computational mapping of cells collected at different developmental time points, we linked transcriptional profiles of single cells to morphologically defined transitions during germ cell development.
+\subsection{Modelling the confounding between mean and over-dispersion} \label{sec2:extended_BASiCS}
+
+Here, we extend BASiCS to account for the confounding effect described above. In a Bayesian framework, the prior information captures the relationship between parameters. Therefore, we introduce the following joint prior distribution for $(\mu_i, \delta_i)'$: 
+
+\begin{equation} \label{eq::jointprior} \mu_i \sim \text{log-Normal}\left(0, s^2_{\mu}\right), \hspace{0.8cm}
+\delta_i | \mu_i \sim \text{log-}\text{T}_{\eta}\left( \text{f}(\mu_i), \sigma^2 \right).
+\end{equation} 
+
+The latter is equivalent to the following non-linear regression model:
+
+\begin{equation} \label{eq::regression}
+\log(\delta_i) =\text{f}(\mu_i)+\epsilon_i, \hspace{0.5cm} \epsilon_i \sim{}\text{T}_{\eta}(0,\sigma^2), 
+\end{equation} where $\text{f}(\mu_i)$ represents the over-dispersion (on the log-scale) that is predicted by the global trend (across all genes) for a given mean expression $\mu_i$. Therefore, $\epsilon_i$ can be interpreted as a latent gene-specific \textit{residual over-dispersion} parameter, capturing departures from the overall trend. \\
+
+A similar approach was introduced by DESeq2 \citep{Love2014} in the context of bulk RNA sequencing. Whereas DESeq2 assumes normally distributed errors when estimating this trend, here we use Student-T distributed errors (with $\eta$ degrees of freedom) as it leads to inference that is more robust to the presence of outlier genes \citep{Fernandez1999}. 
 
 \newpage
 
-\subsection{Classification of cell types based on bulk RNA-Seq data}
+Moreover, the parametric trend assumed by DESeq2 is replaced by a more flexible semi-parametric approach. This is defined by
 
-While the analysis performed above determines crucial developmental transitions during spermatogenesis, we did not achieve the high-resolution required for the mapping of defined developmental cell types to the clusters identified above. To further validate the identity of the cell clusters, we used bulk RNA-Seq from testis collected during the first wave of spermatogenesis. These samples were harvested every two days between P6 and P34 and allowed us to refine the mapping analysis performed above \textbf{(Fig.~\ref{fig3:1st_wave}A)}. The batch-correction approach used above was developed to match hundreds of single cells across samples and is not suitable to map the 30 bulk RNA-Seq samples onto the adult trajectory. To classify each bulk RNA-Seq sample to one or multiple clusters identified in the scRNA-Seq data, we used a regression approach that performs probabilistic classification. Using the top 50 cluster-specific marker genes for spermatogonia, all spermatocyte groups, all spermatid groups, sertoli and leydig cells, we trained a random forest classifier (implemented in the \emph{randomForest} R package \citep{Liaw2002}) on 2000 cells isolated from adult B6 testes. Model testing was performed on the remaining 1215 cells isolated from adult B6 testes. Prior to training and testing, log$_2$-transformed, normalised counts were scaled by computing the Z score for each gene. Probabilistic prediction was performed using the Z score of log$_2$-transformed, normalised bulk RNA-Seq reads of the input genes. The output of this analysis is the classification probability for each bulk RNA-Seq sample to belong to each scRNA-Seq cluster.\\
+\begin{equation} \label{eq::trend}
+\text{f}(\mu_i) = \alpha_0 + \log(\mu_i)\alpha_1 + \sum_{l=1}^L \text{g}_l(\log(\mu_i))\beta_l,
+\end{equation} 
 
-This classification confirmed that between P6 – P14 spermatogonia and somatic cells contributed most to the transcriptomic profile \textbf{(Fig.~\ref{fig3:1st_wave}D)}. Between P16 and P20 we observed the emergence of spermatocyte-specific gene expression signatures, after which spermatids become the transcriptionally dominant cell type. By P26, spermatids reach the elongating state where transcription is uniformly shut-down due to the beginning of the histone-to-protamine transition \citep{Steger1999}. Following this, changes in RNA content are mostly due to degradation. Bulk transcriptional profiles can only be classified up to S10 because transcription is largely inactive thereafter and no new cluster-specific marker genes emerge.  
+which is a linear combination of an intercept, a linear term $\log(\mu_i)$ and a set of $L$ \gls{GRBF} kernels $\text{g}_1(\cdot), \ldots, \text{g}_L(\cdot)$. As in Kapourani \emph{et al.}, 2016 \cite{Kapourani2016}, these are defined as: 
+
+\begin{equation} \label{eq::GRBF}
+\text{g}_l(\log(\mu_i)) = \exp\left\lbrace-\frac{1}{2}\left(\dfrac{\log(\mu_i)-m_l}{h_l}\right)^2\right\rbrace, \hspace{0.3cm} l = 1, \ldots, L,
+\end{equation} 
+
+where $m_l$ and $h_l$ represent location and scale hyper-parameters for GRBF kernels and $\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L$ are regression coefficients. \\
+
+In equation \eqref{eq::trend}, the linear term captures the (typically negative) global correlation between $\delta_i$ and $\mu_i$. Its addition also stabilises inference of GRBFs around mean expression values where only a few of genes are observed. In equation \eqref{eq::GRBF}, the location and scale hyper-parameters $(m_l, h_l)$ are assumed to be fixed \emph{a priori} (see \textbf{Section \ref{sec2:hyper-parameters}}). %A schematic representation of this regression approach can be seen in \textbf{Fig. \ref{fig2:GRBFs}}.
+
+%\begin{figure}[!h]
+%\centering
+%\includegraphics[width=0.9\textwidth]{Fig_2.png}
+%\caption[Schematic representation of the regression approach using GRBFs]{\textbf{Schematic representation of the regression approach using GRBFs.}\\
+%Point estimates of the squared coefficient of variation (CV$^2$) were plotted against mean expression on the log-log scale. For fitting a regression trend, the model matrix $X$ contains an intercept term (green line), a linear component (orange line) and 10 GRBFs (blue lines). For visualization purposes, a linear regression was fitted using least-square estimates (red line) based on the given model matrix $X$ and data from Dictyostelium prior to differentiation (day 0) \citep{Antolovic2017}.}
+%\label{fig2:GRBFs}
+%\end{figure}
 
 \newpage
 
-\section{Under-represented cell types in spermatogenesis}
+\subsection{Implementation}
 
-The analysis of early stages of juvenile mice in the previous section showed an enrichment for cell types that are relatively under-represented in later stages and in adults (e.g.~spermatogonia and early spermatocytes at P15, \textbf{Fig.~\ref{fig3:1st_wave}C}). Additionally, we detected the absence of germ cells in the P10 sample which leads to a relative enrichment of somatic cell types \textbf{(Fig.~\ref{fig3:cell_types}A)}. This relative enrichment allows us to dissect somatic cell types and spermatogonial differentiation at higher resolution compared to cells isolated from adult samples.
+Next, we will give a detailed explanation on how the model was built and how posterior sampling was performed.  
 
-\subsection{Somatic cell types in juvenile testes}
+\subsubsection{Prior specification}
 
-To study heterogeneity within the somatic cell population, we focused on the P10 stage, where somatic cells are relatively more frequent \textbf{(Fig.~\ref{fig3:somatic_cells})}. As expected, we identify substantial numbers of Sertoli and Leydig cells, which are the main somatic cell types in adult. Leydig cells are the primary producers of steroid hormones such as testosterone that regulate sexual differentiation and development of secondary sex characteristics \citep{Svechnikov2010, Haider2004}. Sertoli cells on the other hand reside inside the tubules and provide the structural features required for testis development. They further support differentiating germ cells by providing growth factors and nutrients  \citep{Griswold1998}. In addition, we newly identified a large population of \gls{IL} cells, based on \textit{Dlk1} expression \citep{Lottrup2014}. ILs shape the embryonic development of testes and rapidly decline in numbers after birth \citep{Griswold2009}. \\
+For implementation purposes, the log-Student-T distribution in equation \eqref{eq::jointprior} is represented via a shape mixture of a log-Normal density with a Gamma density as in Vallejos \emph{et al.}, 2015 \cite{Vallejos2015}. This introduces an auxiliary set of parameters $\lambda_i$ such that the full prior specifications of the extended BASiCS model are:
 
-Furthermore, we detected the cells that form the basal lamina. These include \gls{PTM} cells (\textit{Acta2}, \citep{Cool2008}), vascular \glspl{EC} (\textit{Tm4sf1}, \citep{Shih2009}), and \glspl{tMg} (\textit{Cd14}, \citep{Kitchens2000}) \textbf{(Fig.~\ref{fig3:somatic_cells}A and B)}. PTM are contractile cells that form the wall of seminiferous tubules and induce the release of the testicular fluid which contains mature spermatozoa \citep{Diez-Torre2011}. In addition, endothelial cells play a major role in forming the testis cord during development and together with PTMs surround Sertoli cells in the adult testes \citep{Combes2009}. Testicular macrophages are the most abundant immune cell type in the organ and play a crucial role in testes development by expressing anti-inflammatory cytokines that induce a tolerogenic environment in testes. This is needed since germ cell specific antigens are only expressed after puberty when the immune system has already matured \citep{Fijak2006}. By performing differential expression analysis (using the \emph{findMarkers} function in \emph{scran}), we identified novel markers for these cell populations that are relatively under-represented in adult testes. \textbf{Fig.~\ref{fig3:somatic_cells}B} visualises the top marker genes for the enriched somatic cell types detected at P10.\\
+\begin{align*}
+\mu_i &\ind \mbox{log-Normal}\left(0, s^2_{\mu}\right) \\
+\delta_i| \mu_i,\beta,\sigma^2, \lambda_i, \eta &\ind \text{log-N}\left( \text{f}(\mu_i),\frac{\sigma^2}{\lambda_i} \right)\\
+\lambda_i|\eta &\ind \text{Gamma}\left(\frac{\eta}{2},\frac{\eta}{2}\right)\\
+\beta|\sigma^2 & \sim \textnormal{Normal}(m_\beta,\sigma^2V_\beta),\\
+\sigma^2 & \sim  \textnormal{Inv-Gamma}(a_{\sigma^2},b_{\sigma^2}),\\
+s_j & \iid  \textnormal{Gamma}(a_s,b_s) \\
+(\phi_1, \ldots, \phi_n)' & \sim  n \times \textnormal{Dirichlet}(a_\phi),\\
+\theta & \sim  \textnormal{Gamma}(a_\theta,b_\theta)
+\end{align*}
+
+Here, $s^2_{\mu}, m_\beta, V_\beta, a_{\sigma^2}, b_{\sigma^2}, a_s, b_s, a_\phi, a_\theta, b_\theta$ are hyper-parameters that are fixed \emph{a priori}. Their initial values can be found in \textbf{Appendix \ref{appB.1.hyper}}. In principle, the degrees of freedom parameter $\eta$ could also be estimated within a Bayesian framework. However, we observed that fixing this parameter \emph{a priori} led to more stable results. A default choice for this parameter is described in \textbf{Section \ref{sec2:hyper-parameters}}.
+
+\newpage
+
+\subsubsection{Estimation of regression parameters}
+
+To simplify inference for the regression coefficients $\beta = (\alpha_0, \alpha_1, \beta_1, \ldots, \beta_L)'$ equation \eqref{eq::trend} can be rewritten as a linear regression model using 
+
+\begin{equation} \label{eq::trend2} 
+\text{f}(\mu_i) = X \beta
+\end{equation} 
+
+Here, $X$ is a $q_0 \times (L+2)$ model matrix given by 
+
+\begin{equation} \label{eq::X} X = \left( \begin{array}{ccccc}
+1 & \log(\mu_1) & g_1(\log(\mu_1)) & \cdots & g_L(\log(\mu_1)) \\
+1 & \log(\mu_2) & g_1(\log(\mu_2)) & \cdots & g_L(\log(\mu_2)) \\
+\vdots & \vdots & \vdots & \ddots & \vdots  \\
+1 & \log(\mu_{q_0}) & g_1(\log(\mu_{q_0})) & \cdots & g_L(\log(\mu_{q_0}))
+\end{array}\right)
+\end{equation}
+
+Each column contains either the intercept, the linear component or values of one of the $L$ GRBF. This matrix is updated every 50 iterations during posterior sampling.
+
+\subsubsection{Posterior inference}
+
+Posterior inference for the model described above is implemented by extending the Adaptive Metropolis within Gibbs sampler \citep{Roberts2009} that was adopted by Vallejos \emph{et al.}, 2016 \cite{Vallejos2016}. To implement the sampler, the full conditionals for each model parameter need to be derived. \\
+
+As in Vallejos \emph{et al.}, 2015 \cite{Vallejos2015BASiCS}, the random effect $\rho_{ij}$ in \ref{eq::PoissonBASiCS} is integrated out, leading to the following count distributions:
+
+\begin{equation} \label{eq::NegBinBASiCS}
+ X_{ij}|\mu_i,\delta_i,\phi_j,\nu_j \ind
+ \left\lbrace
+  \begin{aligned}
+    &\text{Neg-Bin}\left(\frac{1}{\delta_i},\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right), && i=1,...,q_0,j=1,...n;  \\ 
+    &\text{Poisson}(\nu_j\mu_i), && i=q_0+1,...,q,j=1,...,n        
+  \end{aligned}
+\right.
+\end{equation}
+
+Based on equation \eqref{eq::NegBinBASiCS}, the likelihood function therefore takes the form
+
+\begin{align} \label{eq::loglik}
+\Lagr = & \left[\prod_{i=1}^{q_0}\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})x_{ij}!}\left(\frac{\frac{1}{\delta_i}}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\phi_j\nu_j\mu_i}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right] \nonumber\\ 
+&\times\left[\prod_{i=q_0+1}^{q}\prod_{j=1}^n\frac{(\nu_j\mu_i)^{x_{ij}}}{x_{ij}!}\exp\lbrace-\nu_j\mu_i\rbrace\right]\times{}\left[\prod_{j=1}^n\frac{(s_j\theta)^{-\frac{1}{\theta}}}{\Gamma(\frac{1}{\theta})}\nu_j^{\frac{1}{\theta}-1}\exp\left\lbrace-\frac{\nu_j}{s_j\theta}\right\rbrace\right]
+\end{align} 
+
+\newpage
+
+The full conditionals can now be derived by calculating the parameter-dependent part of the posterior distribution which is a product of the likelihood times the prior specifications $\pi^\ast(\cdot)\propto{}\Lagr\times\pi(\cdot)$. Full conditionals for the model are as follows: \\
+
+\begingroup
+\addtolength{\jot}{0.8em}
+\begin{align*} \label{eq::FullCond}
+&\pi^*(\mu_i|\cdot) && \propto \frac{\mu_i^{\sum_{j=1}^n{}x_{ij}}}{\prod_{j=1}^n{}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\exp\left(-\frac{(\log(\mu_i))^2}{2a_\mu^2}-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right)\frac{1}{\mu_i} \\
+&\pi^*(\delta_i|\cdot) && \propto \left[\prod_{j=1}^n\frac{\Gamma(x_{ij}+\frac{1}{\delta_i})}{\Gamma(\frac{1}{\delta_i})}\frac{(\frac{1}{\delta_i})^{\frac{1}{\delta_i}}}{(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\right]\times{}\exp\left\lbrace-\frac{\lambda_i(\log(\delta_i)-f(\mu_i))^2}{2\sigma^2}\right\rbrace\frac{1}{\delta_i}\\
+&\pi^*(\beta|\cdot)&&\propto{}\text{Normal}(m^*_\beta,\sigma^2V^*_\beta)\\
+&\pi^*(\lambda_i|\cdot)&&\propto{}\text{Gamma}(a^*_\lambda,b^*_\lambda)\\
+&\pi^*(\sigma^2|\cdot)&&\propto{}\text{Inv-Gamma}(a^*_{\sigma^2},b^*_{\sigma^2})\\
+&\pi^*(s_j|\cdot)&&\propto{}s_j{}^{a_s-\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}-b_ss_j\rbrace\\
+&\pi^*(\phi_j|\cdot)&&\propto{}\frac{\prod_{i=1}^{q_0}\phi_j{}^{\sum_{j=1}^nx_{ij}}}{\prod_{i=1}^{q_0}\prod_{j=1}^{n}(\phi_j\nu_j\mu_i+\frac{1}{\delta_i})^{\frac{1}{\delta_i}+x_{ij}}}\times{}\pi(\phi_j)\\
+&\pi^*(\nu_j|\cdot)&&\propto{}\left[\prod_{i=1}^{q_0}\left(\frac{1}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^\frac{1}{\delta_i}\left(\frac{\nu_j}{\phi_j\nu_j\mu_i+\frac{1}{\delta_i}}\right)^{x_{ij}}\right]\left[\prod_{i=q_0+1}^{q}\nu_j{}^{x_{ij}}\exp\lbrace-\nu_j\mu_i\rbrace\right]\nu_j^{\frac{1}{\theta}-1}\exp\lbrace-\frac{\nu_j}{s_j\theta}\rbrace\\
+&\pi^*(\theta|\cdot)&&\propto{}\frac{\left(\prod_{j=1}^{n}\frac{s_j}{\nu_j}\right)^{-\frac{1}{\theta}}}{\Gamma{}^n(\frac{1}{\theta})}\theta^{a_\theta-\frac{n}{\theta}-1}\exp\lbrace-\frac{1}{\theta}\sum_{j=1}^n\frac{\nu_j}{s_j}-b_\theta\theta\rbrace
+\end{align*}
+\endgroup
+
+Here, posteriors for $\beta, \lambda_i, \sigma^2$ take on closed form distributions. The posterior for $s_j$ represents a Generalised Inverse Gaussian distribution. To sample all other posterior distributions adaptive Metropolis sampling was implemented as described in \textbf{Section \ref{sec0:posterior_inference}}. The derivation of the full conditionals can be found in \textbf{Appendix  \ref{appB.1.derivation}}. In practice, the MCMC sampler is run for 40,000 iterations with a 20,000 iteration burn in period. The chain was thinned by storing parameter samples every 20 iterations.
+
+\newpage
+
+\subsection{Probabilistic rule associated to the differential test} \label{sec:differentialtest}
+
+The residual over-dispersion parameter is calculated as $\epsilon_i=\log(\delta_i)-\text{f}(\mu_i)$. We can now implement a probabilistic approach to identify changes in residual over-disperison between groups of cells. Let $\delta_i^A$ and $\delta_i^B$ be the over-dispersion parameters associated to gene $i$ in groups $A$ and $B$. Following equation \eqref{eq::regression}, the log$_2$ fold change in over-dispersion between these groups can be decomposed as: 
+
+\begin{equation} \label{eq::dispersion_lfc}
+\log_2 \left( \frac{\delta_i^A}{\delta_i^B}\right) = \log_2(e) \times \left[\underbrace{\text{f}^A(\mu_i^A) - \text{f}^B(\mu_i^B) }_{\text{Mean contribution}} + \underbrace{\epsilon_i^A - \epsilon_i^B}_{\text{Residual change}} \right]
+\end{equation} 
+
+where the first term captures the over-dispersion change that can be attributed to differences between $\mu_i^A$ and $\mu_i^B$. The second term in equation \eqref{eq::dispersion_lfc} represents the change in residual over-dispersion that is not confounded by mean expression. Based on this observation, statistically significant differences in residual over-dispersion will be identified for those genes where the tail posterior probability of observing a large difference between $\epsilon_i^A$ and $\epsilon_i^B$ exceeds a certain threshold $\psi_0 > 0$:
+
+\begin{equation} \label{eq::decision_rule}
+\pi_i(\psi_0)=\text{P}(\mid\epsilon_i^{A}-\epsilon_i^{B}\mid >\psi_0 \mid \text{Data} ) >\alpha_R
+\end{equation}
+ 
+As a default choice for testing changes in over-dispersion we chose a 50\% increase. This translates into $\psi_0 = \log_2(1.5) / \log_2(e) \approx 0.41$ as default threshold for testing changes in residual over-dispersion. In the limiting case when $\psi_0 = 0$, the probability in equation \eqref{eq::decision_rule} is equal to 1 regardless of the information contained in the data. Therefore, as in Bochkina \emph{et al.}, 2007 \cite{Bochkina2007}, our decision rule is based on the maximum of the posterior probabilities associated to the one-sided hypotheses $\epsilon^A - \epsilon^B_i > 0$ and  $\epsilon^A - \epsilon^B_i < 0$:
+
+\begin{equation} \label{eq::decision_rule2} 2 \times \max\{\pi_i^+, 1-\pi_i^+\} - 1  >\alpha_R, \hspace{0.2cm} \text{with} \hspace{0.2cm} \pi_i^+ = \text{P}(\epsilon_i^{A}-\epsilon_i^{B} > 0 \mid \text{Data})
+\end{equation}
+
+In both cases, the posterior probability threshold $\alpha_R$ is chosen to control the expected false discovery rate (EFDR) \citep{Newton2004}. The default value for EFDR is set to 10\%. The EFDR is defined as:
+
+\begin{equation}
+\text{EFDR}_{\alpha_R}(\psi_0)=\frac{\sum_{i=1}^{q_0}(1-\pi_i(\psi_0))\text{I}(\pi_i(\psi_0)>\alpha_R)}{\sum_{i=1}^{q_0}\text{I}(\pi_i(\psi_0)>\alpha_R)}
+\end{equation}
+
+where I(A)=1 if the event A is true. As a default and to support interpretability of the results, we exclude genes that are not expressed in at least 2 cells per condition from differential variability testing.
+
+\newpage
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{Fig_3.png}
+\caption[EFDR, FPR and TPR estimation using simulated data]{\textbf{EFDR, FPR and TPR estimation using simulated data (Full legend on next page).}\\
+Data was simulated using the BASiCS model with model parameters set by empirical estimates based on 98 microglia cells \citep{Zeisel2015} \textbf{(Table \ref{tab2:datasets})}. Different samples sizes (40 - 200 cells) were simulated in replicates of 5. Differential testing was performed between 2 simulated datasets of equal size to calculate the false positive rate (FPR, number of detections divided by number of genes tested) and the true positive rate (TPR, number of true positive divided by number of all positives). Moreover, we report the expected false discovery rate (EFDR, \citep{Newton2004}). For each test, the EFDR was controlled to 10\% and the default minimum tolerance thresholds were used ($\tau_0 = \log_2(1.5)$, $\omega_0 = \log_2(1.5)$ and $\psi_0 = 0.41$), \textbf{(A)-(C)} Synthetic datasets generated using the null model (without changes in variability). FPR and EFDR for (A) differential mean expression, (B) differential over-dispersion and (C) differential residual over-dispersion testing using datasets with increasing samples sizes, \textbf{(D)-(E)} Synthetic datasets generated using the alternative model where 1000 genes were randomly selected and their associated over-dispersion parameters were increased or decreased by a $\log_2$ fold change of 5. TPR and EFDR for (D) differential over-dispersion testing and (E) differential residual over-dispersion testing using simulated datasets with increasing samples sizes.}\label{fig2:EFDR}
+\end{figure}
+
+\newpage
+
+To evaluate the performance of our test we generated synthetic data under a null model (without changes in variability) and an alternative model (with changes in variability). All datasets were generated following the BASiCS model, with parameter values set by empirical posterior estimates based on 98 microglia cells \citep{Zeisel2015} (see \textbf{Table \ref{tab2:datasets}} in \textbf{Section \ref{sec2:datasets}}). To simulate data under an alternative model, 1000 genes were randomly selected and their associated $\delta_i$'s were increased or decreased by a $\log_2$ fold change of 5. Increasing numbers of cells were simulated to estimate the effect of sample size on differential testing. Differential testing was performed either between data simulated on the same set of parameters (null model) or between data simulated from the original parameters and the altered parameters (alternative model). We report the EFDR \citep{Newton2004} as well as the \gls{FPR} for simulations under the null model \textbf{(Fig.~\ref{fig2:EFDR}A-C)} and the \gls{TPR} for simulations under the alternative model \textbf{(Fig.~\ref{fig2:EFDR}D and E)}. \\
+
+As specified, the EFDR is controlled at 10\%. Furthermore, the FPR for differential mean expression and differential over-dispersion is consistently smaller than 10\% and is only slightly higher for differential residual over-dispersion testing. Since the data was simulated under the non-regression BASiCS model, the simulated expression variability cannot be controlled in terms of residual over-dispersion parameters $\epsilon_i$ leading to subtle differences between simulated cell populations. The TPR for differential over-dispersion and differential residual over-dispersion testing increases with increasing sample size and plateaus at 100\% \textbf{(Fig.~\ref{fig2:EFDR})}.
+
+\subsection{Choice of hyper-parameters} \label{sec2:hyper-parameters}
+
+As discussed above, the degrees of freedom $\eta$, the number of GRBFs  $L$ as well as their hyper-parameters ($m_l$, $h_l$) are set \emph{a priori}. Here, we explain the default values implemented in the extended BASiCS model. These were chosen to achieve a compromise between flexibility of the trend fit and the strength of shrinkage towards the estimated trend. Further discussion on the shrinkage can be found in \textbf{Section \ref{sec2:stabilization}}. \\ 
+
+Firstly, we observed that large values of $L$ can lead to over-fitting but that small values of $L$ can limit the flexibility to capture non-linear relations between $\log(\delta_i)$ and $\log(\mu_i)$ \textbf{(Fig.~\ref{fig2:choice_hyper})}. Thus, as a parsimonious choice, we selected $L = 10$. Moreover, as in Kapourani \emph{et al.}, 2016 \cite{Kapourani2016}, values for $m_l$ were chosen to be equally spaced across the range of $\log(\mu_i)$:. 
+
+\begin{equation} m_l = a + (l-1)\frac{b - a }{L-1}, \hspace{0.2cm}  l=1,\ldots, L, \end{equation} 
+
+where $a=\min_{i\in\{1,\ldots,q_0\}}\{\log(\mu_i)\}$ and $b=\max_{i\in\{1,\ldots,q_0\}}\{\log(\mu_i)\}$. As $\mu_i$ values are unknown \emph{a priori} and change throughout the sampling procedure, $a$ and $b$ are updated every 50 MCMC iterations during the burn-in phase. Additionally, the scale hyper-parameters $h_l$ control the width of the GRBFs and, consequently, the locality of the regression. As a default, we set these as $h_l = c \times \Delta m$, where $c$ is a fixed proportionality constant and $\Delta m$ is the distance between consecutive values of $m_l$. In practice, we observed that the choice of a particular value of $c$ is not critical, as long as narrow kernels ($c<0.5$) are avoided \textbf{(Fig.~\ref{fig2:choice_hyper})}. As a default, $c = 1.2$ was chosen. 
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.75\textwidth]{Fig_4.png}
+\caption[Effect of regression hyper-parameters on trend fitting]{\textbf{Effect of regression hyper-parameters on trend fitting.}\\
+Posterior estimates of over-dispersion parameters $\delta_i$ are plotted versus posterior estimates of mean expression parameters $\mu_i$ on the log-log scale. The extended BASiCS model was used to estimate these parameters using naive CD4\plus{} T cells from the previous chapter. Different hyper-parameter combinations were used to fit the model. L: number of Gaussian Radial Basis Functions, c: constant multiplier of the scale parameter, $\eta$: degrees of freedom. Purple points indicate genes which are expressed in fewer than 2 cells.}
+\label{fig2:choice_hyper}
+\end{figure}
+
+\newpage
+
+The degrees of freedom $\eta$ controls the tails of the distribution for the residual term in equation \eqref{eq::regression}. This influences the shrinkage towards the global trend and the robustness against outlying observations \textbf{(Fig.~\ref{fig2:choice_hyper})}.  If $\eta \geq 30$, $\epsilon_i$ approximately follows a normal distribution for which posterior inference for $\beta$ is known to be sensitive to outliers. Instead, small values of $\eta$ introduce heavy-tails for $\epsilon_i$, leading to more robust posterior inference. In principle, $\eta$ could be estimated within a Bayesian framework. However, this is problematic as the likelihood function associated to equation \eqref{eq::regression} can be unbounded \citep{Fernandez1999}. Here, we opt for a pragmatic approach where the value of $\eta$ is fixed \emph{a priori}. To select a reasonable default value, we ran the regression BASiCS model for a grid of possible values of $\eta$, using the datasets described in \textbf{Table \ref{tab2:datasets}} in \textbf{Section \ref{sec2:datasets}} (with $L$, $m_l$ and $h_l$ fixed as described above). In all cases, we calculated a Monte Carlo estimate for the log-likelihood associated to equation \eqref{eq::PoissonBASiCS} as a proxy for goodness-of-fit \textbf{(Fig.~\ref{fig2:DoF}A)}. We observed that log-likelihood estimates were consistently the smallest for $\eta=1$ and that no substantial differences are observed across larger values of $\eta$. The \textit{Dictyostelium} data show very similar log-likelihood estimates for all tested $\eta$.  When visualising posterior estimates for the variance $\sigma^2$ of the distribution for the residual term depending on the degrees of freedom chosen, we observe a constant increase plateauing when the distribution reaches the normal distribution at $\eta=30$ \textbf{(Fig.~\ref{fig2:DoF}B)}. We chose $\eta=5$ to be the default parameter as a compromise between shrinkage and sensitivity to outlying data points. 
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_5.png}
-\caption[Enrichment of under-represented somatic cell types in juvenile samples]{\textbf{Enrichment of under-represented somatic cell types in juvenile samples.} \\
-\textbf{(A)} tSNE representation of cells isolated from P10 animals that were mapped to cells from adult mice. Cell types were identified by unbiased, graph-based clustering and annotated after marker gene extraction. SG: Spermatogonia, SC: Spermatocytes, IL: Immature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Macrophages, \textbf{(B)} Heatmap representation of cell type-specific marker genes. Gene in bold are previously described markers of the following cell type: Sertoli cells (\textit{Cst12}), early spermatocytes (\textit{Sycp1}), spermatogonia (\textit{Dmrt1}), immature Leydig cells (\textit{Dlk1}), endothelial cells (\textit{Acta2}), peritubular myoid cells (\textit{Tm4sf1}), Leydig cells (Insl3), testicular macrophages (\textit{Cd14}), \textbf{(C)} PCA of spermatogonia (SG) and early spermatocytes (SC 1) from P10 and P15 animals. 
-}
-\label{fig3:somatic_cells}
+\caption[Comparison of model fits for varying degrees of freedom]{\textbf{Comparison of model fits for varying degrees of freedom.}\\
+The regression BASiCS model was fit to datasets listed in \textbf{Table \ref{tab2:datasets}}. These include CA1 pyramidal neurons (CA1, \citep{Zeisel2015}), pool-and-split RNA 2i medium (PS, \citep{Grun2014}), mouse embryonic stem cells 2i medium (mESC, \citep{Grun2014}), \textit{Dictyostelium} cells at day 0 of differentiation (Dict, \citep{Antolovic2017}) and naive CD4\plus{} T cells (CD4, previous chapter). \textbf{(A)} The model was fit using varying degrees of freedom and the log-likelihood was calculated as stated in equation \eqref{eq::loglik}. The log-likelihood was scaled between the highest and lowest value for each dataset. \textbf{(B)} Posterior estimates of the variance parameter $\sigma^2$ depending on the number of degrees of freedom.}
+\label{fig2:DoF}
 \end{figure}
 
-Furthermore, we detect a relative enrichment of spermatogonia compared to other germ cell types at P10 and P15 \textbf{(Fig.~\ref{fig3:somatic_cells}C)}. Using this large amount of stem cell like cells sampled from different time points during development allows us to dissect its differentiation programme.
+%Based on these observations, default values implemented in the BASiCS software are set to $L=10, c=1.2, \eta=5$. Despite this, the model's implementation also allows flexible adjustment of $L$, $c$ and $\eta$ by the user. 
+
+\section{Pre-processing of scRNA-Seq data used in this chapter} \label{sec2:datasets}
+
+We employed a range of different datasets to test the proposed methodology. These datasets were selected to cover different experimental techniques (with and without UMIs) and to encompass a variety of cell types. Moreover, key features of each dataset can be found in \textbf{Table \ref{tab2:datasets}}. 
+
+\begin{table}[ht	]
+\centering
+\caption[Datasets used for model testing and analysis]{\textbf{Datasets used for model testing and analysis.} \\
+For each of the datasets analysed in this study: number of cells (2$^\text{nd}$ column), number of genes (biological + technical spike-ins, 3$^{rd}$ column), number of batches (4$^\text{th}$ column), type of data acquisition system (5$^\text{th}$ column), information on whether the data was generated using unique molecular identifiers (UMIs, 6$^\text{th}$ column) and the reference to the original study (7$^\text{th}$ column) are provided.}
+\label{tab2:datasets}
+\begin{tabular}{lllllll}
+\toprule
+\textbf{Dataset} & \textbf{\# cells} & \textbf{\# genes} & \textbf{\# batches} & \textbf{Protocol} & \textbf{UMIs} & \textbf{Ref.}                       \\
+\midrule
+Young naive  & 93       & 10,553    & 2          & Fluidigm C1       & No   & \citep{Martinez-jimenez2017} \\
+CD4\plus{} T cells   &        &   &          &       & No   &  \\
+\midrule
+
+Young active    & 53       & 10,553    & 2          & Fluidigm C1       & No   & \citep{Martinez-jimenez2017} \\
+CD4\plus{} T cells    &        &     &           &        &    &  \\
+\midrule
+
+Microglia cells                         & 98       & 10,687    & 1          & Fluidigm C1       & Yes  & \citep{Zeisel2015}           \\
+\midrule
+
+CA1 pyramidal                    & 948      & 10,687    & 1          & Fluidigm C1       & Yes  & \citep{Zeisel2015}           \\
+neurons       &       &     &           &       &   &           \\
+\midrule
+
+Malaria infected     & 89       & 7899     & 2          & Fluidigm C1       & No   & \citep{Lonnberg2017}         \\
+CD4\plus{} T cells day 2     &        &      &          &  &    &  \\
+\midrule
+
+Malaria infected  & 133      & 7899     & 2          & Fluidigm C1       & No   & \citep{Lonnberg2017}         \\
+CD4\plus{} T cells day 4     &       &      &    &  &    &\\
+\midrule
+
+Malaria infected  & 64       & 7899     & 1          & Fluidigm C1       & No   & \citep{Lonnberg2017}         \\
+CD4\plus{}  T cells day 7    &   & &  &  &  &   \\
+\midrule
+
+\textit{Dictyostelium}             & 131      & 10,738    & 3          & Fluidigm C1       & No   & \citep{Antolovic2017}        \\
+cells day 0  &  &   &   &  & & \\
+\midrule
+
+Pool-split RNA                 & 76       & 8924     & 2          & CEL-Seq           & Yes  & \citep{Grun2014}            \\
+2i medium  &  &  & &  &  & \\
+\midrule
+
+mESC 2i medium    & 74       & 8924     & 2          & CEL-Seq           & Yes  & \citep{Grun2014} \\
+\midrule
+
+Pool-split RNA             & 56       & 8924     & 2          & CEL-Seq           & Yes  & \citep{Grun2014}            \\
+serum medium &  &      &         &   &   &  \\
+\midrule
+
+mECS serum medium & 52       & 8924     & 2          & CEL-Seq           & Yes  & \citep{Grun2014} \\
+\bottomrule       
+\end{tabular}
+\end{table}
+\addcontentsline{lot}{table}{\ref{tab2:datasets} \hspace{2.5mm} Datasets used for model testing and analysis.}
+
+\subsection{\textit{Dictyostelium} cells} \label{seq::data_dict}
+
+Antolovi\'{c} \emph{et al.}, 2017 studied changes in expression variability between 0 hours (undifferentiated), 3 hours and 6 hours of \emph{Dictyostelium} differentiation \cite{Antolovic2017}. Raw data is available by direct download (see Data S1 in \citep{Antolovic2017}). Across all time points, 5 cells were removed due to low quality. Technical spike-in genes that were not detected and biological genes with an average expression (across all cells) smaller than 1 count were removed. In total, 433 cells (131 cells in 3 batches at 0h, 157 cells in 3 batches at 3h, and 145 cells in 3 batches at 6h) and 10,551 genes (88 technical and 10,650 biological genes) passed filtering. We used data from the 0h time point to test the functionality of our model.
+
+\subsection{Mouse brain cells} \label{seq::data_micro}
+
+This dataset was composed of UMI scRNA-Seq data of cells isolated from the mouse somatosensory cortex and hippocampal CA1 region \citep{Zeisel2015}. Raw data is available from Gene Expression Omnibus under accession code GSE60361. Prior to the analysis, we removed technical genes with 0 total counts and biological genes for which the average count across all 3007 cells was below 0.1. The groups comprising microglia cells and CA1 neurons were chosen for analysis to include cell populations comprising a small and large number of cells. For these groups, 98 cells (microglia), 939 cells (CA1 pyramidal neurons) and 10,744 genes (10,687 biological and 57 technical genes) passed filtering.
+
+\subsection{Pool-and-split RNAseq data} \label{seq::data_PaS}
+
+This UMI-based dataset provides a control experiment to assess changes in biological heterogeneity in a situation where mean expression remains unchanged across conditions. Pool-and-split samples were created by pooling 1 million mESCs grown in 2i or serum medium and splitting 20pg of RNA into aliquots. These libraries are compared against single-cell samples (mESCs) \citep{Grun2014}. Raw data is available from Gene Expression Omnibus under accession code GSE54695. \\
+
+As in Gr\"un \emph{et al.}, 2014 \cite{Grun2014}, some cells were removed from the analysis due to low expression of the stem cell marker \textit{Oct4}. Technical genes with 0 total counts were also removed from the analysis. Additionally, lowly expressed biological genes with fewer than 0.5 counts (on average, across all samples) were excluded. This left 258 libraries (74 single mESCs grown in 2i medium, 52 single mESCs grown in serum medium, 76 pool-and-split aliquots from cells grown in 2i medium and 56 pool-and-split aliquots from cells grown in serum medium) as well as 8924 genes (50 technical spike-ins and 8874 biological genes) for the analysis. Each condition contained 2 batches.\\
+
+Matched smFISH data from mESCs grown in 2i and serum media were obtained from Dominic Gr\"un (Max Planck Institute of Immunobiology and Epigenetics, Freiburg, Germany) through personal communications. This smFISH experiment assayed 9 genes (\textit{Gli1}, \textit{Klf4}, \textit{Notch1}, \textit{Pcna}, \textit{Pou5f1}, \textit{Sohlh2}, \textit{Sox2}, \textit{Stag3}, \textit{Tpx2}) in more than 70 cells per condition. %We excluded \textit{Notch1} from the analysis due to strong disagreement between smFISH and scRNA-Seq data of cells grown in serum medium.
+
+\subsection{CD4\plus{} T cell activation} \label{seq::data_cd4}
+
+Non-UMI scRNA-Seq data of CD4\plus{} T cells represent data analysed in  the previous chapter. Raw data is available from ArrayExpress under accession code E-MTAB-4888. To perform a variety of tests, naive and activated CD4\plus{} T cells from young \emph{Mus musculus} (B6) mice were selected. Biological genes with an average count $<~1$ and non-detected technical genes were removed from the analysis. In total, 146 cells (93 naive and 53 activated CD4\plus{} T cells) and 10,553 genes (10,495 biological and 58 technical genes) passed filtering. Each condition contains 2 replicates.
+
+\subsection{CD4\plus{} T cell differentiation} \label{seq::data_cd4diff}
+
+Non-UMI scRNA-Seq data were generated from CD4\plus{} T cells during differentiation towards Th1 and Tfh cell fates after \emph{Plasmodium} infection \citep{Lonnberg2017}. Raw reads were downloaded from ArrayExpress [E-MTAB-4388] and mapped against the \emph{Mus musculus} genome (GRCm38) using \emph{gsnap} \citep{Wu2010a} with default settings. Read counting was performed using \emph{HTSeq} \citep{Anders2014} with default settings. \\
+
+Quality control was performed by removing cells with fewer than 300,000 biological reads or fewer than 600,000 technical reads at day 2. At days 4 and 7, cells with fewer than 1,000,000 biological reads were excluded from downstream analysis. Additionally, we removed genes that did not show an average detection of more than 1 read at day 2, day 3, day 4 or day 7 after infection. After applying these criteria, 376 cells (Day 0: 16 cells, Day 2: 89, Day 3: 21, Day 4: 133, Day 7: 64, Day 7 non-infected: 53) and 7899 genes (7847 biological and 52 technical) remained for analysis. Note that, due to low sample sizes, we focused our analysis on data from day 2, day 4 and day 7 post-infection.
 
 \newpage
 
-\subsection{Spermatogonial differentiation}
 
-In the mouse, spermatogenesis is initiated with the division of a type A spermatogonia, also termed A$_{\text{single}}$, to form first a pair, and then a connected chain of undifferentiated spermatogonia (A$_{\text{paired}}$ and A$_{\text{aligned}}$) \citep{Oakberg1971, DeRooij1973}. These cells have competency to undergo spermatogonial differentiation, which involves six transit-amplifying mitotic divisions generating A$_{1-4}$, Intermediate (In), and B spermatogonia, which then give rise to pre-leptotene spermatocytes (Pl) \citep{DeRooij2000} \textbf{(Fig.~\ref{fig3:cell_staging}C)}. Given this, we expect a high level of heterogeneity within the spermatogonia population but identifying spermatogonial sub-populations in adult testes is greatly complicated by their rarity relative to other germ cell types \citep{Lukassen2018}. However, as shown above, during early juvenile development spermatogonia are relatively enriched, which we exploited to further characterise their heterogeneity \textbf{(Fig. \ref{fig3:spermatogonia}A)}. \\
+\section{The informative prior stabilises parameter estimation}
+\label{sec2:stabilization}
 
-By combining cells from P10 and P15, we obtained 1,186 transcriptional profiles that capture sub-populations during spermatogonial differentiation \textbf{(Fig.~\ref{fig3:spermatogonia}B)}. To jointly analyse transcriptomes of P10 and P15 samples, we performed batch correction between these samples as described above and clustered batch corrected data using a graph-based approach. In order to label the cell types corresponding to the different clusters, we performed marker gene detection using the \emph{findMarker} function in \emph{scran}. By visualising the individual marker genes, we detect two clusters corresponding to undifferentiated spermatogonia (A$_\textnormal{undiff}$) based on their expression of \textit{Nanos3} and \textit{Zbtb16} \textbf{(Fig. \ref{fig3:spermatogonia}B and C)} \citep{Buaas2004, Lolicato2008}). These cells comprise A$_\textnormal{s}$, A$_\textnormal{paired}$, and A$_\textnormal{aligned}$ spermatogonia that decrease in stemness as they divide and gain competency to differentiate \citep{Suzuki2012}. Additionally, these cells express a number of marker genes also detected in undifferentiated human spermatogonial stem cells, such as \textit{Gfra1}, \textit{Bcl6} and \textit{Id4} \citep{Guo2017}. Based on the expression of \gls{Stra8}, we can map the point at which spermatogonial differentiation is induced (A$_\textnormal{aligned}$-to-A$_\textnormal{1}$ transition), thus marking the beginning of differentiating spermatogonia (A$_\textnormal{diff}$) \citep{Endo2015} \textbf{(Fig. \ref{fig3:spermatogonia}B)}. A$_\textnormal{diff}$ are marked by the expression of \textit{Sohlh1} \citep{Ballow2006} and are highly proliferative, generating A$_\textnormal{1-4}$, Intermediate and B spermatogonia. Late differentiating spermatocytes express \textit{Dmrtb1}, which mediates the mitosis-to-meiosis transition and quickly disappears in pre-leptotene spermatocytes \textbf{(Fig. \ref{fig3:spermatogonia}B)}. This latter population shows a second increase in \textit{Stra8} expression levels, which is necessary for initiation of meiosis \textbf{(Fig.~\ref{fig3:spermatogonia}B and C)} \citep{Anderson2008, Endo2015, Zhang2014}. 
+Our joint prior formulation induces a non-linear regression that captures the overall trend between gene-specific over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$. Thus, we also refer to the extended model induced by this prior as the \textit{regression} BASiCS model. Accordingly, the model induced by the original independent prior specification \citep{Vallejos2016} is referred to as the \textit{non-regression} BASiCS model. 
+
+\subsection{Dataset specificity of the regression trend}
+
+To study the performance of the regression BASiCS model, we applied both the regression and non-regression BASiCS model to a variety of scRNA-Seq datasets. Each dataset is unique in its composition, covering a range of different cell types and experimental protocols (see \textbf{Section \ref{sec2:datasets}} and \textbf{Table \ref{tab2:datasets}}). Qualitatively, we observe that the inferred regression trend varies substantially across different datasets \textbf{(Fig.~\ref{fig2:datasets})}, justifying the choice of a flexible semi-parametric approach (see \textbf{Section \ref{sec2:extended_BASiCS}} and \textbf{Section \ref{sec2:hyper-parameters}}). Moreover, as expected, we observe that residual over-dispersion parameters $\epsilon_i$ are not confounded by mean expression. Additionally, we assessed whether the residual over-dispersion parameter is biased by the percentage of zero counts per gene \textbf{(Fig.~\ref{fig2:datasets}, fourth column)}. This feature increases for lowly expressed genes due to technical expression drop-outs. Nevertheless, posterior estimates of gene-specific residual over-dispersion parameters are not confounded by the percentage of zero counts per gene \textbf{(Fig.~\ref{fig2:datasets})}. \\
+
+Next, we observed that the regression BASiCS model shrinks the posterior estimates for $\mu_i$ and $\delta_i$ towards the regression trend. This is due to the joint prior specification on $(\mu_i,\delta_i)'$ and is consistent with the shrinkage observed in Love \emph{et al.}, 2014 \citep{Love2014}. The strength of this shrinkage is dataset-specific, being more prominent in sparser datasets with a higher frequency of zero counts and for lowly-expressed genes where measurement error is greatest \textbf{(Fig.~\ref{fig2:datasets}A)}. 
 
 \newpage
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.9\textwidth]{Fig_6.png}
-\caption[Cellular heterogeneity during spermatogonial differentiation]{\textbf{Cellular heterogeneity during spermatogonial differentiation.}\\
-\textbf{(A)} Schematic representation of spermatogonial differentiation including sub-stages of undifferentiated (A$_\textnormal{s}$, A$_\textnormal{paired}$, A$_\textnormal{aligned}$) and differentiating (A$_\textnormal{1}$, A$_\textnormal{2}$, A$_\textnormal{3}$, A$_\textnormal{4}$, In, B) spermatogonia (SGs) as well as pre-leptotene spermatocytes (Pl), \textbf{(B)} Sub-structure detection in spermatogonia isolated from P10 and P15 animals. PCA was computed on transcriptomes after batch correction between P10 and P15 samples. The first three panels represent expression of known marker genes for undifferentiated (Undiff, \textit{Nanos3}) and differentiating (Diff, \textit{Stra8} and \textit{Dmrtb1}) spermatogonia. The colour scale shows log$_2$-transformed, normalised counts. The last panel overlays cluster identity by sub-clustering batch-corrected transcriptomes of spermatogonia, \textbf{(C)} Z score of normalised expression counts of the top 15 marker genes per cell cluster. Column and row labels represent the cell clusters identified in the last panel of (B). The lower bar indicates the gradual differentiation from undifferentiated spermatogonia to pre-leptotene cells driven by two \gls{RA} signals. }
-\label{fig3:spermatogonia}
+\includegraphics[width=0.95\textwidth]{Fig_6.png}
+\caption[Parameter estimation using a variety of scRNA-Seq datasets]{\textbf{Parameter estimation using a variety of scRNA-Seq datasets.}\\
+Model parameters were estimated using the regression and non-regression BASiCS models on \textbf{(A)} naive CD4\plus{} T cells \citep{Martinez-jimenez2017}, \textbf{(B)} \textit{Dictyostelium} cells prior to differentiation (day 0) \citep{Antolovic2017}, \textbf{(C)} microglia cells \citep{Zeisel2015} and \textbf{(D)} pool-and-split RNA \citep{Grun2014}. These datasets were selected to highlight situations with different levels of sparsity (i.e.~the proportion of zero counts, see fourth column). The colour code within the scatterplots is used to represent areas with high (yellow/red) and low (blue) density of genes. \textbf{First column:} gene-specific over-dispersion $\delta_i$ versus mean expression $\mu_i$ as estimated by the non-regression BASiCS model. \textbf{Second column:} gene-specific over-dispersion $\delta_i$ versus mean expression $\mu_i$ as estimated by the regression BASiCS model. The red line indicates the estimated regression trend. Purple dots indicate genes detected (i.e.~with at least one count) in less than 2 cells. \textbf{Third column:} gene-specific residual over-dispersion $\epsilon_i$ versus mean expression $\mu_i$ as estimated by the regression BASiCS model. \textbf{Forth column:} gene-specific posterior estimates for residual over-dispersion $\epsilon_i$ parameters versus percentage of zero counts for each gene.\\}
+\label{fig2:datasets}
 \end{figure}
 
 \newpage
 
-\subsection{Leptotene and zygotene spermatocytes}
+\subsection{Stabilisation of posterior inference}
+\label{sec2:parameter_stabilization}
 
-The transition between differentiating spermatogonia and spermatocytes is a gradual process that occurs in stage VIII tubules when B spermatogonia divide and form pre-leptotene spermatocytes \citep{Anderson2008, Baltus2006}. When visualising the first two components of a PCA, we did not observe a continuous differentiation trajectory bridging spermatogonia to spermatocytes \textbf{(Fig.~\ref{fig3:somatic_cells}C)} which indicates a possible loss of cells that characterise the transition between these two cell types. One possible explanation is that leptotene and zygotene spermatocytes have decreased transcriptional activity \citep{Kierszenbaum1974, Monesi1965}, and are thus likely to be classified as empty droplets by the 10X CellRanger pipeline. \\
+Next, we asked whether or not the shrinkage introduced by the regression BASiCS model improves posterior inference. To assess this, we compared estimates for gene-specific parameters across (i) different sample sizes and (ii) different gene expression levels. Both the sample size and the level of expression influence posterior estimation of model parameters due to loss of power when few cells are used to estimate parameters for lowly expressed genes. More concretely, we used a large dataset containing 939 CA1 pyramidal neurons \citep{Zeisel2015} (\textbf{Section \ref{seq::data_micro}}) to artificially generate smaller datasets by randomly sub-sampling 50-500 cells. For each sample size, parameter estimates were then obtained using both the regression and non-regression BASiCS models. 
+Based on parameter estimates using the non-regression model, we split the genes into three sets: lowly expressed ($\mu_i<1.89$), medium expressed ($1.89<\mu_i<5.37$) and highly expressed ($\mu_i>5.37$). These cut-off values were chosen such that roughly a third of genes were assigned to each category. The distribution of these estimates is summarised in \textbf{Fig.~\ref{fig2:parameter_stabilization}}. \\
 
-To capture these transcriptionally quiescent cells, we used the \emph{emptyDrops} function from the \emph{DropletUtils} R package to distinguish between droplets capturing genuine cells with low transcriptional complexity and empty droplets containing only ambient mRNA \citep{Lun2018}. Applying this approach increased the number of early spermatocytes in all samples and, in particular, identified a population of cells connecting spermatogonia and spermatocytes at the predicted position in the cell trajectory \textbf{(Fig.~\ref{fig3:emptyDrops}A-C)}. We strongly enrich for leptotene and zygotene spermatocytes, especially in the P15 sample, after including these smaller cells in the analysis. Due to low transcriptional complexity, these two cell types cluster together which makes it hard to detect a clear mitosis-to-meiosis transition \textbf{(Fig.~\ref{fig3:emptyDrops}B and C)}. As expected for leptotene and zygotene spermatocytes, these cells show high mRNA levels for genes involved in synaptonemal complex formation, chromosome synapsis and DNA double-strand break (DSB) formation such as \textit{Sycp1}, \textit{H2afx} and \textit{Hormad1} \citep{Daniel2011, Mahadevaiah2001, Vries2005} \textbf{(Fig.~\ref{fig3:emptyDrops}D)}.\\
-
-In addition to early spermatocytes, droplets with lower transcriptional complexity also captured late condensing spermatids. As mentioned above, these late stages of spermiogenesis are characterised by continuous degradation of RNA after transcriptional shut-down at the round-to-elongating transition \citep{Steger1999} \textbf{(Fig.~\ref{fig3:emptyDrops}E)}. Nevertheless, including droplets with low transcriptional complexity increases the risk of including low-quality cells and debris. In our case, the large cluster of unidentified cells in \textbf{Fig.~\ref{fig3:emptyDrops}A} could represent membrane vesicles containing RNA at the end of spermiogenesis that form during a process termed "cytoplasmic extrusion" \citep{Rengan2012}.\\
-
-\newpage
+Firstly, we observe that both the regression and non-regression BASiCS models led to consistent and largely stable mean expression estimates $\mu_i$ across different sample sizes and expression levels \textbf{(Fig.~\ref{fig2:parameter_stabilization}A)}. Secondly, in line with the results in \textbf{Fig.~\ref{fig2:datasets}}, the main differences between the methods arise when estimating the over-dispersion parameters $\delta_i$ \textbf{(Fig.~\ref{fig2:parameter_stabilization}B)}. In particular, we observe that the non-regression BASiCS model appears to underestimate $\delta_i$ for lowly expressed genes when the sample size is small (with respect to the parameter estimates obtained based on the full dataset of 939 cells). This is due to the original, non-informative prior: $\delta_i\sim\textnormal{log-N}(0,a_\delta^2)$. In the case of lowly expressed genes, the data is not informative and the over-dispersion parameters are estimated as $\delta_i\approx{}0$. In contrast, the shrinkage introduced by our regression BASiCS model aids parameter estimation, leading to robust estimates even for the smallest sample size. This is particularly important for rare cell populations where large sample sizes are difficult to obtain. A similar effect is observed for genes with medium and high expression levels, where the non-regression BASiCS model appears to slightly overestimate $\delta_i$. We also observe that estimates of residual over-dispersion parameters $\epsilon_i$ are stable across sample sizes and expression levels. \textbf{Fig.~\ref{fig2:parameter_stabilization2}A-C} summarises 10 replicates of the down-sampling experiment performed in \textbf{Fig.~\ref{fig2:parameter_stabilization}A-C}. We use parameters estimated from the full dataset as \gls{pgt} values. For each sub-sampling experiment, sample size and gene set, we computed the median $\log_2$ fold change in $\mu_i$ and $\delta_i$ and the median difference for $\epsilon_i$ between the estimates and the \gls{pgt}. The median and the range of these values across 10 sub-sampling experiments is used for visualisation purposes \textbf{(Fig.~\ref{fig2:parameter_stabilization2}A-C)}. 
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.75\textwidth]{Fig_7.png}
-\caption[Transcriptionally silent cell types in spermatogenesis]{\textbf{Transcriptionally silent cell types in spermatogenesis.} \\
-\textbf{(A)} tSNE representation of cells selected by the \emph{emptyDrops} filtering strategy. Coloured dots represent annotated cell types detected using the default \emph{CellRanger} filtering pipeline while black dots represent cells detected by the \emph{emptyDrops} filtering. SG: Spermatogonia, SC: Spermatocytes, IL: Immature Leydig, PTM: Peritubular Myoid Cells, EC: Endothelial Cells, tMg: testicular Macrophages, S: Spermatids, \textbf{(B)} tSNE representation of emptyDrops filtered cells from the P15 sample. Cell colouring corresponds to clustering performed on this sample. Undiff SG: undifferentiated spermatogonia, Diff SG: differentiating spermatogonia, \textbf{(C)} PCA representation of spermatogonia and spermatocytes detected in the P15 sample after \emph{emptyDrops} filtering. Labelling corresponds to the clusters shown in (B), \textbf{(D)} Leptotene and zygotene spermatocyte marker gene expression. The colour scale represents log$_2$-transformed, normalised counts, \textbf{(E)} Visualisation of the number of genes expressed (> 0 counts) per cell.}
-\label{fig3:emptyDrops}
+\includegraphics[width=0.9\textwidth]{Fig_7.png}
+\caption[Estimation of gene-specific model parameters for varying sample sizes]{\textbf{Estimation of gene-specific model parameters for varying sample sizes.}\\
+The regression (orange) and non-regression (blue) BASiCS models were used to estimate gene-specific model parameters for lowly (lower panels), medium (mid panels) and highly (upper panels) expressed genes across populations with varying numbers of cells. These were generated by randomly sub-sampling cells from a population of 939 CA1 pyramidal neurons \citep{Zeisel2015}. Extended results based on multiple downsampling experiments are displayed in \textbf{Fig.~\ref{fig2:parameter_stabilization2}A-C}. \textbf{(A-C)} For a single sub-sampling experiment, boxplots summarise the distribution of gene-specific estimates for (A) mean expression parameters $\mu_i$ (log-scale), (B) over-dispersion parameters $\delta_i$ (log-scale) and (C) residual over-dispersion parameters $\epsilon_i$. \textbf{(D-F)} For 10 sub-sampling experiments, parameter estimates were compared against a \textit{pseudo} ground truth (pgt). The latter is defined as the parameter estimates obtained for the full population of 939 cells using the regression BASiCS model. For each sub-sampling experiment, gene-specific log$_2$ fold changes ($\log_2(\mu_i/\mu_{i,pgt})$ and $\log_2(\delta_i/\delta_{i,pgt})$) and distances ($\epsilon_i - \epsilon_{i,pgt}$) between the estimates and the pgt were computed. For visualisation purposes, the medians across genes for each sub-sampling experiment are presented,}
+\label{fig2:parameter_stabilization}
 \end{figure}
 
-\newpage
+\subsection{Validation of gene-specific posterior estimates by smFISH}
 
-\section{Characterisation of male meiosis}
-
-After characterising the major germ and somatic cell types, we next profiled the transcriptional programmes of known developmental processes during spermatogenesis. These include firstly meiosis and later on spermiogenesis which will be analysed and discussed in the next section.\\
-
-The mitotic expansion of spermatogonia produces large numbers of spermatocytes, which then undergo male meiosis where two consecutive cell divisions give rise to four haploid spermatids. In contrast to mitotic cell divisions, prophase of meiosis I is extremely prolonged, lasting up to 10 days in male mice \citep{Soh2017}. Furthermore, meiosis includes programmed DSB formation, homologous recombination, and chromosome synapsis \citep{Marston2004}, which represent molecular processes to induce genetic variation between offspring. Most meiotic processes have been histologically described, but a full transcriptional characterisation of spermatocytes undergoing meiosis is lacking. \\
-
-The continuum of sampled cell types allows us to perform in-depth characterisation of transcriptional changes that occur during meiosis. For this, we ordered spermatocytes along their differentiation trajectory by fitting a principal curve \citep{Hastie1989} to the first 3 principal components using the \emph{principal.curve} function implemented in the \emph{princurve} R package. This approach allows us to order cells along the developmental trajectory. The directionality of the trajectory was inferred using prior information based on the cluster annotation. Here, the ordering of cell types is as follows: leptotene spermatocytes (SCs, not present in CellRanger filtered data), zygotene SCs, pachytene SCs, diplotene SCs and finally cells in metaphase \textbf{(Fig.~\ref{fig3:meiosis}A)}. \\
-
-To detect molecular processes that occur during meiosis, we first profiled the overall transcriptional rate before dissecting changes in expression on a gene-specific level. As shown before \citep{Xia2018}, we identified a strong increase in the number of genes expressed as spermatocytes progress through prophase, with the highest number being expressed immediately before the cells divide \textbf{(Fig.~\ref{fig3:meiosis}A)}. Using this as a proxy for active transcription, we identified diplotene spermatocytes, which are the latest cell type in prophase I in which RNA synthesis is occurring \citep{Monesi1965}. 
-
-\newpage
-
-We used the increase and later decrease in transcription as a guide for the progressive changes in transcription throughout meiosis. Therefore, to detect functional genes that influence this process, we correlated each gene’s normalised expression level to the number of genes expressed. For this, we used the \emph{correlatedPairs} function implemented in \emph{scran} \citep{Lun2016}. First, we constructed an empirical null distribution using the \emph{correlateNull} function implemented in \emph{scran}. Next, we tested the observed Spearman’s $\rho$ for each gene against this null distribution. Genes with $\rho$ < -0.3 and a Benjamini-Hochberg corrected empirical p-value < 0.1 were considered as negatively correlated and genes with $\rho$ > 0.3 and a Benjamini-Hochberg corrected empirical p-value < 0.1 were considered as positively correlated.\\
-
-As expected, previously known marker genes for early meiotic processes such as \textit{Hormad1} and \textit{Sycp3} decreased in expression during Prophase I, whereas \textit{Pou5f2} and \textit{Tcte2}, a male meiosis-specific gene \citep{Braidotti1997} increased in expression \textbf{(Fig.~\ref{fig3:meiosis}B)}. Supporting our identification of diplotene spermatocytes, \textit{Pou5f2} has previously been shown to be specifically expressed during a 36- to 48-hour period preceding the meiotic cell division \citep{Andersen1993}. \\
-
-In the next step, we performed a targeted analysis and detected marker genes for each of the spermatocyte sub-cell types. Despite the overall increase in transcription, we observed distinct temporal expression patterns when visualising these specific marker genes for individual spermatocyte populations. Even within pachytene spermatocytes at different stages in their developmental progression, there exists substantial heterogeneity \textbf{(Fig.~\ref{fig3:meiosis}C)}. As expected, early spermatocyte markers (SC 1 and SC 2) were enriched for genes with known functions in male or female fertility such as \textit{Piwil1} (\textit{Miwi}), \textit{Cks2}, \textit{Sycp1}, reflecting a history of intensive investigation \citep{Deng2002, Spruck2003, Vries2005}. We performed literature search and used the database \url{www.mousephenotype.org} to annotate genes regarding their sterility phenotype. \\
-
-In sum, we dissected the transcriptional heterogeneity within spermatocytes undergoing meiosis and identified a set of genes that form potential drivers for this process. Genes which show a high expression in early stages during meiosis have been validated to induce sterility once removed from the system.  
-
-\newpage
+As an external validation, we compared our posterior estimates of gene-specific model parameters obtained from scRNA-Seq data to empirical estimates from matched smFISH data of mouse embryonic stem cells grown in 2i and serum media \citep{Grun2014}. Firstly, posterior estimates of mean-expression parameters $\mu_i$ exhibit high correlation to smFISH mean transcript counts \textbf{(Fig.~\ref{fig2:parameter_stabilization2}D)}. Secondly, we also observe a strong correlation between posterior estimates for over-dispersion parameters $\delta_i$ and the empirical CV$^2$ values obtained from smFISH data \textbf{(Fig.\ref{fig2:parameter_stabilization2}E)}. Finally, a similar behaviour is observed when comparing posterior estimates of residual over-dispersion parameters $\epsilon_i$ to a residual CV$^2$ \textbf{(Fig.\ref{fig2:parameter_stabilization2}F)}. As in Brennecke \emph{et al.}, 2013 \cite{Brennecke2013}, to obtain residual CV$^2$ values for the smFISH data, we fitted a gamma generalised linear model with identity link (\textit{glmgam.fit} of the \textit{statmod} package in R) between the CV$^2$ and the reciprocal log-transformed mean transcript counts.
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.9\textwidth]{Fig_8.png}
-\caption[Gene expression dynamics during male meiosis]{\textbf{Gene expression dynamics during male meiosis.} \\
-\textbf{(A)} Number of genes expressed per spermatocyte. Cells are ordered by their developmental progression during meiotic prophase until metaphase, \textbf{(B)} Expression of genes that are negatively or positively correlated with the number of genes expressed during meiotic prophase (negatively correlated: $\rho$ < -0.3, Benjamini-Hochberg corrected empirical p-value < 0.1; positively correlated: $\rho$ > 0.3, Benjamini-Hochberg corrected empirical p-value < 0.1). Per category, two genes are visualised. The colour gradient represents log$_2$-transformed, normalised counts, \textbf{(C)} Heatmap visualising the Z score scaled expression of the top 15 marker genes per cell type. Row and column labels correspond to the different populations of spermatocytes (SC). M: Metaphase. Genes are labelled based on their fertility phenotype: pink – infertile or sub-fertile in females, light blue - infertile or sub-fertile in males, dark green - infertile or sub-fertile in both males and females. The sterility phenotype was annotated using \url{www.mousephenotype.org.}}
-\label{fig3:meiosis}
+\caption[Stability of posterior estimates for gene-specific parameters]{\textbf{Stability of posterior estimates for gene-specific parameters.}\\
+\textbf{(A-C)} Matched scRNA-Seq and smFISH data measured on mouse embryonic stem cells grown in 2i and serum media \citep{Grun2014} was used to validate the performance of the regression BASiCS model. Gene-specific parameter estimates obtained by the regression BASiCS model were compared against empirical estimates calculated based on smFISH data. This comparison includes 8 genes, measured in both conditions. Pearson's correlation is indicated for each comparison, \textbf{(D)} Estimates of mean expression parameters $\mu_i$ (log-scale) are plotted against mean transcript count (smFISH), \textbf{(E)} Estimates of over-dispersion parameters $\delta_i$ (log-scale) are plotted against the squared coefficient of variation (CV$^2$) of transcript counts (smFISH), \textbf{(F)} Estimates for residual over-dispersion parameters $\epsilon_i$ are compared against residual estimates of variability estimated for the smFISH data.}
+\label{fig2:parameter_stabilization2}
 \end{figure}
 
-\section{Transcriptional dynamics during spermiogenesis}
-\label{sec3:spermiogenesis}
+\newpage
 
-Once the meiotic divisions result in the production of four haploid cells, round spermatids progress to form first elongating and finally mature sperm during a process termed "spermiogenesis" \textbf{(Fig.~\ref{fig3:spermiogenesis}A)}. A key event during spermiogenesis is chromatin condensation, which is required to package the haploid genome into the confined space of the sperm nucleus. Our data allowed us to dissect at high-resolution the transcriptional regulation needed for gradual chromatin remodelling during spermatid differentiation, involving the replacement of canonical histones by histone variants followed by transition proteins and eventually protamines \citep{Balhorn2007, Kennani2017}. This chromatin remodelling later induces a transcriptional shut-down where changes in RNA content are purely driven by degradation \citep{Steger1999}.
+\section{Expression variability during immune responses}
 
-\subsection{Expression of chromatin components during spermiogenesis}
+Here, we illustrate how the regression BASiCS model assesses changes in expression variability using CD4\plus{} T cell activation and differentiation. For all datasets, pre-processing steps are described in \textbf{Section \ref{sec2:datasets}}. 
 
-We first explored how expression of histone variants changed throughout early spermatid maturation \textbf{(Fig.~\ref{fig3:spermiogenesis}A)}. Similar to the developmental ordering presented in the previous section, we ordered cells by fitting a principal curve to the first three principal components calculated on S1-S14 spermatids. Annotations for histone variants and canonical histones were taken from El Kennani \emph{et al.}, 2017 \citep{Kennani2017}. Multiple variants of H3 and H2A are expressed in spermatocytes \citep{Greaves2006, Mahadevaiah2001, Tang2015}, and our data showed that many of these histones are highly expressed in early round spermatids. For instance, Histone H3.3 is a histone variant consisting of two genomic copies (\textit{H3f3a} and \textit{H3f3b}). Across spermatogenesis, we observed distinct expression patterns for the two genes, with \textit{H3f3a} being consistently highly expressed until the transcriptional shut-down at spermatid stage S10. In contrast, \textit{H3f3b} showed a much more dynamic expression profile, starting at a high level in spermatocytes, dropping throughout meiotic prophase, followed by up-regulation in round spermatids \textbf{(Fig.~\ref{fig3:spermiogenesis}B)}. Although both genes have been implicated in male fertility, the phenotypes associated with perturbations of the more dynamically regulated paralog \textit{H3f3b} are much more severe \citep{Tang2015, Yuen2014}.\\
+\subsection{Testing variability changes upon immune activation}
+\label{sec2:immune_activation}
 
-When profiling the expression of canonical histones, we detected increased expression of \textit{Hist1h2bp} and \textit{Hist1h4a}, with a distinct up-regulation during early and mid-spermiogenesis \textbf{(Fig.~\ref{fig3:spermiogenesis}C)}. Canonical histones are typically transcribed in a replication-dependent manner during S phase \citep{Marzluff2002}, thus the atypical expression during spermiogenesis could suggest important roles as replacement histones during chromatin remodelling. Nevertheless, canonical histones appeared to be the set of annotated histones that is least correlated to the developmental trajectory \textbf{(Fig.~\ref{fig3:spermiogenesis}A)}.
+As described in the previous chapter, the non-regression BASiCS model only allows the assessment of changes in variability for genes that remain stable in gene expression across conditions. Here, we extend the previous analysis and test for changes in variability in parallel to changes in mean expression. \\
+
+To identify gene expression changes during early T cell activation, we compared CD4\plus{} T cells before (naive) and after (active) 3 hours of stimulation with CD28 and CD3\textepsilon{} antibodies (see \textbf{Section \ref{sec1:activation}} and \citep{Martinez-jimenez2017}). For both conditions, we ran the regression BASiCS model independently and performed differential mean expression and differential variability testing using the residual over-dispersion parameters. Testing changes in variability through residual over-dispersion is performed across all genes, including the large set of genes that are up-regulated upon immune activation \textbf{(Fig.~\ref{fig1:immune_activation})}. The latter include immune-response genes and critical drivers for CD4\plus{} T cell functionality that had to be excluded from analysis in the previous chapter.
+
+\subsubsection{Comparison between the regression and non-regression BASiCS model}
+
+Firstly, we compared the results obtained by the regression BASiCS model to those presented in \textbf{Section \ref{sec1:activation}}.  
+To allow for a direct comparison of the results, the same inclusion criteria as in the previous chapter is adopted, i.e.~we excluded genes with low mean expression ($\mu_i<50$) in both conditions from testing. Moreover, the minimum tolerance thresholds were also adapted to match the choices in \textbf{Section \ref{sec1:activation}}. To detect differentially expressed genes, a minimum tolerance threshold $\tau_0 = 2$ was used \textbf{(Fig.~\ref{fig2:model_comparison}A)}. To compare the detection of differentially over-dispersed genes, we performed differential mean expression testing using a stringent minimum tolerance threshold $\tau_0 = 0$ for both models (this is to avoid the results being confounded by changes in mean, see upper panel in \textbf{Fig.~\ref{fig2:model_comparison}B}). For the 463 genes that are detected as non-differentially expressed by both models for this threshold, a total of 111 genes are detected as differentially over-dispersed by either model (minimum tolerance log$_2$ fold change threshold $\omega_0 = \log_2(1.5) = 0.58$). Out of this set, 93 genes ($\sim$83\%) are detected as differentially over-dispersed by both models (see lower panel in \textbf{Fig.~\ref{fig2:model_comparison}B}).
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.85\textwidth]{Fig_9.png}
-\caption[Transcriptional dynamics and chromatin remodelling during spermiogenesis]{\textbf{Transcriptional dynamics and chromatin remodelling during spermiogenesis.} \\
-\textbf{(A)} Z score scaled, normalised expression of histone variants (H1, H2A, H2B, H3), canonical histones, \glspl{Tnp} and \glspl{Prm} during spermiogenesis. Cells were ordered based on their developmental trajectory ranging from round spermatids (S1-S8) to elongating spermatids (S9-S14), \textbf{(B)} Expression of \textit{H3f3a} (middle panel) and \textit{H3f3b} (right panel) across the different germ cell populations, \textbf{(C)} Similar visualisation as in (B) for \textit{Hist1h4a} expression across germ cells. }
-\label{fig3:spermiogenesis}
+\includegraphics[width=\textwidth]{Fig_9.png}
+\caption[Differential testing results of the two BASiCS models]{\textbf{Differential testing comparison between the regression and non-regression BASiCS model.}\\
+\textbf{(A)-(B)} Results of differential testing between naive and activated CD4\plus{} T cells were compared between the regression and non-regression BASiCS models. As in \textbf{Section \ref{sec1:activation}}, genes with low mean expression ($\mu_i<50$) in both conditions were excluded from testing. \textbf{(A)} Overlap of differentially expressed genes (mean) using a minimum tolerance threshold $\tau_0=2$ obtained by the regression and non-regression BASiCS models (EFDR = 10\%), \textbf{(B)} Upper panel: overlap of genes detected as non-differentially expressed using a stringent minimum tolerance threshold $\tau_0=0$ obtained by the regression and non-regression BASiCS models (EFDR = 10\%). Lower panel: overlap of differentially over-dispersed genes using a minimum tolerance threshold $\omega_0=\log_2(1.5)$ obtained using the regression and non-regression  BASiCS models for the 463 genes detected as non-differentially expressed by both models (EFDR = 10\%).}
+\label{fig2:model_comparison}
 \end{figure}
 
+\subsubsection{Differential testing during immune activation}
+
+For further analyses in this chapter (and in contrast to the previous chapter), we exclude genes whose estimated mean expression parameter $\mu_i$ was below 1 from the differential testing. Furthermore, a $\log_2$ fold change threshold $\tau_0 = 1$ was adopted for mean expression testing. Unlike the more stringent threshold used in the previous chapter ($\tau_0 = 2$), this choice allows us to detect more subtle changes in mean expression. Moreover, the default threshold $\psi_0 = 0.41$ was used for differential variability testing. The EFDR was controlled to 10\%. By using these thresholds, our model classifies genes into four categories based on their expression dynamics: down-regulated upon activation with (i) lower and (ii) higher variability, and up-regulated with (iii) lower and (iv) higher variability \textbf{(Fig.~\ref{fig2:immune_activation}A)}. \\
+
+Genes with up-regulated expression upon activation and decreased expression variability encode components of the splicing machinery (e.g.~\textit{Sf3a3}, \textit{Plrg1}), RNA polymerase subunits (e.g.~\textit{Polr2l}, \textit{Polr1d}) as well as translation machinery components (e.g.~\textit{Ncl}, \textit{Naf1}) (see \textbf{Fig.~\ref{fig2:immune_activation}B}). These biosynthetic processes help naive T cells to rapidly enter a programme of proliferation and effector molecule synthesis \citep{Tan2017,Araki2017}. Therefore, rapid and uniform up-regulation of these transcripts would assist such processes. This observation also confirms our previous findings that the translational machinery is tightly regulated during early immune activation (see \textbf{Section \ref{sec1:activation}}).\\
+
+In contrast, genes with up-regulated expression and increased expression variability (see \textbf{Fig.~\ref{fig2:immune_activation}C}) include the death-inducing and inhibitory transmembrane ligands \gls{Fasl} and \gls{PDL1} (gene symbol: \textit{Cd274}), the regulatory transcription factor Smad3 (\textit{Smad3}), and the TCR-induced transcription factor, Oct2 (\textit{Pou2f2}). Additionally, we detect a heterogeneous up-regulation in the mRNA expression of the autocrine/paracrine growth factor Il2 (\textit{Il2}) upon immune activation. This is in line with previous reports of binary Il2 expression within a population of activated T cells, which has been suggested to be necessary for a scalable antigen response \citep{Fuhrmann2016}. Heterogeneity in expression of these genes suggests that, despite their uniform up-regulation of biosynthetic machinery, the T cells in this early activation culture represent a mixed population with varying degrees of activation and/or regulatory potential. \\
+
+For each of these gene sets, functional annotation analysis was performed using all tested genes as background. The functional annotation clustering tool in DAVID \citep{Dennis2003} was used to cluster annotation categories based on similarity and sort them according to their enrichment score. Here, we list the top 3 functional annotation clusters per gene set and their corresponding enrichment score (ES):
+\begin{itemize}
+\item \textbf{Down-regulated with lower variability:} Pleckstrin homology domain (ES = 1.57), G protein signalling (ES = 1.51), glycosidase (ES = 1.49),
+\item \textbf{Down-regulated with higher variability:} Ankyrin repeat-containing domain (ES = 2.19), GTPase mediated signalling (ES = 1.51), steroid biosynthesis (ES = 0.89), 
+\item \textbf{Up-regulated with lower variability:} RNA polymerase (ES = 1.6), RNA binding (ES = 1.53), splicing (ES = 1.41),
+\item \textbf{Up-regulated with higher variability:} Cytokine-cytokine receptor interaction (ES = 1.65), WD40 repeat (ES = 1.22), transcription (ES = 1.18).
+\end{itemize}
+
 \newpage
 
-We next profiled the transcriptional dynamics of testis-specific histone variants. They showed highest expression in elongating spermatids, with most variants increasing strongly in expression from S5 onwards. While some variants had a consistently high expression level, \textit{Hils1} and \textit{H1fnt} decreased in expression towards the late stages, similarly to \textit{Tnp1} and \textit{Tnp2} \citep{Zhao2004}. Both histone variants are important for male fertility, and \textit{Hils1} has previously been shown to interact with \textit{Tnp1} \citep{Tanaka2005}. In contrast, three testis-specific histone variants \textit{Hypm}, \textit{H2afb1} and \textit{H2bl1} (\textit{1700024p04rik}) showed consistently high expression until the end of differentiation similar to protamines, suggesting these variants may contribute to the final genome condensation.
-
-\subsection{Identifying the point of transcriptional shut-down}
-
-As a consequence of chromatin condensation, transcription ceases in spermatids at the round to elongating switch, consistent with the lack of active RNA Pol II at S10 and later stages \citep{DottermuschHeidel2014}.
-By fitting a smooth regression (loess) to the number of genes expressed per cell along the differentiation trajectory, we easily identified the point of transcriptional shut-down. The number of expressed genes is stable until approximately S9 before gradually declining by roughly 50\% \textbf{(Fig.~\ref{fig3:transcriptional_shutdown}A)}. In the 8 days following transcriptional shut-down, spermatids still need to undergo drastic morphological changes, including the assembly of sperm-specific structures such as the flagellum, before mature testicular sperm can be released into the lumen \citep{ODonnell2014}. To achieve this in the absence of active transcription, spermatids store large amounts of mRNAs in a perinuclear RNA granule termed the chromatoid body \citep{Kotaja2007}. RNA stored in the chromatoid body is then released for translation, suggesting that these molecules may play vital roles during late stages of spermiogenesis. However, identifying the RNAs that are stored has been hindered by difficulties in purifying late spermatids. \\
-
-By correlating normalised gene expression against the number of genes expressed, we identified a large number of genes that gradually decrease in relative expression after transcriptional shut-down. We reasoned that transcripts where the relative expression after transcriptional shut-down appeared to increase are likely protected from degradation \textbf{(Fig. \ref{fig3:transcriptional_shutdown}B)}. This included genes with well-known spermiogenesis-specific functions. Among those that relatively increase in expression, we find transition proteins and protamines that are involved in chromatin condensation. Furthermore, we detect genes that are involved in the development of sperm motility such as \gls{Akap4} and \gls{Cabs1} \citep{Kawashima2009, Miki2002}. 
-
-\newpage
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_10.png}
-\caption[Transcriptional shut-down during spermiogenesis]{\textbf{Transcriptional shut-down during spermiogenesis.} \\
-\textbf{(A)} Number of genes expressed per spermatid. Cells were ordered based on their developmental trajectory. Red line indicates a smooth regression (loess) fit, \textbf{(B)} For each gene, its normalised expression per cell was correlated with the number of genes expressed per cell. Genes were ordered based on the correlation coefficient and grouped into 9 sets. Z score scaled expression was averaged across genes within each gene set. Vertical dashed line indicates transcriptional shut-down between S9 and S10.}
-\label{fig3:transcriptional_shutdown}
+\includegraphics[width=0.7\textwidth]{Fig_10.png}
+\caption[Changes in expression patterns during early immune activation]{\textbf{Changes in expression patterns during early immune activation.}\\
+Differential testing (mean and residual over-dispersion) was performed between naive and activated murine CD4\plus{} T cells taken from the previous chapter. This analysis uses a minimum tolerance threshold of $\tau_0=1$ for changes in mean expression and a minimum tolerance threshold of $\psi_0=0.41$ for differential residual over-dispersion testing (expected false discovery rate is fixed at 10\%). \textbf{(A)} For each gene, the difference in residual over-dispersion estimates (Active - Naive) is plotted versus the log$_2$ fold change in mean expression (Active/Naive). Genes with statistically significant changes in mean expression and variability are coloured based on their regulation (up/down-regulated, higher/lower variability), \textbf{(B-C)} Normalised expression counts across the naive (purple) and active (green) CD4\plus{} T cell population are visualised for representative genes that (B) increase in mean expression and decrease in expression variability and (C) increase in mean expression as well as expression variability  upon immune activation. Each dot represents a single cell.}
+\label{fig2:immune_activation}
 \end{figure}
 
-With this analysis, we explored transcriptional processes occurring throughout the process of spermiogenesis that (i) regulate the expression of chromatin components and (ii) lead to the degradation of unneeded transcripts.
-
 \newpage
 
-\section{Meiotic silencing dynamics of sex chromosomes}
+\subsubsection{Effect of expression outliers on changes in variability}
 
-A male-specific feature of meiosis is the transcriptional silencing of sex chromosomes, followed by a partial reactivation in post-meiotic spermatids. This process is termed \gls{MSCI}, and is caused by asynapsis of the sex chromosomes, leading to accumulation of phosphorylated \gls{H2afx} and the formation of the sex body \citep{Hamer2003} \textbf{(Fig.~\ref{fig3:X_reactivation}A)}. We next profiled transcriptional changes mediated by the inactivation and reactivation of the sex chromosomes in single-cell and bulk RNA-Seq data. \\
-
-To assess overall transcriptional dynamics of the sex chromosomes, we computed the ratio of expression from the X and Y chromosome and chromosome 9 to all autosomes. For this, we selected genes that were expressed in more than 30\% of spermatogonia or 30\% of spermatids, the cell types with detectable sex chromosome expression. For each cell, the mean expression across these genes per chromosome was calculated. Mean expression of the sex chromosomes and chromosome 9 was divided by mean expression across all autosomes. By plotting the ratio of gene expression from the X or Y chromosomes compared to all autosomes, the inactivation and re-activation status of the sex chromosomes can be inferred \textbf{(Fig.~\ref{fig3:X_reactivation}B)}. \\
-
-The X chromosome is partially up-regulated in spermatogonia as described by Sangrithi \emph{et al.}, 2017 (\gls{XA} ratio < 1) \citep{Sangrithi2017}. This is followed by transcriptional silencing in spermatocytes. Throughout spermiogenesis, expression from the X chromosome gradually increases, reaching X:A ratios comparable to spermatogonia, therefore suggesting a substantial reactivation of the X chromosome in post-meiotic spermatids. We detect similar behaviour for the Y chromosome but due to the small number of expressed genes, the signal is noisier \textbf{(Fig.~\ref{fig3:X_reactivation}B)}. In comparison, chromosome 9 shows consistent expression across all cell types throughout spermatogenesis (9:A $\approx$ 1).\\
-
-Transcriptional silencing was originally thought to persist throughout post-meiotic development \citep{Greaves2006, Turner2006}. However, several genes have been shown to be re- or \emph{de novo} activated in spermatids, some of which are dependent on \gls{Rnf8} and/or \gls{Scml2} \citep{Hasegawa2015a, Sin2012, Sin2015}. The precise timing and order of the transcriptional reactivation of \emph{de novo} escape genes during spermiogenesis has not been explored. We therefore first classified \emph{de novo} activated escape genes using bulk RNA-Seq data and profiled their temporal expression directly following meiosis.\\
-
-Profiling whole-testis transcriptomes of juvenile mice sampled every two days during the first wave of spermatogenesis allowed the sensitive detection of spermatid-specific escape genes \textbf{(Fig.~\ref{fig3:cell_staging}A)}. Due to the gradual emergence of germ cell types during the first spermatogenic wave, differential expression analysis between early ($\leq$ P20) and late (> P20) time points revealed genes exclusively expressed in spermatids and which are thus \emph{de novo} activated escape genes (n = 128) \textbf{(Fig.~\ref{fig3:X_reactivation}C)}. We used \emph{edgeR} to identify differentially expressed genes between these conditions \citep{Robinson2009}. Spermatid-specific genes are identified with a log$_2$-fold change > 5 in samples after day 20 compared to samples before day 20 (controlling the FDR to 10\%). \\
-
-Within the set of \emph{de novo} activated escape genes we find many of the previously annotated escape genes such as \textit{Cypt1}, \textit{Cycl1}, and \textit{Akap4}. Interestingly, this set of genes show an enrichment for targets of H3K27 acetylation which is mediated by \textit{Rnf8} or \textit{Scml2} (Fisher's Exact Test: \textit{Rnf8}-targets, p-value < 5x10$^{-12}$; \textit{Scml2}-targets, p-value < 2x10$^{-9}$) \textbf{(Fig. \ref{fig3:X_reactivation}C)}. This chromatin mark represents active enhancers necessary for the reactivation of gene expression in spermatids \citep{Adams2018}. \\
-
-While the bulk RNA-Seq data is ideal for identifying spermatid-specific, \emph{de novo} activated genes, it lacks the temporal resolution to differentiate between early and late reactivated genes. We therefore ordered the 128 \emph{de novo} activated genes based on their peak in expression using the scRNA-Seq data \textbf{(Fig. \ref{fig3:X_reactivation}D)}. The \emph{de novo} activated genes across our single cell RNA-Seq dataset showed a broad range of temporal expression patterns. The earliest expression, directly following meiosis and lasting until stages S4-S5 was observed for three members of the \gls{Ssxb} multi-copy gene family (\textit{Ssxb1}, \textit{Ssxb2}, \textit{Ssxb3}). Multi-copy genes have previously been described to have spermatid-specific expression \citep{Mueller2008}, and their ampliconic structure has been speculated to play a role in escaping meiotic silencing via self-pairing \citep{Disteche2008}.
-
-\newpage
+We observe that for some genes (e.g.~\textit{Plrg1}), changes in variability are driven by a small number of outlier cells with high expression. The interpretation of these results is not trivial as it could reflect very subtle sub-structure or genuine changes in variability. To explore this, we performed the following synthetic experiment: We artificially created a mixed population of cells by combining 5 activated CD4\plus{} T cells with a population of 93 naive CD4\plus{} T cells therefore simulating expression outliers. Subsequently, we performed a differential testing (mean and residual over-dispersion) between this mixed population and a \textit{pure} population of 93 naive CD4\plus{} T cells. As expected, this analysis shows an overall increase in variability in the mixed population. For example, among the genes that exhibit higher mean expression and higher residual over-dispersion in the mixed population, we found \textit{Il2} which is up-regulated upon CD4\plus{} T cell activation \textbf{(Fig.~\ref{fig2:mixture_population}A)}. Moreover, we observe that the genes in this category are enriched for those that are only expressed in the 5 activated CD4\plus{} T cells \textbf{(Fig.~\ref{fig2:mixture_population}B)}. This result suggests that differential variability testing can potentially uncover markers for heterogeneous cell states or cell types that can provide important biological insights. However, changes in residual over-dispersion that are driven by outliers can also reflect unwanted contamination (e.g.~mixed cell types), hence careful data filtering and clustering analysis should be performed prior to differential variability testing. 
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_11.png}
-\caption[X chromosome dynamics during spermatogenesis]{\textbf{X chromosome dynamics during spermatogenesis.} \\
-\textbf{(A)} Schematic of sex chromosome sub-nuclear localisation through spermatogenesis, \textbf{(B)} For each cell, the ratio of mean expression of genes on Chr 9, Chr X and Chr Y to the mean expression of genes across all autosomes is represented as a boxplot for cells allocated to each developmental stage. SG: Spermatogonia, M: Metaphase, \textbf{(C)} Expression of all X chromosome genes (> 10 average counts) in bulk RNA-Seq data across the juvenile time course. Columns correspond to developmental stage and rows are ordered by the log$_2$ fold change between spermatocytes (stages before and including postnatal day (P) 20) and spermatids (stages after P20). Horizontal dashes indicate genes that are targets of \textit{Rnf8} (green) and \textit{Scml2} (blue) \citep{Adams2018}, \textbf{(D)} Average expression of spermatid-specific genes (panel (C)) per germ cell type. Columns are ordered by developmental stage and rows are ordered by peak gene expression through development. Multi-copy genes are highlighted in bold.}
-\label{fig3:X_reactivation}
+\caption[Dissecting changes in variability driven by expression outliers]{\textbf{Dissecting changes in variability driven by expression outliers.}\\
+5 activated CD4\plus{} T cells were combined with a population of 93 naive CD4\plus{} T cells. \textbf{(A)} Distribution of normalised expression counts for \textit{Il2} in a population of naive CD4\plus{} T cells (red) and the mixture population representing a mix of 93 naive and 5 activated CD4\plus{} T cells (blue). Each dot represents a single cell, \textbf{(B)} Genes with increased mean expression and increased variability in the mixed population were detected. The heatmap shows normalised expression counts for these genes across the mixed population (93 naive and 5 activated CD4\plus{} T cells).}
+\label{fig2:mixture_population}
 \end{figure}
 
 \newpage
 
-\section{Epigenetic mechanisms of X chromosome reactivation}
+In summary, our approach allows us to extend the findings from the previous chapter, dissecting immune-response genes into two functional sets: (i) homogeneous up-regulation of biosynthetic machinery components and (ii) heterogeneous up-regulation of several immunoregulatory genes.
 
-After identifying \emph{de novo} activated escape genes, we next profiled the epigenetic basis that might underpin such transcriptional dynamics. For this, we profiled the chromatin landscape in spermatocytes and spermatids using the newly developed CUT\&{}RUN protocol for low cell numbers \textbf{(Appendix \ref{appA.2})} \citep{Skene2018}. 
+\subsection{Expression dynamics during \textit{in vivo} CD4\plus{} T cell differentiation}
 
-\subsection{CUT\&{}RUN to profile H3K4me3 and H3K9me3 marks}
+In contrast to the quick transcriptional switch that occurs within hours of naive T cell activation, transcriptional changes during cellular differentiation processes are more subtle and were found to be coupled with changes in variability prior to cell fate decisions \citep{Richard2016, Mojtahedi2016}. Here, we apply our method to study changes in expression variability during CD4\plus{} T cell differentiation after malaria infection using the dataset introduced by L\"onnberg \emph{et al.}, 2017 \cite{Lonnberg2017}. In particular, we focus on samples collected 2, 4 and 7 days post-malaria infection, for which more than 50 cells are available. The BASiCS model was run for 40,000 iterations independently for each condition.
 
-In brief, from two individuals, we sorted spermatocytes and spermatids at P26 during the first wave of spermatogenesis \textbf{(Fig.~\ref{fig3:K9_global}A)}. At this stage, tubules contain spermatocytes close to the meiotic cell divisions and elongating spermatids. We assayed H3K4me3 as a proxy for promoter activity, as well as repressive H3K9me3 mark. By profiling the enrichment of H3K9me3 across all chromosomes, we confirmed that the X chromosome has high levels of H3K9me3 in spermatids which has been previously shown \citep{Moretti2016, Greaves2006, Tachibana2007}. In addition, we now show that H3K9me3 accumulation begins earlier in meiosis, and indeed spermatocytes show enrichment of this repressive mark on the X chromosome \textbf{(Fig.~\ref{fig3:K9_global}B)}. \\
+\subsubsection{Changes in variability over the differentiation time course}
 
-On autosomes, H3K9me3 is enriched in pericentromeric regions of constitutive heterochromatin \citep{Peters2001}. To assay the distribution of read pairs across whole chromosomes, we binned reads in 1kb windows across the chromosome. Next, we calculated the cumulative sum across 10,000 randomly sampled bins starting at windows with the highest H3K9me3 enrichment. This measure indicates whether each window contains equal enrichment (slope is similar across the curve) or if some windows are enriched for the mark (slope decreases across the curve). As seen in \textbf{Fig.~\ref{fig3:K9_global}D}, the H3K9me3 enrichment appears to be homogeneously distributed across the X chromosome while, for example, the enrichment of the H3K9me3 mark on chromosome 9 is a lot more heterogeneous. \\
+First, we studied global changes in over-dispersion along the differentiation time course by comparing posterior estimates for the gene-specific over-dispersion parameter $\delta_i$, focusing on 126 genes for which mean expression does not change \textbf{(Fig.~\ref{fig2:immune_differentiation}A)}. These genes were detected by testing changes in mean expression using a stringent threshold ($\tau_0=0$) between day 2 and day 4 as well as between day 4 and day 7. Genes that are not detected as differentially expressed in both tests were considered for variability analysis. We found that the expression of these genes is most tightly regulated at day 4, when cells are in a highly proliferative state. Moreover, between day 4 and day 7, the cell population becomes more heterogeneous. This is in line with the emergence of differentiated Th1 and Tfh cells that was observed by L\"onnberg \emph{et al.}, 2017. \\
 
-Nevertheless, when merging the 1000 windows with highest H3K9me3 enrichment, we detected broad regions showing particularly high levels of H3K9me3 scattered across the X chromosome \textbf{(Fig.~\ref{fig3:K9_global}C)}. Among the merged regions with highest H3K9me3 enrichment, we detect the promoter of \textit{Akap4}, a well-known escape gene. This discovery prompted us to profile the chromatin dynamics of active and repressive marks at promoters of \emph{de novo} escape genes (\emph{spermatid-specific genes}) versus the promoters of all other expressed X-chromosome genes (\emph{non-spermatid specific genes}) \textbf{(Fig.~\ref{fig3:X_reactivation}C)}.
+Next, we exploited the residual over-dispersion parameters to identify changes in variability (irrespective of changes in mean expression) between consecutive time points. For this, we performed differential variability testing using the default threshold on changes in the residual over-dispersion parameter ($\psi_0 = 0.41$) between day 2 and day 4 as well as between day 4 and day 7. After testing, we excluded all genes that are expressed in fewer than 2 cells in at least one time point from down-stream analysis. Separating the remaining genes by whether their variability increases or decreases between time points revealed four different patterns \textbf{(Fig.~\ref{fig2:immune_differentiation}B)}. These include genes whose variability systematically increases (or decreases) as well as patterns where variability is highest (or lowest) at day 4. 
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_12.png}
-\caption[Chromatin profiling in spermatocytes and spermatids]{\textbf{Chromatin profiling in spermatocytes and spermatids.} \\
-\textbf{(A)} Spermatocytes and spermatids were isolated from the same individual using FACS and profiled using H3K4me3 (active mark) and H3K9me3 (repressive mark) using CUT\&{}RUN, \textbf{(B)} Number of H3K9me3 Fragments Per Kilobase per Million (FPKM) for each chromosome. Pink: spermatocytes, blue: spermatids. Shape corresponds to biological replicate, \textbf{(C)} The top 1000 windows with highest H3K9me3 signal (1000 bp width, CPM) were merged using a tolerance of 1500 bp. Representative tracks of one replicate in spermatocytes and one replicate in spermatids are shown, \textbf{(D)} Cumulative summed counts per million across 10000 randomly sampled windows (1000 bp width) visualising the distribution of the H3K9me3 signal across chromosome 9 (dashed line) and chromosome X (solid line).}
-\label{fig3:K9_global}
+\caption[Dynamics of expression variability throughout CD4\plus{} T cell differentiation]{\textbf{Dynamics of expression variability throughout CD4\plus{} T cell differentiation.}\\
+Analysis was performed on CD4\plus{} T cells assayed 2 days, 4 days and 7 days after \textit{Plasmodium} infection. Changes in residual over-dispersion were tested using a minimum tolerance threshold of $\psi_0=0.41$ (EFDR is fixed at 10\%), \textbf{(A)} Distribution of posterior estimates of over-dispersion parameters $\delta_i$ for genes that exhibit no changes in mean expression across the differentiation time course. Changes in mean expression were tested using a minimum tolerance threshold of $\tau_0=0$ (expected false discovery rate is fixed at 10\%), \textbf{(B)} Posterior estimates for residual over-dispersion parameters  $\epsilon_i$, focusing on genes with statistically significant changes in expression variability between time points. Gene set size is indicated for each plot, \textbf{(C-D)} Normalised expression counts across cell populations at day 2 (yellow) and day 4 (red) post infection are visualised for representative genes that (C) increase or (D) decrease in variability during differentiation. Each dot represents a single cell.\\}
+\label{fig2:immune_differentiation}
+\end{figure}
+
+\subsubsection{Opposing expression dynamics of lineage-defining marker genes}
+
+The differential variability analysis between day 2 and day 4, revealed  changes in expression variability for a set of immune-related genes \textbf{(Fig.~\ref{fig2:immune_differentiation}C-D)}. For example, expression of \gls{Cxcr5} which encodes the chemokine receptor that directs Tfh cells to the B cell follicles \citep{Crotty2014}, strongly increases in variability on day 4. This finding agrees with results from L\"onnberg \emph{et al.}, 2017 \citep{Lonnberg2017}, where Tfh and Th1 differentiation was observed to be transcriptionally detectable at day 4 within a subset of activated cells. A similar behaviour was observed for \gls{Tyk2} and \gls{Tigit}. The latter encodes a receptor that is expressed by a subset of Tfh cells and that was found to promote Tfh function \citep{Godefroy2015}. In contrast, we observe a decrease in variability between day 2 and day 4 for \gls{Ikzf4} (Treg-associated gene), \textit{Ly6c1} (expressed by effector T cells) and \textit{Tbx21} (encoding the Th1 lineage-defining transcription factor Tbet). \\
+
+To achieve a broader view on changes in variability within sets of genes that drive this differentiation process, we selected gene sets listed in L\"onnberg \emph{et al.}, 2017 to visualise their changes in mean expression and residual over-dispersion \citep{Lonnberg2017}. The first set of genes is taken from Figure 3E of the original publication, which filtered genes based on their association with the bifurcation of Th1 and Tfh differentiation. The second set of genes with sequential peak expression over pseudo-time is taken from Figure 5A of the original publication, which were selected based on immunological relevance from a list of dynamic genes during \textit{in vivo} differentiation. For the genes that were detected to be lineage-associated, we detected a continuous increase in expression of Th1-associated genes but not Tfh-associated genes \textbf{(Fig.~\ref{fig2:immune_differentiation2}A)}, with the majority of changes in variability for these genes occurring between day 2 and day 4. \\
+
+Finally, we examined immune-related genes (\textit{Il2ra, Tbx21, Il2rb, Cxcr5, Selplg, Id2, Ifng, Icos, Ifngr1}) that were previously described as showing differences in their peak expression over the pseudo time course of differentiation \citep{Lonnberg2017} \textbf{(Fig.~\ref{fig2:immune_differentiation2}B)}. From this list, the lineage-associated genes \textit{Tbx21} and \textit{Cxcr5} are up-regulated between days 2 and 4. However, these genes  exhibit opposite behaviours in terms of variability: \textit{Cxcr5} increases and \textit{Tbx21} decreases in variability between day 2 and day 4 \textbf{(Fig.~\ref{fig2:immune_differentiation2}C)}. The fact that variability of \textit{Tbx21} (Tbet) expression was highest on day 2 suggests that Tbet is up-regulated very early in differentiation, as seen in \cite{Lonnberg2017} and similar to \textit{in vitro} Th1 induction \citep{Szabo2000}. Moreover, this suggests that Th1 fate decisions (for at least a subset of cells) may be made even earlier than the differentiation bifurcation point identified on day 4 by the original study \citep{Lonnberg2017}. 
+
+\newpage
+
+\begin{figure}[!h]
+  \begin{minipage}[c]{0.57\textwidth}
+    \includegraphics[width=\textwidth]{Fig_13.png}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.4\textwidth}
+\caption[Differential regulation of lineage-associated genes across differentiation]{\textbf{Differential regulation of Th1- and Tfh-associated genes across the differentiation process.}\\
+Differential mean expression testing (minimum tolerance threshold $\tau_0=1$) and differential residual over-dispersion testing (minimum tolerance threshold $\psi_0=0.41$) was performed on cell populations between day 2 and day 4 as well as day 4 and day 7 controlling the EFDR to 10\%. Genes that increase in expression over time are marked with a red dot while genes that decrease in expression over time are marked with a blue dot. Similarly, genes that increase in variability over time are marked in purple while genes that decrease in variability over time are marked in green. Only genes that pass filtering are visualised. \textbf{(A)} Differential testing results are visualised for Th1- and Tfh-associated genes taken from Figure 3E in L\"onnberg \emph{et al.}, 2017 \citep{Lonnberg2017}. Genes are ordered based on their correlation with the Th1 trend assignment (top to bottom) or their correlation to Tfh trend assignment (bottom to top), \textbf{(B)} Differential testing results are visualised for important genes during CD4\plus{} T cell differentiation taken from Figure 5A in \citep{Lonnberg2017}. Genes were ordered based on their peak expression point in pseudo-time as defined by L\"onnberg \emph{et al.}, 2017 \citep{Lonnberg2017}, \textbf{(C)} \textit{Tbx21} (blue) and \textit{Cxcr5} (red) measured at day 2, day 4 and day 7 post-infection. Posterior estimates for residual over-dispersion parameters $\epsilon_i$ are plotted against posterior estimates for mean expression parameters $\mu_i$. Statistically significant changes in mean expression (DE, minimum tolerance threshold of $\tau_0=1$) and variability (DV, minimum tolerance threshold of $\psi_0=0.41$) are indicated for each comparison} \label{fig2:immune_differentiation2}
+  \end{minipage}
 \end{figure}
 
 \newpage
 
-\subsection{Targeted silencing of spermatid-specific escape genes}
+\section{Application to droplet-based scRNA-Seq data}
+\label{sec2:droplet}
 
-Here, we profiled the enrichment for H3K4me3 and H3K9me3 marks at promoters of spermatid-specific escape genes and all other X-linked genes in spermatids and spermatocytes. As a measure for enrichment, we calculated the \gls{CPM} for paired reads per promoter. In spermatocytes, spermatid-specific genes showed lower enrichment in H3K4me3 than non-spermatid specific genes (Wilcoxon-Mann-Whitney: p-value < 2.2x10$^{-16}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, left panel)}. In contrast, spermatid-specific genes have on average elevated H3K4me3 in spermatids, as expected based on their increased expression level compared to spermatocytes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}A, right panel)}. \\
+\begin{Comment}
+\hspace{-3mm} \textbf{Declaration} In the context of expanding the BASiCS framework to test changes in variability independent of mean expression, Catalina A. Vallejos (The Alan Turing Institute/MRC Institute of Human Genetics/University of Edinburgh) developed an approach where technical variation was quantified by borrowing information across multiple replicates. This avoids the use of technical spike-in genes when droplet-based scRNA-Seq data is analysed. This approach is part of the publication:\\
 
+Nils Eling, Arianne C. Richard, Sylvia Richardson, John C. Marioni, Catalina A. Vallejos. Robust expression variability testing reveals heterogeneous T cell responses. \emph{Cell Systems}, In press, 2018 \\
 
-When examining the deposition of H3K9me3 on the promoters of X-linked genes, we detected a strong enrichment in spermatid-specific escape genes in spermatocytes (Wilcoxon-Mann-Whitney: p-value < 3.7x10$^{-11}$) \textbf{(Fig.~\ref{fig3:K9_K4_targeted}B, left panel)}. This pattern indicates that spermatid-specific genes are more strongly repressed in spermatocytes. Due to the strong enrichment of H3K9me3 on the post-meiotic X chromosome, we detect similar H3K9me3 enrichment in promoters for both spermatid-specific and non-specific X-linked genes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}B, right panel)}.\\
+Here, I will not describe this approach in detail as this has not been my own work. However in the context of this section, it integrates with my contribution to assess mean-independent changes in variability for droplet-based scRNA-Seq data.
+\end{Comment}
 
-Our results describe the precise epigenetic changes associated with escape gene activation in post-meiotic cells. These dynamics are exemplified by the chromatin remodelling that occurs around \textit{Akap4} and \gls{Cypt1}, both of which are well-studied spermatid-specific genes \textbf{(Fig.~\ref{fig3:K9_K4_targeted}C)}. The promoters of these genes have high levels of H3K9me3 in spermatocytes, which decreases in spermatids, while H3K4me3 levels are strongly increased. This targeted repression of a subset of X-linked escape genes could indicate a mechanism to repress otherwise lethal genes in spermatocytes that are later on needed in spermatid development. Examples of spermatocyte-lethal genes involved in spermatid development are two Y chromosome encoded genes: \gls{Zfy} 1 and 2 \citep{Royo2010}.
+With the development of droplet-based scRNA-Seq technologies, the number of cells that can be profiled per experiment strongly increased at the cost of lower sequencing depth per cell \citep{Macosko2015, Klein2015, Zheng2017}. Furthermore, these technologies exclude the use of spike-in RNA to measure technical variation, which is essential for quantifying technical variation using the original BASiCS model \citep{Vallejos2015BASiCS, Vallejos2016}. To ensure the broad applicability of the BASiCS model, both the regression and non-regression models have been expanded to handle datasets without spike-in genes. For this purpose, principles of measurement error models were exploited, where --- in the absence of gold standard features --- technical variation is quantified through {\it replication} \citep{Carroll1998}. This horizontal data integration approach is based on experimental designs where cells from a population are randomly allocated to multiple independent experimental replicates (batches). In such an experimental design, the no-spikes implementation of BASiCS assumes that biological effects are shared across batches and that technical variation will be reflected by spurious differences. As shown in the publication, posterior inference under the no-spikes BASiCS model closely matches the original implementation for datasets where spike-ins and batches are available. Technical details about the no-spikes implementation of BASiCS are discussed in the original publication (see \textbf{Declaration}).
+
+\newpage
+
+\subsection{Differential testing using somitic and pre-somitic mesoderm cells}
+
+To test the applicability of the regression BASiCS model to droplet-based scRNA-Seq data, I analysed cells isolated from mouse embryos at E8.25 \citep{Ibarra-Soria2018}. Ibarra-Soria \emph{et al.}, 2018 analysed more than 20,000 cells to identify the major cell types following gastrulation. Key findings included a spatial sub-structure within the foregut, detection of oscillating gene expression patterns during somitogenesis and the contribution of the leukotriene pathway to blood formation. I selected the cells identified as presomotic mesoderm and somitic mesoderm as test populations as they reside in contrasting differentiation stages. Somitogenesis is a rhythmic and sequential differentiation process from \gls{PSM} cells to mature somites, which later will give rise to bone, muscle and skin of the adult body. Throughout this process, oscillating gene expression patterns control the differentiation of PSM into \gls{SM}. Driving factors for this are Wnt and \gls{Fgf} signalling on the side of the PSM and retinoic acid signalling in somites \cite{Oates2012}. The regression BASiCS model can now further dissect transcriptional regulation between these groups of cells.
+
+\subsubsection{Data processing}
+
+The raw counts data and assigned cluster labels can be obtained from ArrayExpress [E-MTAB-6153] \citep{Ibarra-Soria2018}. I selected cells labelled as pre-somitic mesoderm and somitic mesoderm for further down-stream analysis and removed lowly expressed genes ($< 0.1$ reads on average). For visualisation purposes, I normalised the data using \emph{scran} by pooling cells within each cell type. PCA computed on the log-transformed normalised counts shows a clear separation between these two cells types with an additional intermediate cell type labelled as 'presomiticmesoderm.b'. I excluded this small set of cells as well as outlying cells for which $\text{PC2}{}<{}-5$ \textbf{(Fig.~\ref{fig2:droplet}A)}. After filtering, I obtained 791 pre-somitic mesoderm cells and 670 somitic mesoderm cells for further analysis. For each of the two populations, the MCMC was run for 20,000 iterations separately. After posterior inference was completed, I first confirmed that the model estimated the regression trend between the over-dispersion parameters $\delta_i$ and mean expression parameters $\mu_i$ correctly. For both conditions, the regression trend captures the full range of data points and differential testing can be performed \textbf{(Fig.~\ref{fig2:droplet}B)}. For differential testing, I used a threshold of $\tau_0=1$ to assess changes in mean expression and the default threshold $\psi_0\approx{}0.41$ to test changes in residual over-dispersion.  
 
 \newpage
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_13.png}
-\caption[Targeted repression of spermatid-specifc escape genes in spermatocytes]{\textbf{Targeted repression of spermatid-specifc escape genes in spermatocytes.} \\
-\textbf{(A)} and \textbf{(B)} Boxplot of H3K4me3 (A) and H3K9me3 (B) Counts Per Million (CPM) in promoter regions of spermatid specific (n=127) and non-spermatid specific (n=617) genes for spermatocytes (left) and spermatids (right).  \# indicates statistical significance (Wilcoxon-Mann-Whitney: p-value < 1x10$^{-10}$), n.s. – not significant, 
-\textbf{(C)} Genome tracks of H3K4me3 and H3K9me3 for two representative spermatid-specific genes (\textit{Akap4} and \textit{Cypt1}) for spermatocytes (left) and spermatids (right). Reads were scaled by library size. The genomic location of these genes is indicated below the tracks where exons are labelled as blocks and the directionality of transcription is shown by arrows.}
-\label{fig3:K9_K4_targeted}
+\includegraphics[width=\textwidth]{Fig_14.png}
+\caption[Quantification of expression dynamics from droplet-based scRNA-Seq data]{\textbf{Quantification of expression dynamics from droplet-based scRNA-Seq data (Full legend on next page).}}
+\label{fig2:droplet}
 \end{figure}
 
 \newpage
 
-\section{Measuring changes in variability over pseudo-time}
-\label{sec3:variability_over_PT}
+\captionsetup[figure]{list=no}
+\addtocounter{figure}{-1}   
+\captionof{figure}{\textbf{Quantification of expression dynamics from droplet-based scRNA-Seq data (continued).}\\
+\textbf{(A)} Somitic (SM) and pre-somitic mesoderm (PSM) cells from droplet-based scRNA-Seq data \citep{Ibarra-Soria2018} were selected and visualised via a PCA. Colour labelling was done based on the cluster annotation taken from the original publication. For down-stream analysis cells with $\text{PC2}{}<{}-5$ and marked as 'presomiticmesoderm.b'/Pre-somitic mesoderm 2 were removed, \textbf{(B)} For each condition, over-dispersion estimates $\delta_i$ were plotted against mean expression estimates $\mu_i$. The regression trend is indicated as red line, \textbf{(C)} Posterior estimates for the log$_2$ fold change in mean expression between PSM and SM were plotted against mean expression averaged across the two populations. Differentially expressed genes are coloured based on their regulation: blue: PSM-specific (PSM+), red: SM-specific (SM+), \textbf{(D)} Posterior estimates for differences in residual over-dispersion between PSM and SM were plotted against mean expression averaged across the two populations. Differentially variable genes are coloured based on their regulation: purple: PSM-specific (PSM+), brown: SM-specific (SM+), \textbf{(E)} Heatmap showing the Z score scaled gene expression of pre-somitic mesoderm-specific genes of the GO category GO:0009952: anterior/posterior pattern specification. Genes were ordered based on their log$_2$ fold change in expression from highest to lowest, \textbf{(F)} Gene expression of \textit{Meox2} in PSM and SM. This gene was detected to be heterogeneously up-regulated in SM. Upper panel: violin plots showing distribution of log-normalised expression counts. Lower panel: \textit{Meox2} expression across the PCA from \textbf{(A)}.\\}
+\captionsetup[figure]{list=yes}
 
-As described above, spermatogenesis is a unidirectional and continuous differentiation process coupled to a complex system of developmental steps. I next asked whether this differentiation process is coupled to changes in transcriptional variability. In mouse haematopoietic cell differentiation, cell-to-cell diversity increases at critical state transitions where cell fate decisions are made \citep{Mojtahedi2016}. A similar effect was detected in chicken erythroid progenitor cells where the Shannon entropy is highest directly at the point of fate commitment and declines upon the irreversible commitment to differentiation \cite{Richard2016}. In the previous chapter, we have demonstrated that transcriptional variability shows dynamic changes during CD4\plus{} T cell differentiation with high variability being observed at a possible early commitment point and a decrease in variability upon proliferation. In this section, I applied the regression BASiCS model, which was developed in the previous chapter, to study changes in transcriptional variability over the time-course of spermatogenesis. More specifically, I profiled changes in variability for individual genes during spermiogenesis, the differentiation process that directly follows meiosis (see \textbf{Section \ref{sec3:spermiogenesis}}). As described above, spermiogenesis is a differentiation process that involves an extensive remodelling of the chromatin with transcriptional shut-down occurring at around spermatid stage S10. Modelling changes in expression over a differentiation time-course is done by ordering transcriptional profiles of individual cells along their so called \emph{pseudo-time}. Different methods have been proposed to perform this ordering based on minimum spanning trees \citep{Trapnell2014} and nearest-neighbour graphs \cite{Setty2016}, Gaussian Processes \citep{Reid2016a, Campbell2016b} and diffusion maps \citep{Haghverdi2016}. Once the pseudo-temporal ordering is determined, genes that change in expression over pseudo-time can be found by fitting a generalised linear model to the expression counts and performing a likelihood ratio test against a null model with no pseudo-time dependence \citep{Trapnell2014}. Profiling changes in variability is more complicated as single-cell measures of variability are not available. 
+\subsubsection{Changes in mean expression during somitogenesis}
 
-\subsection{Using BASiCS on continuous data}
-
-Here, I use BASiCS to estimate residual over-dispersion parameters for homogeneous cell populations along the differentiation time-course. Different approaches of identifying homogeneous populations exist. First, ordered cells can be split into populations of equal size (e.g.~200 cells per group). This approach produces heterogeneous cell populations when cell state transitions occur within the population. I therefore rely on the clustering performed in \textbf{Section \ref{sec3:clustering}} which splits the full cell population along the differentiation trajectory. For each cluster from S1 to S14, the regression BASiCS model was run for 40,000 iterations with 20,000 iterations of burn-in and a thinning value of 20. \\
-
-For each gene in each of the 14 spermatid populations, BASiCS generates a posterior distribution estimating the residual over-dispersion parameter in form of an MCMC chain \textbf{(Fig.~\ref{fig3:variability_schematic}A)}. These measures are independent of mean expression (see previous chapter) and can therefore be used to study changes in variability which are not confounded by changes in mean expression throughout the differentiation of sperm. I chose two approaches to profile and test temporal changes of transcriptional variability during spermiogenesis. \\
-
-First, I used the iterative fitting of a linear regression model between the residual over-dispersion parameters and the progression of spermiogenesis to find linear changes in variability. For this, I selected spermatids from stages S1 to S9 prior to transcriptional shut-down. Transcriptional changes after S10 are only due to degradation of mRNA and I assume that linear changes in variability occur before S10. In more detail, for each MCMC iteration, I fit a linear regression model between the current samples of $\epsilon_i$ against the cluster label \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. This fitting is performed for each gene individually and generates a \emph{post hoc} distribution of the intercept and the slope regression coefficient that captures uncertainty in the regression fit. Focusing on the slope coefficient, I can compute the posterior tail probability of the slope coefficient being different from 0. If the posterior tail probability is larger than a threshold (e.g.~80\%), I consider the transcriptional variability of this gene to be either positively or negatively associated with temporal ordering depending on the sign of the median slope coefficient \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. Similar to differential testing described in the previous chapter, the probability threshold is determined by fixing the expected false discovery rate to 10\%. A similar testing can be done for the slope coefficient when fitting a linear model between the group wise mean expression parameter $\log(\mu_i)$ and the group labels.\\
-
-Secondly, to detect non-linear patterns of changes in transcriptional variability, I perform clustering on the gene-specific variability profiles across spermatid populations S1-S14. Similar approaches have been used to find patterns of genes expression across pseudo-time. Common patterns for changes in expression levels include immediate, transient and gradual up- or down-regulation \citep{Trapnell2014}. When profiling changes in variability over the time-course of differentiation these clustered profiles can indicate similarly strong or weak transcriptional regulation or similar expression rates \textbf{(Fig.~\ref{fig3:variability_schematic}C)}.
+I first tested changes in mean expression between SM and PSM and detected 203 SM-specific genes and 236 PSM-specific genes. Based on these cell type-specific gene lists, I performed GO analysis using the Bioconductor \emph{goseq} package while correcting for gene length biases. As expected, top enriched categories for SM-specific genes include 'animal organ morphogenesis' and 'skeletal system development' which contain genes such as \textit{Bmp7}, \textit{Fgfr2}, \textit{Gata6} and \textit{Meox2}. Somites are rhythmically formed from the PSM and are embryonic precursors for vertebrae and skeletal muscles \citep{Dequeant2008}. On the other hand, top categories for PSM-specific genes include 'pattern specification process', 'somitogenesis' and 'Wnt signaling pathway'. It is known that the posterior end of the PSM is high in Wnt and Fgf signalling that determines the oscillation dynamics of individual cells during somitogenesis \citep{Oates2012}. \textbf{Fig.~\ref{fig2:droplet}E} visualises the PSM-specific gene expression of the GO category: GO:0009952 - anterior/posterior pattern specification. This category includes contributors to embryonic patterning: \textit{Fgf8} \citep{Dubrulle2004}, Wnt signalling components (e.g.~\textit{Wnt5a}, \textit{Dkk1}), Notch signalling components (e.g.~\textit{Dll1}) \citep{Dequeant2008} and several members of the Hox gene family which control embryonic patterning \citep{Pearson2005}.
 
 \newpage
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width=0.8\textwidth]{Fig_14.png}
-\caption[Detecting changes in variability over pseudo-time]{\textbf{Detecting changes in variability over pseudo-time.}\\
-\textbf{(A)} For each group of spermatids, BASiCS  generates a posterior distribution of residual over-dispersion parameters $\epsilon_i$. Cell groups can be ordered based on their pseudo-time (upper panel). Lower panels indicate the MCMC chain for gene-specific $\epsilon_i$ per group (A, B, ..., X), \textbf{(B)} For each iteration of the MCMC (1,...,n), a linear regression was fit between the current samples of $\epsilon_i$ against the group labels for spermatids (S) 1-9. This approach generates a \emph{post hoc} distribution of the slope coefficient $\beta_1$ (lower panels). The distribution is used to calculate the posterior probability of observing $\beta_1\neq0$, \textbf{(C)} Clustering was performed on variability profiles across spermatid populations S1 to S14. A smooth regression (loess) was fit to the median $\epsilon_i$'s of the genes within each cluster. Genes that quickly decrease in variability (left panel), increase then decrease in variability (middle panel) or quickly increase in variability (right panel) can be identified.}
-\label{fig3:variability_schematic}
-\end{figure}
+\subsubsection{Changes in variability during somitogenesis}
 
-\newpage
+Next, I tested changes in variability between SM and PSM and categorised genes based on their regulation as in \textbf{Section \ref{sec2:immune_activation}}. These categories include genes with higher expression and higher variability in SM, higher expression and lower variability in SM, higher expression and higher variability in PSM and higher expression and lower variability in PSM. Interestingly, I detected the \gls{Meox2} gene to be heterogeneously up-regulated in somitic mesoderm when compared to the precursor mesoderm \textbf{(Fig.~\ref{fig2:droplet}F)}. \textit{Meox2} has been shown to regulate somite morphogenesis, patterning and differentiation specifically in the sclerotome (forming the vertebrae and rib cartilage) alongside its paralog \textit{Meox1}. While knocking out \textit{Meox1} in mice only shows mild defects in vertebrate and rib bones, the knockout of \textit{Meox2} induces defective differentiation and morphogenesis of the limb muscles \cite{Mankoo2003}. The heterogeneous, but unstructured \textbf{(Fig.~\ref{fig2:droplet}F)}, expression of \textit{Meox2} might therefore indicate the identity of early progenitor cells that later on differentiate to form  muscles of the limbs. Similarly, I find \gls{Dmrt2} heterogeneously up-regulated in SM compared to PSM. This transcription factor has been implicated in somite development with specific expression in the dermomyotome, the part of the mesoderm that forms skin. The homozygous loss of \textit{Dmrt2} leads to severe somite patterning defects at E10.5 and mice die shortly after birth \citep{Seo2006}. The differential variability analysis revealed an early and heterogeneous expression of \textit{Dmrt2} in SM which leads to the possible identification of dermomyotome progenitor cells.\\
 
-\subsection{Finding continuous changes in variability by linear model fitting}
-
-To detect single genes that continuously increase or decrease in variability, I fit a linear regression model to each iteration of the MCMCs sampling $\epsilon_i$ or $\mu_i$ \emph{versus} the group labels \textbf{(Fig.~\ref{fig3:variability_schematic}B)}. The posterior distributions of the slope coefficient were used to categorise genes based on their transcription dynamics along the differentiation time-course (middle panel in \textbf{Fig.~\ref{fig3:linear_variability}}). These categories include: 
-
-\begin{itemize}
-\itemsep0em 
-\item Increase in mean expression, no change in variability
-\item Increase in mean expression, increase in variability
-\item Increase in mean expression, decrease in variability
-\item Decrease in mean expression, no change in variability
-\item Decrease in mean expression, increase in variability
-\item Decrease in mean expression, decrease in variability
-\item No change in mean expression, no change in variability
-\item No change in mean expression, increase in variability
-\item No change in mean expression, decrease in variability
-\end{itemize}
-
-This approach leads to the detection of few genes that significantly change in variability over the differentiation time-course in a linear fashion while the majority of genes change only in mean expression. One hypothesis is that sperm maturation is a tightly regulated progress where the majority of genes follow a clear transcriptional pattern. Such a process contrasts with other differentiation programmes such as haematopoiesis where branching events occur and the whole cell population expands in transcriptional variability to find new attractor states \citep{Mojtahedi2016}. To visualise changes in transcriptional variability, I selected representative genes from four categories: (i) Increase in mean expression, increase in variability, (ii) Increase in mean expression, decrease in variability, (iii) Decrease in mean expression, increase in variability, (iv) Decrease in mean expression, decrease in variability (see insets in \textbf{Fig.~\ref{fig3:linear_variability}}). Interestingly, \gls{Tsga8}, one of the most rapidly evolving X-linked genes, shows a strong increase in expression and a clear decrease in transcriptional variability. \emph{Tsga8} has been reported to be involved in hybrid sterility where F$_1$ crosses of mice form different strains are unable to reproduce. This effect might be due to the strong divergence of the \emph{Tsga8} sequence between species \citep{Good2011}. A tight regulation of its expression during spermiogenesis can therefore further control the phenotypic effect in F$_1$ animals.
-
-\newpage
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=0.8\textwidth]{Fig_15.png}
-\caption[Linear changes in variability over spermiogenesis]{\textbf{Linear changes in variability over spermiogenesis.}\\
-Linear models were fit between the residual over-dispersion parameter $\epsilon_i$ or the mean expression parameter $\mu_i$ and the groups labels (S) 1-9 for each iteration of the MCMC. Median posterior estimates of the slope parameter of the variability fit were plotted against the slope parameter of the mean expression fit. Each dot represents a single gene. Genes are coloured based on their regulation (legend). Plot insets indicated the Z score scaled normalised expression (upper panel) and the median group-wise residual over-dispersion estimates $\epsilon_i$ (lower panels) of representative genes for four categories.}
-\label{fig3:linear_variability}
-\end{figure}
-
-\newpage
-
-\subsection{Clustering of variability profiles}
-
-To identify non-linear patterns across all genes, I first ordered variability profiles based on their peak variability \textbf{(Fig.~\ref{fig3:variability_clustering}A)}. Here, variability profiles are represented by the median residual over-dispersion parameter $\epsilon_i$  ordered from S1 to S14. Most variability profiles showed highest variability in one group, albeit other patterns of variability are also detectable. \\
-
-To identify the major patterns of variability across the full range of spermiogenesis, I performed k-means clustering across all variability profiles. In this case, it was required to select the expected number of clusters. Due to the fact that most genes showed peak variability in exactly one group, I selected $\text{k}=20$ to detect patterns other than peaks in single groups. After clustering, I detect a variety of variability patterns ranging from high variability in early spermiogenesis to high variability at later stages \textbf{(Fig.~\ref{fig3:variability_clustering}B)}. Interestingly, I observed patterns that show gradual increase in variability until around spermatid stage S9 and decrease afterwards \textbf{(Fig.~\ref{fig3:variability_clustering}B, middle panel)}. \\
-
-The group with peak variability at around S9 consists of all transition proteins (\textit{Tnp1}, \textit{Tnp2}) and protamins (\textit{Prm1}, \textit{Prm2}, \textit{Prm3}). When visualising the expression patterns of \textit{Prm1}, I detect a rapid shift in expression for cells from S9 \textbf{(Fig.~\ref{fig3:variability_clustering}C, middle panel)}. Similarly, genes that show the highest variability at later stages of spermiogenesis \textbf{(Fig.~\ref{fig3:variability_clustering}B, second to last panel)} show a quick transcriptional decline after transcriptional shut-down (e.g.~\emph{Tekt4}, \textbf{Fig.~\ref{fig3:variability_clustering}B}). \\
-
-These results indicate that the changes in expression associated with the trajectory of pseudo-time are additional confounding factors when quantifying transcriptional variability. Similar to removing the confounding between mean expression and variability, a regression approach can be used to correct variability measures based on the correlation between expression and pseudo-time. 
-
-\newpage
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=\textwidth]{Fig_16.png}
-\caption[Clustering of variability profiles]{\textbf{Clustering of variability profiles.}\\
-\textbf{(A)} Variability profiles (median of the $\epsilon_i$ estimates ordered by developmental progression) were ordered based on their maximum $\epsilon_i$ starting in S1 spermatids, \textbf{(B)} Variability profiles were clustered using k-means with $\text{k}=20$. 5 representative patterns of variability are displayed ranging from highest variability in round spermatids to highest variability in elongating spermatids, \textbf{(C)} Z score scaled, normalised expression of example genes per variability pattern taken from (B) are displayed in the form of boxplots.}
-\label{fig3:variability_clustering}
-\end{figure}
+In sum, I confirmed that the regression BASiCS model can be applied to droplet-based scRNA-Seq data to assess changes in transcriptional variability between conditions. This is an important validation for the next chapter, where I apply the regression BASiCS model to continuous droplet-based scRNA-Seq data to study changes in variability during spermatogenesis. 

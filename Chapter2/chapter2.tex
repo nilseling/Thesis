@@ -1,16 +1,16 @@
 %!TEX root = ../main.tex
 %******************************
-%	 Chapter 2
+%	 Chapter 1 
 %*****************************
 
-\chapter{Addressing the mean-variability dependency in scRNA-Seq data}  
+\chapter{Ageing increases transcriptional noise in CD4$^+$ T cell activation}
 
-\graphicspath{{"../../Dropbox (Cambridge  University)/Figures_for_thesis/Chapter2/"}}
+\graphicspath{{"../../Dropbox (Cambridge  University)/Figures_for_thesis/Chapter1/"}}
 
 \vfill
 
 \begin{Abstract}
-\hspace{-5mm} As shown above, cell-to-cell transcriptional variability in otherwise homogeneous cell populations plays an important role in immune activation and increases with age. Single-cell RNA sequencing can characterise this variability in a transcriptome-wide manner. However, the confounding between variability and mean expression estimates hinders meaningful comparison of expression variability between cell populations. To address this problem, we introduce a statistical approach that extends the BASiCS framework to derive a residual measure of variability that is not confounded by mean expression. This measure is used to test changes in variability in parallel to changes in mean expression on a gene-specific level. With this method, we assess changes in variability for genes responding to CD4\plus{} T cell activation and detect a synchronisation of biosynthetic machinery components. Furthermore, cytokines such as Il2 that support the activation of surrounding cells by paracrine signalling are heterogeneously up-regulated upon immune activation. When profiling more subtle transcriptional changes during CD4\plus{} T cell differentiation, we detect opposing patterns of changes in variability between \textit{Tbx21} and \textit{Cxcr5}, which are markers for Th1 and Tfh cells, indicating a delayed commitment process throughout differentiation. Finally, we confirmed the applicability of the newly extended BASiCS model to droplet-based scRNA-Seq data which is necessary for the subsequent chapter.
+\hspace{-5mm} Ageing is characterised by progressive loss of physiological and cellular functions, but the molecular basis of this decline remains largely unexplored. Here, we study how ageing impacts transcriptional dynamics using single-cell RNA-sequencing of over a thousand unstimulated and stimulated naive and effector memory CD4\plus{} T cells from young and old mice. Furthermore, we sampled cells from two divergent strains of mice to assess the evolutionary conservation of the molecular ageing signature. In young animals, immunological activation drives a transcriptomic switch from variable to tightly regulated gene expression, characterised by a strong up-regulation of a core activation program, coupled to a decrease in cell-to-cell variability. The up-regulation of a set of immune response genes is conserved between the two mouse strains as is the decrease in expression variability upon immune activation. Ageing significantly perturbed the activation of the core immune response programme by increasing expression heterogeneity across different populations of CD4\plus{} T cells. This discovery adds transcriptional noise as an unexplored hallmark of ageing to the list of known phenotypic changes.
 \end{Abstract}
 
 \vfill
@@ -18,22 +18,21 @@
 \newpage
 
 \begin{Comment}
-\hspace{-3mm} \textbf{Declaration} I worked on this project in close collaboration with Catalina Vallejos, Arianne Richard, Sylvia Richardson and John Marioni. In this project, I extended an existing Bayesian framework (BASiCS) that was developed to model scRNA-Seq data. Besides calculating the underlying math and programming the model, I helped re-write the BASiCS R package, which is now published on \href{https://bioconductor.org/packages/release/bioc/html/BASiCS.html}{Bioconductor}. Catalina Vallejos co-supervised me and introduced me to principles of Bayesian statistics. Arianne Richard helped with the interpretation of biological data and helped writing the manuscript. Sylvia Richardson provided statistical help on a part of the project that is not presented here. John Marioni co-supervised me and suggested analysis to be performed. Catalina Vallejos, John Marioni and I designed the study. Catalina Vallejos, John Marioni and I wrote the manuscript. I kindly thank Dominic Gr\"un for providing the smFISH data matched to mESC scRNA-Seq data. The study has been published as:\\
+\hspace{-3mm} \textbf{Declaration} This work was a joint effort of the Marioni, Odom, de la Roche and Teichmann labs. Celia P. Martinez-Jimenez, Duncan T. Odom, John C. Marioni and Sarah Teichmann designed the study. Celia P. Martinez-Jimenez and Aleksandra A. Kolodziejczyk performed preliminary experiments. Celia P. Martinez-Jimenez performed all single-cell RNA sequencing experiments displayed in this chapter. Hung-Chang Chen and Maike de la Roche provided extensive support during the revision process. Hung-Chang Chen performed FACS experiments during the revision process. Lovorka Stojic and Frances Connor provided experimental support. Timothy F. Rayner provided technical support. Michael J. T. Stubbington performed the T cell receptor and clone analysis. Catalina A. Vallejos helped with the statistical analysis by providing additional explanations of the BASiCS model. Celia P. Martinez-Jimenez and I interpreted results. Celia P. Martinez-Jimenez, Duncan T. Odom, John C. Marioni and I wrote the manuscript. Duncan T. Odom and John C. Marioni supervised the study. I performed computational analysis of all data displayed in this chapter and generated all figures with the exception of the FACS analysis (Fig. \ref{fig1:FACS} and Fig. \ref{fig1:EM_Naive_CD4}A-C). The paper has been published as:\\
 
-Nils Eling, Arianne C. Richard, Sylvia Richardson, John C. Marioni, Catalina A. Vallejos. Robust expression variability testing reveals heterogeneous T cell responses. \emph{Cell Systems}, In press, 2018 
+Celia P. Martinez-Jimenez$^\ast$, Nils  Eling$^\ast$, Hung-Chang Chen, Catalina A. Vallejos, Aleksandra Kolodziejczyk, Frances Connor, Lovorka Stojic, Tim F. Rayner, Michael J. T. Stubbington, Sarah A. Teichmann, Maike de la Roche, John C. Marioni, Duncan T. Odom. Ageing increases cell-to-cell transcriptional variability upon immune stimulation. \emph{Science}, 1436: 1433-1436, 2017, ($^\ast$ equal contributions)
 \end{Comment}
 
 \begin{figure}[hb]
 \centering    
-\includegraphics[width=0.5\textwidth]{GraphicalAbstract.png}
+\includegraphics[width=0.8\textwidth]{GraphicalAbstract.png}
 \end{figure}
 
 \newpage
 
 % Include different main sections of the first chapter
-\input{Chapter2/Chapt2_files/intro}
+\input{Chapter1/Chapt1_files/intro}
 \newpage
-\input{Chapter2/Chapt2_files/results}
+\input{Chapter1/Chapt1_files/results}
 \newpage
-\input{Chapter2/Chapt2_files/discussion}
-
+\input{Chapter1/Chapt1_files/discussion}
