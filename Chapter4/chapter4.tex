@@ -8,7 +8,19 @@
 \graphicspath{{"../Figs/Chapter4/"}}
 
 \begin{Abstract}
-\hspace{-5mm} Spermatogenesis is a recurring differentiation process that results in the production of male gametes within the testes. Consequently, its in-depth characterisation is needed to understand male fertility. During spermatogenesis, spermatogonial stem cells undergo a unidirectional differentiation process to form spermatocytes, round spermatids and lastly mature sperm. This process involves a complex sequence of developmental steps and is coupled to large-scale chromatin rearrangements, therefore making it difficult to profile. To address this, we thoroughly characterised spermatogenesis by   profiling the transcriptomes of over 20,000 cells that were captured using droplet-based scRNA-Seq. To confidently connect transcriptional profiles to distinct developmental stages, we profiled multiple time points during the first wave of spermatogenesis. As juvenile animals progress through spermatogenesis for the first time, development has only progressed to a certain point, thus allowing the identification of the most mature cell type. With this precise labelling, we can dissect developmental processes such as spermatogonial differentiation, meiosis and spermiogenesis at a molecular level. Furthermore, our data captured the expression dynamics of the X chromosome, which is subject to meiotic silencing in spermatocytes, followed by a partial reactivation in spermatids. ScRNA-Seq reveals the distinct temporal expression dynamics present in the post-meiotic reactivation of the X chromosome. Profiling of the associated chromatin changes identified a set of genes specifically repressed by H3K9me3 in spermatocytes that later-on escape post-meiotic silencing in spermatids, demonstrating extensive chromatin remodelling on the X chromosome. After fully characterising spermatogenesis at a single-cell level, BASiCS was used to detect changes in transcriptional variability by estimating the residual over-dispersion measures for the different germ cell populations. In this analysis, the differentiation trajectory defines a new confounding factor that must be accounted for to accurately quantify variability in gene expression levels.  
+\hspace{-5mm} Spermatogenesis is a recurring differentiation process that results in the production of male gametes within the testes. 
+Consequently, its in-depth characterisation is needed to understand male fertility. 
+During spermatogenesis, spermatogonial stem cells undergo a unidirectional differentiation process to form spermatocytes, round spermatids and lastly mature sperm. 
+This process involves a complex sequence of developmental steps and is coupled to large-scale chromatin rearrangements, therefore making it difficult to profile. 
+To address this, we thoroughly characterised spermatogenesis by profiling the transcriptomes of over 20,000 cells that were captured using droplet-based scRNA-Seq. 
+To confidently connect transcriptional profiles to distinct developmental stages, we profiled multiple time points during the first wave of spermatogenesis. 
+As juvenile animals progress through spermatogenesis for the first time, development has only progressed to a certain point, thus allowing the identification of the most mature cell type. 
+With this precise labelling, we can dissect developmental processes such as spermatogonial differentiation, meiosis and spermiogenesis at a molecular level. 
+Furthermore, our data captured the expression dynamics of the X chromosome, which is subject to meiotic silencing in spermatocytes, followed by a partial reactivation in spermatids. 
+ScRNA-Seq reveals the distinct temporal expression dynamics present in the post-meiotic reactivation of the X chromosome. 
+Profiling of the associated chromatin changes identified a set of genes specifically repressed by H3K9me3 in spermatocytes that later-on escape post-meiotic silencing in spermatids, demonstrating extensive chromatin remodelling on the X chromosome. 
+After fully characterising spermatogenesis at a single-cell level, BASiCS was used to detect changes in transcriptional variability by estimating the residual over-dispersion measures for the different germ cell populations. 
+In this analysis, the differentiation trajectory defines a new confounding factor that must be accounted for to accurately quantify stochastic variability in gene expression levels.  
 \end{Abstract}
 
 \newpage
@@ -16,7 +28,12 @@
 \vspace*{\fill}
 
 \begin{Comment}
-\hspace{-3mm} \textbf{Declaration} This project was done in collaboration with members of the Marioni and Odom lab. Christina Ernst performed all wet-lab experiments presented in this chapter. Celia P. Martinez-Jimenez performed preliminary experiments. John Marioni and Duncan Odom supervised the study. Christina Ernst, I, John Marioni and Duncan Odom designed the study and wrote the manuscript. I performed all computational analyses and produced all figures in this chapter (except the histology images and schematics). The last section of this chapter is purely my own contribution. The preprint has been made available online at:\\
+\hspace{-3mm} \textbf{Declaration} This project was done in collaboration with members of the Marioni and Odom lab. Christina Ernst performed all wet-lab experiments presented in this chapter.
+Celia P. Martinez-Jimenez performed preliminary experiments. 
+John Marioni and Duncan Odom supervised the study. 
+Christina Ernst, I, John Marioni and Duncan Odom designed the study and wrote the manuscript. 
+I performed all computational analyses and produced all figures in this chapter (except the histology images and schematics). 
+The last section of this chapter is purely my own contribution. The preprint has been made available online at:\\
 
 Christina Ernst$^\ast$, Nils Eling$^\ast$, Celia P. Martinez-Jimenez, John C. Marioni, Duncan T. Odom. Staged developmental mapping and X chromosome transcriptional dynamics during mouse spermatogenesis. \emph{bioRxiv}, 2018, ($^\ast$ equal contributions)
 \end{Comment}
