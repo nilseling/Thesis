@@ -22,13 +22,12 @@ When using to information of this thesis, please cite the associated papers:
 
 **Chapter 2:** [Aging increases cell-to-cell transcriptional variability upon immune stimulation](http://science.sciencemag.org/content/355/6332/1433)
 
-Celia P. Martinez-Jimenez\*, Nils  Eling\*, Hung-Chang Chen, Catalina A. Vallejos, Aleksandra Kolodziejczyk, Frances Connor, Lovorka Stojic, Tim F. Rayner, Michael J. T. Stubbington, Sarah A. Teichmann, Maike de la Roche, John C. Marioni, Duncan T. Odom. \\ 
-_Ageing increases cell-to-cell transcriptional variability upon immune stimulation._ Science, 1436: 1433-1436, 2017, \\
-(\* equal contributions)
+Celia P. Martinez-Jimenez\*, Nils  Eling\*, Hung-Chang Chen, Catalina A. Vallejos, Aleksandra Kolodziejczyk, Frances Connor, Lovorka Stojic, Tim F. Rayner, Michael J. T. Stubbington, Sarah A. Teichmann, Maike de la Roche, John C. Marioni, Duncan T. Odom.
+_Ageing increases cell-to-cell transcriptional variability upon immune stimulation._ Science, 1436: 1433-1436, 2017, (\* equal contributions)
 
 **Chapter 3:** [Correcting the Mean-Variance Dependency for Differential Variability Testing Using Single-Cell RNA Sequencing Data](https://www.cell.com/cell-systems/fulltext/S2405-4712(18)30278-3)
 
-Nils Eling, Arianne C. Richard, Sylvia Richardson, John C. Marioni, Catalina A. Vallejos. \\
+Nils Eling, Arianne C. Richard, Sylvia Richardson, John C. Marioni, Catalina A. Vallejos. 
 _Correcting the Mean-Variance Dependency for Differential Variability Testing Using Single-Cell RNA Sequencing Data._ Cell Systems, 7: 284-294, 2018 
 
 **Chapter 4:**
