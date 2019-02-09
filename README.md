@@ -13,6 +13,19 @@ Quantifying expression variability in single-cell RNA sequencing data
 
 ## How to compile this thesis
 
+Clone this thesis into a local folder using:
+
+```{bash}
+clone https://github.com/nilseling/Thesis.git
+```
+
+To compile the thesis, change to the `Thesis` and use `latexmk`:
+
+```{bash}
+cd Thesis
+latexmk -pdf main.tex
+```
+
 ## How to cite this thesis
 
 The work presented in this thesis has been done by me in collaboration with the persons listed in each section. 
