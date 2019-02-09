@@ -19,7 +19,7 @@ Clone this thesis into a local folder using:
 clone https://github.com/nilseling/Thesis.git
 ```
 
-To compile the thesis, change to the `Thesis` and use `latexmk`:
+To compile the thesis, change to the Thesis folder and use `latexmk`:
 
 ```{bash}
 cd Thesis
