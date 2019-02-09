@@ -63,7 +63,7 @@ For simplicity, the distributions of the joint prior specification, the product 
 \begin{align*}
 \text{log-Normal}(\text{f}(\mu_i),\frac{\sigma^2}{\lambda_i})&\propto{}(\frac{\lambda_i}{\sigma^2})^{\frac{1}{2}}\exp\lbrace-\frac{\lambda_i}{2\sigma^2}(\log(\delta_i)-x_{i,\ast}^T\beta)^2\rbrace\\
 \prod_{i=1}^{q_o}\text{log-Normal}(\text{f}(\mu_i),\frac{\sigma^2}{\lambda_i})&\propto{}(\frac{1}{\sigma^2})^{\frac{q_0}{2}}(\prod_{i=1}^{q_0}\lambda_i)^{\frac{1}{2}}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)^T\Lambda(Y-X\beta)\\
-\textnormal{Normal}(m_\beta,\sigma^2V_\beta)&\propto{}(\frac{1}{\sigma^2})^{\frac{k}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)^TV_\beta^{-1}(\beta-m_\beta)\rbrace\\
+\textnormal{Normal}(m_\beta,\sigma^2V_\beta)&\propto{}(\frac{1}{\sigma^2})^{\frac{L+2}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)^TV_\beta^{-1}(\beta-m_\beta)\rbrace\\
 \end{align*}
 
 Here, $x_{i,\ast}^T$ is the transposed vector of the $i$th row in the model matrix $X$.
@@ -96,7 +96,7 @@ Full conditional for $\beta$ across all cells and genes:
 \begin{align*}
 \pi^*(\beta|\cdot)&\propto{} \Lagr\times\pi(\delta|\mu,\beta,\sigma^2,\eta)\times\pi(\beta)\\
 &\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)'\Lambda(Y-X\beta)\rbrace\times\\
-&(\frac{1}{\sigma^2})^{\frac{k}{2}}\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)'V_\beta^{-1}(\beta-m_\beta)\rbrace\\
+&\exp\lbrace-\frac{1}{2\sigma^2}(\beta-m_\beta)'V_\beta^{-1}(\beta-m_\beta)\rbrace\\
 &\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[(Y-X\beta)'\Lambda(Y-X\beta)+(\beta-m_\beta)'V_\beta^{-1}(\beta-m_\beta)]\rbrace\\
 &\propto{}\exp\lbrace-\frac{1}{2\sigma^2}[Y'\Lambda{}Y-2(X\beta)'\Lambda{}Y+(X\beta)'\Lambda{}X\beta\\
 &+\beta'V_\beta^{-1}\beta-2m_\beta'V_\beta^{-1}\beta+m_\beta{}V_\beta^{-1}m_\beta{}]\rbrace\\
