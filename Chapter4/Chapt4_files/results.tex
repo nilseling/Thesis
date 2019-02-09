@@ -612,7 +612,7 @@ In this section, I applied the regression BASiCS model, which was developed in t
 More specifically, I profiled changes in variability for individual genes during spermiogenesis, the differentiation process that directly follows meiosis (see \textbf{Section \ref{sec3:spermiogenesis}}). 
 As described above, spermiogenesis is a differentiation process that involves an extensive remodelling of the chromatin with transcriptional shut-down occurring at around spermatid stage S10. 
 Modelling changes in expression over a differentiation time-course is done by ordering transcriptional profiles of individual cells along their so called \emph{pseudo-time}. 
-Different methods have been proposed to perform this ordering based on minimum spanning trees \citep{Trapnell2014} and nearest-neighbour graphs \cite{Setty2016}, Gaussian Processes \citep{Reid2016a, Campbell2016b} and diffusion maps \citep{Haghverdi2016}. 
+Different methods have been proposed to perform this ordering based on minimum spanning trees \citep{Trapnell2014} and nearest-neighbour graphs \cite{Setty2016}, Gaussian Processes \citep{Reid2016, Campbell2016b} and diffusion maps \citep{Haghverdi2016}. 
 Once the pseudo-temporal ordering is determined, genes that change in expression over pseudo-time can be found by fitting a generalised linear model to the expression counts and performing a likelihood ratio test against a null model with no pseudo-time dependence \citep{Trapnell2014}. 
 Profiling changes in variability is more complicated as single-cell measures of variability are not available. 
 

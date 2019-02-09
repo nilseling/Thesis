@@ -39,4 +39,4 @@ Eling, N. (2019). _Quantifying expression variability in single-cell RNA sequenc
 
 ## Acknowlegments
 
-*   Krishna Kumar - Original CUED PhD thesis template
+*   Krishna Kumar - [Original CUED PhD thesis template](https://github.com/kks32/phd-thesis-template)
