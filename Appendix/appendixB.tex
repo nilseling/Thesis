@@ -52,7 +52,9 @@ The likelihood function of the extended BASiCS model takes the form:
 \subsection{Derivation of full conditionals for the extended BASiCS model}
 \label{appB.1.derivation}
 
-To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). $q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. $L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.
+To calculate the full conditionals ($\pi^*(\cdot)$) for Gibbs sampling, the likelihood ($\Lagr_j$ for cell-specific likelihood, $\Lagr_i$ for gene-specific likelihood) is multiplied by the relevant prior specifications ($\pi(\cdot)$). 
+$q_0$ indicates the number of biological genes while $q$ is the number of biological and spike-in genes. 
+$L$ is the number of Gaussian Radial Basis Functions. $\Lambda$ is a diagonal matrix with elements $(\lambda_1, \ldots, \lambda_{q_0})$ and $Y = (\log(\delta_1), \ldots, \log(\delta_{q_0}))'$.
 
 \newpage 
 
@@ -185,6 +187,7 @@ Full conditional for $\nu_j$ across all genes:
 \end{fleqn}
 
 Full conditional for $\theta$ across all genes and cells:
+
 \begin{fleqn}
 \begin{align*}
 \pi^*(\theta|\cdot)&\propto{}\Lagr\times\pi(\theta)\\
