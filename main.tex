@@ -2,7 +2,7 @@
 % ------- PhD Thesis Nils Eling -------
 % *************************************
 
-\documentclass[a4paper,12pt,times,numbered,print]{Classes/PhDThesisPSnPDF}
+\documentclass[a4paper,12pt,times,numbered,print,draftclassic]{Classes/PhDThesisPSnPDF}
 
 % *************************************
 % **** Class Options 
@@ -97,7 +97,7 @@
 % The chapter mode allows user to only print particular chapters with references. Title, Contents, Frontmatter are disabled by default. Useful option to review a particular chapter or to send it to supervisior. To use choose `chapter' option in the document class
 
 \ifdefineChapter
- \includeonly{Discussion/discussion}
+ \includeonly{Introduction/intro}
 \fi
 
 % *************************************
@@ -110,10 +110,10 @@
 
 \maketitle
 
-\include{Dedication/dedication}
-\include{Declaration/declaration}
-\include{Acknowledgement/acknowledgement}
-\include{Abstract/abstract}
+%\include{Dedication/dedication}
+%\include{Declaration/declaration}
+%\include{Acknowledgement/acknowledgement}
+%\include{Abstract/abstract}
 
 % *************************************
 % **** Adding TOC and List of Figures 
@@ -143,10 +143,10 @@
 
 
 \include{Introduction/intro}
-\include{Chapter2/chapter2}
-\include{Chapter3/chapter3}
-\include{Chapter4/chapter4}
-\include{Discussion/discussion}
+%\include{Chapter2/chapter2}
+%\include{Chapter3/chapter3}
+%\include{Chapter4/chapter4}
+%\include{Discussion/discussion}
 
 % *************************************
 % **** Bibliography 
@@ -158,7 +158,7 @@
 \bibliographystyle{unsrt} % Use for unsorted references  
 
 \cleardoublepage
-\bibliography{References/library} 
+%\bibliography{References/library} 
 
 \end{spacing}
 
@@ -168,8 +168,8 @@
 
 \begin{appendices} % Using appendices environment for more functunality
 
-\include{Appendix/appendixA}
-\include{Appendix/appendixB}
+%\include{Appendix/appendixA}
+%\include{Appendix/appendixB}
 
 \end{appendices}
 

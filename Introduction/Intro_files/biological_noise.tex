@@ -5,30 +5,36 @@ Kello%!TEX root = ../intro.tex
 
 \section{Biology of expression noise} 
 
-Biological noise is defined as measurable differences in \gls{mRNA} or protein abundance across homogeneous cell populations (see \textbf{Box 1}). 
+\cor{The intrinsic stochasticity of biochemical reactions contributes to a wide distribution of mRNAs and proteins across a seemingly homogeneous populations of cells\citep{Elowitz2002}. 
+In the scientific litearature, this phenomenon is referred to as “biological noise” (see \textbf{Box 1})}
 All cellular systems are exposed to varying levels of noise and employ strategies to make use of or cope with this source of variation. 
 The sources and consequences of biological noise have been studied in an array of viral, prokaryotic and eukaryotic systems \citep{Raj2010, Balazsi2011, Eldar2010}. 
 Across these systems the extent of its function remains unclear. 
-It is crucial to differentiate between unicellular systems (prokaryotes, viruses, and yeast) in which biological noise supports responses to environmental changes and higher, multicellular eukaryotic systems where biological noise either benefits or obstructs cellular function depending on the tissue type and health state.\\
 
 \begin{Comment}
 \hspace{-2.5mm}\textbf{Box 1: Defining biological noise}\label{box1}\\
 \small
-Biological noise in cell populations arises from stochastic effects on transcription and translation that propagates to form cell-to-cell phenotypic differences. 
-To define noise, one needs to distinguish between different sources of cell-to-cell variability in multiple measurable factors. 
-On the broadest level, differences between single cells in a population can arise from structured (also termed “deterministic” in Marusyk \emph{et al.}, 2012 \citep{Marusyk2012}) and unstructured sources (similar as in Singer \emph{et al.}, 2014 \citep{Singer2014}). 
+Biological noise in cell populations \cor{is defined as} stochastic effects on transcription and translation that propagates to form cell-to-cell phenotypic differences. 
+To \cor{understand} noise, one needs to distinguish between different sources of cell-to-cell variability in multiple measurable factors. 
+On the broadest level, differences between single cells in a population can arise from structured and unstructured sources. 
 When capturing cell populations that contain discrete cell states and/or cell types \citep{Paul2015, Ibarra-Soria2018, Rosenberg2018}, measuring cell-specific features results in the detection of non-stochastic but rather correlated (structured) differences between individual cells. 
 When the cell population structure is not driven by correlated features (unstructured variation), continuous processes (e.g.~differentiation) can be the dominating source of cell-to-cell phenotypic variability \citep{Dahlin2018}. 
 Computational approaches allow the detection of these trajectories (e.g.~via \gls{PCA} or pseudotime inference \citep{Trapnell2014, Angerer2015}). 
-Therefore, I define biological noise as unstructured, phenotypic cell-to-cell differences independent of measurement errors and differentiation processes. \\
+Therefore, \cor{my work and work of others \citep{Faure2017, Morgan2018} focus on studying "molecular phenotypic variability", independent of measurement errors, in homogeneous cell populations as proxy for biological noise}. \\
 
-As previously introduced \citep{Elowitz2002}, biological noise can broadly be classified into intrinsic and extrinsic noise. 
+\cor{Classically and specifically in populations of bacteria} \citep{Elowitz2002}, biological noise has broadly been classified into intrinsic and extrinsic noise. 
 Intrinsic noise originates from stochastic biochemical effects that directly influence mRNA and protein expression gene-specifically (e.g.~\gls{TF} binding dynamics, see \citep{Swain2002}). 
-Extrinsic noise on the other hand introduces co-variation across multiple genes (also in a pathway specific manner \citep{Raser2005}) due to differences in cell-specific factors such as stress response, mitochondrial maintenance, amino-acid synthesis \citep{Stewart-Ornstein2012} or cell cycle \citep{Zopf2013}. 
-Intrinsic noise can therefore be measured as expression differences between co-regulated genes in one cell, while extrinsic noise is measured as co-regulated variance in gene sets across all cells.
+Extrinsic noise on the other hand introduces co-variation across multiple genes (also in a pathway specific manner \citep{Raser2005}) due to \cor{variations} in cell-specific factors such as stress response, mitochondrial maintenance, amino-acid synthesis \citep{Stewart-Ornstein2012} or cell cycle \citep{Zopf2013}. 
+\cor{Within a population of bacteria,} intrinsic noise can therefore be measured as expression differences between co-regulated genes in one cell, while extrinsic noise is measured as co-regulated variance in gene sets across all cells.
+\cor{In multicellular systems however, the observed molecular phenotypic variability is a combination of stochastic (noise) and deterministic effects, which are difficult to delineate.}
 \end{Comment}
 
 \newpage
+
+It is crucial to differentiate between unicellular systems (prokaryotes, viruses, and yeast) in which biological noise supports responses to environmental changes and higher, multicellular eukaryotic systems where biological noise either benefits or obstructs cellular function depending on the tissue type and health state. 
+\cor{Furthermore, measuring the stochastic component of biological noise is difficult and requires time-resolved reporter gene read-outs in truly homogeneous cell populations\citep{Elowitz2002}. 
+Due to this, the majority of studies presented in this chapter use the observable molecular phenotypic variation in form of single-cell transcriptomic or proteomic read-outs as proxy for biological noise (see \textbf{Box 1}). 
+This variation is confounded by unobserved deterministic processes (e.g subtle cell cycle variation) and delineating the stochastic and deterministic component is challenging.}
 
 \subsection{Bet-hedging in unicellular systems}
 
