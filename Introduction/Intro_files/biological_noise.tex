@@ -5,7 +5,7 @@ Kello%!TEX root = ../intro.tex
 
 \section{Biology of expression noise} 
 
-\cor{The intrinsic stochasticity of biochemical reactions contributes to a wide distribution of mRNAs and proteins across a seemingly homogeneous populations of cells\citep{Elowitz2002}. 
+\cor{The intrinsic stochasticity of biochemical reactions contributes to a wide distribution of \gls{mRNAs} and proteins across a seemingly homogeneous populations of cells\citep{Elowitz2002}. 
 In the scientific litearature, this phenomenon is referred to as “biological noise” (see \textbf{Box 1})}
 All cellular systems are exposed to varying levels of noise and employ strategies to make use of or cope with this source of variation. 
 The sources and consequences of biological noise have been studied in an array of viral, prokaryotic and eukaryotic systems \citep{Raj2010, Balazsi2011, Eldar2010}. 
@@ -38,13 +38,15 @@ This variation is confounded by unobserved deterministic processes (e.g subtle c
 
 \subsection{Bet-hedging in unicellular systems}
 
-Biological noise has been described to trigger the differential decision between latency and replication in viruses such as \gls{HIV} and the $\lambda$-phage. 
+Biological noise has been \cor{proposed} to trigger the differential decision between latency and replication in viruses such as \gls{HIV} and the $\lambda$-phage. 
 In the case of the $\lambda$-phage, infected cells either reside in a lysogenic state where the genetic material of the virus is transmitted to daughter cells without inducing cell death, or a lytic state where the virus destroys the host cell \textbf{(Fig.~\ref{fig0:bedhedging})} \citep{Lieb1953}. 
 Previous studies have shown that the lysis-lysogeny switch in $\lambda$-phage is driven by intrinsic and extrinsic noise \citep{Arkin1998, St-Pierre2008}. 
 This idea has been extended by Zeng \textit{el al.}, 2010 where the lysis-lysogeny switch does not depend on a single noise-driven decision but on the sum of all individual phages per cell \citep{Zeng2010}. 
-A similar ‘bet-hedging’ strategy, where a sub-optimal fitness landscape is tolerated across a population of cells in order to facilitate an effective response to environmental changes, exists for \Gls{HIV} infection. 
-Upon infection, \Gls{HIV} either rapidly replicates or resides in a long-lived latent state from which the virus can switch to replication \citep{Weinberger2015}. 
+\cor{This results contradicts the earlier studies, which either modelled the decision event on the level of each phage or connected the decision event with cellular volume. 
+In general, by summing across stochastic events or if one is able to predict the lysis-lysogeny decision based on cellular volume, the switch does not occur as stochastically as initially anticipated.}
+In the case of \Gls{HIV}, the virus either rapidly replicates or resides in a long-lived latent state from which the virus can switch to replication \citep{Weinberger2015}. 
 It has been shown that combining noise-enhancing and activating drugs shifts latent viruses into the active-replication state that can be targeted by anti-retroviral therapeutics \citep{Dar2014}. 
+\cor{Independent of the stochastic contribution to the latency-replication switch, this study present one of the first approaches to modulate phenotypic variability of a biological system to enhance therapeutic efficiency.}
 
 \begin{figure}[!h]
 \centering
@@ -56,24 +58,31 @@ Under stress conditions, the $\lambda$-phage genome is excised from the host gen
 \label{fig0:bedhedging}
 \end{figure}
 
-In unicellular organisms, phenotypic heterogeneity facilitates the commitment to alternative cell states in cases of stress (e.g.~nutrient deprivation, temperature fluctuations). 
+In unicellular organisms, \cor{biological noise has been linked to ‘bet-hedging’ strategies, where a sub-optimal fitness landscape is tolerated across a population of cells in order to facilitate an effective response to environmental changes.}. Here, phenotypic heterogeneity facilitates the commitment to alternative cell states in cases of stress (e.g.~nutrient deprivation, temperature fluctuations). 
 For example, \Gls{Bsubtilis} either commits to sporulation or competence upon starvation or DNA damage. 
 Sporulation describes an irreversible process during which vegetative growth ends and the cell forms endospores that survive the altered environment. 
-Competent bacteria on the other hand take up DNA from endospores to repair DNA damage \citep{Schultz2009}. The probabilistic and transient activation of competence in a sub-population of \Gls{Bsubtilis} cells is modulated by fluctuations in the competence regulators ComK and ComS. 
+Competent bacteria on the other hand take up DNA from endospores to repair DNA damage \citep{Schultz2009}. 
+The probabilistic and transient activation of competence in a sub-population of \Gls{Bsubtilis} cells is modulated by fluctuations in the competence regulators ComK and ComS. 
 An excitable system of negative and positive feedback loops controls the number of cells that reversibly commit to competence while other cells irreversibly execute sporulation \citep{Suel2006}. 
-Noise in the process of transferring phoshporyl groups across a cascade of regulators maintains a constant probability for cells committing to sporulation under nutrient deprived conditions \citep{Russell2017}. 
+\cor{Variations} in the process of transferring phoshporyl groups across a cascade of regulators maintains a constant probability for cells committing to sporulation under nutrient deprived conditions \citep{Russell2017}. 
 A similar phenomenon is observed in \Gls{Ecoli} populations exposed to antibiotics where pre-existing phenotypic heterogeneity allows some cells to resist antibiotic treatment. 
 Once regrown, these cells remain sensitive to the antibiotic \citep{Balaban2004}. \\
 
 Similar to phenotypic heterogeneity in unicellular prokaryotes, transcriptional noise facilitates the switching between mating phenotypes in yeast upon exposure to pheromones \citep{Paliwal2007}. 
-Comparably, commitment to utilising galactose as a nutrient source is a cell fate transition, which is facilitated by stochastic gene expression \cite{Acar2008}. 
+Comparably, commitment to utilising galactose as a nutrient source is a cell fate transition, which is facilitated by stochastic gene expression \cite{Acar2008}. \\
+
+\cor{In these systems, biological noise introduces variation in mRNA and proteins that increase plasticity for cells to adapt to changeing environments.
+However, to control and balance the number of cells that commit to a specific fate, noise needs to be buffered as observed in the regulatory network of feedback loops controlling sporulation and competence.}
 
 \subsection{Development and differentiation}
 
-Similar to bet-hedging strategies in unicellular organisms, noise can facilitate the switch between cell states and the probabilistic induction of differentiation processes \citep{Eldar2010, Chang2008}. 
-It has been shown that transcriptional noise increases throughout differentiation \citep{Stumpf2017} and development \citep{Antolovic2017}. 
-Dissecting differentiation processes of haematopoietic progenitor cells revealed an increase in transcriptional noise directly before cell fate decisions are made \citep{Mojtahedi2016, Richard2016}. 
-Once committed, differentiating cell populations collapse in variability and move towards a new attractor state. \\
+Similar to bet-hedging strategies in unicellular organisms, noise can facilitate the switch between cell states and the probabilistic induction of differentiation processes \citep{Eldar2010, Chang2008}.
+\cor{However, as mentioned above, measuring biological noise in differentiating multi-cellular organisms is challenging and the observed molecular phenotypic variability is a combination of stochastic and deterministic components.} 
+It has been shown that transcriptional \cor{variability} increases throughout differentiation \citep{Stumpf2017} and development \citep{Antolovic2017}. 
+Dissecting differentiation processes of haematopoietic progenitor cells revealed an increase in transcriptional \cor{variability} directly before cell fate decisions are made \citep{Mojtahedi2016, Richard2016}. 
+Once committed, differentiating cell populations collapse in variability and move towards a new attractor state. 
+\cor{These studies highlight a possible contribution of molecular variability to cell fate decision event.
+However, the observed change in variability within differentiating cell populations is purely correlative and it is not possible, with these experiments, to differentiate between variability causing differentiation or differentiation causing variability.}\\
 
 Studies of recent years proposed that stochasticity in expression is an important driver for early (pre-implantation) embryonic development, and prior to gastrulation \citep{Dietrich2007}. 
 As early as the 4-cell stage embryo, targets of master pluripotency factors Oct4 and Sox2 are heterogeneously expressed \textbf{(Fig.~\ref{fig0:noise_development}, left panel)}. 
