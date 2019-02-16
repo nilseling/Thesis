@@ -29,7 +29,7 @@ Mutations in the DNA sequence such as \glspl{SNV} can alter the binding affinity
 A systematic study of the \gls{TDH3} gene expression in yeast found that mutations in known \glspl{TFBS} decrease mean expression and increase expression noise. 
 Moreover, Metzger \textit{et al.}, 2015 \cor{proposed} that evolutionary selection removes mutations that increase expression noise and that SNVs with large effects on expression noise show the lowest frequency within sampled yeast strains \citep{Metzger2015}. 
 \cor{However, this examined one promoter in stable environmental conditions. 
-How selection on mutations that induce variability in expression works in more complex systems and across multiple promoters is still unexplored.}
+How selection on mutations that induce variability in expression works in more complex systems and across multiple promoters is still unexplored.}\\
 
 One of the most widely studied DNA motifs in relation to transcriptional noise is the TATA-box motif in promoters. 
 Generally, TATA-box containing promoters show high levels of transcriptional noise \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Faure2017}, possibly due to a simple activation cycle containing one or few inactive states \citep{Zoller2015}. 
@@ -44,10 +44,6 @@ TATA-box motifs are enriched amongst stress response genes, which support their 
 Tirosh \textit{et al.}, 2006 detected a two-fold enrichment of TFBSs in TATA-box containing promoters \citep{Tirosh2006}. 
 A later study showed that transcriptional noise scales with increased numbers of TFBSs \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Sharon2014}. 
 Furthermore, TATA-box containing genes lack enhancing histone marks and their increased variability in expression can therefore be explained by repressed chromatin \citep{Choi2008} (see \textbf{Section \ref{sec0:epigenetic}}).  
-\cor{These findings highlight that multiple correlated genomic features are associated with modulating noise. 
-It therefore challenging to disentangle the individual underlying sources of transcriptional variability. }
-
-\newpage
 
 \begin{figure}[!h]
 \centering
@@ -58,12 +54,15 @@ Mutations of the transcription factor (TF) binding site (TFBS), the presence of 
 \end{figure}
 
 Promoters can be classified based on their shape as narrow, with few \glspl{TSS} that predominantly control tissue-specific gene expression, and broad promoters with larger numbers of TSSs that control the expression of house keeping genes. 
-Mutations that alter the shape of promoters increase transcriptional noise \citep{Schor2017a}. 
+Mutations that alter the shape of promoters increase transcriptional \cor{variability} \citep{Schor2017a}. 
 Furthermore, promoters with one or few TSS show higher levels of expression variability \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Faure2017}.\\
 
 In addition to \glspl{SNV}, \glspl{CNV} (usually defined as copy number variability of regions $\geq$ 1kb in comparison to a reference genome) in parts of the genome influence gene expression and contribute to, for example, schizophrenia and autism \citep{Gamazon2015}. 
 Combined analysis of DNA and RNA has shown that genes with low copy number tend to be more noisily expressed compared to genes encoded by multiple copies \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Dey2015}. 
 In the context of monoallelic expression, genes located on the X chromosome show increased mRNA half-life which in turn increases transcript stability and reduces noise to levels of autosomal genes \citep{Faure2017}.
+
+\cor{In sum, these findings highlight that multiple correlated genomic features are associated with modulating noise. 
+While most studies focused on linking individual genomic features to changes in expression variability, it is not possible to disentangle the individual underlying sources of transcriptional variability. }
 
 \subsubsection{Epigenetic factors}
 \label{sec0:epigenetic}
