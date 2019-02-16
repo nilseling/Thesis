@@ -92,15 +92,20 @@ Once the cells compact at \gls{E} 3.5, cells of the \gls{ICM} stochastically exp
 Fgf4 driven signal reinforcement controls this heterogeneity to form a salt-and-pepper like cell state pattern at E3.5. 
 Positional information and the establishment of gene regulatory networks facilitate the segregation of the epiblast and primitive endoderm lineage at E4.5 \textbf{(Fig.~\ref{fig0:noise_development}, 3\textsuperscript{rd} panel)} \citep{Ohnishi2014}. 
 In line with this, scRNA-Seq revealed high levels of \cor{transcriptional variability} in the uncommitted inner cell mass at E3.5 (64-cell stage) in comparison to the E4.5 committed epiblast. 
-\cor{Transcriptional variability} increases again upon exit from pluripotency in the E6.5 epiblast while cells of the primitive streak at E6.5 synchronise their expression patterns and \cor{variability} is reduced \textbf{(Fig.~\ref{fig0:noise_development}, right panel)} \citep{Mohammed2017}. \cor{}
+\cor{Transcriptional variability} increases again upon exit from pluripotency in the E6.5 epiblast while cells of the primitive streak at E6.5 synchronise their expression patterns and \cor{variability} is reduced \textbf{(Fig.~\ref{fig0:noise_development}, right panel)} \citep{Mohammed2017}. \\
+
+\cor{Besides the hypothesis of transcriptional variation contributing to embryonic development, a number of alternative drivers for cell fate decisions the mouse embryo exist\citep{Zhang2018a}. 
+For example, in the 8-cell to 16-cell stage embryo, symmetry breaking could be achieved by an interaction between the cell’s position and polarity, its cortical tension, and the orientation of cell division97. 
+Maître \emph{et al.} proposed a system where robust self-organization of 8- to 16-cell stage embryos is achieved by differences in contractility between polar and apolar cells, which leads to the internalization of the more contractile apolar cells\citep{Maitre2016}. 
+Taken together, it is unclear to which fraction transcriptional variability plays a role in cell fate decision-making and if purely the occurrence of differentiating cells induces transcriptional variation. }
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=\textwidth]{Fig_2.png}
 \caption[Progression of transcriptional heterogeneity during embryonic development]{\textbf{Progression of transcriptional noise during embryonic development}.\\
 From left to right: schematic of mouse embryonic development from the 4-cell stage to early gastrulation at E6.5. 
-Cell colours indicate gene expression strength. Heterogeneous expression at the 4-cell stage induce commitment to form extra-embryonic lineages or pluripotent cells. 
-These pluripotent cells at E3.5 show high expression heterogeneity forming the inner cell mass (ICM). 
+Cell colours indicate gene expression strength. Variable expression at the 4-cell stage induce commitment to form extra-embryonic lineages or pluripotent cells. 
+These pluripotent cells at E3.5 show high expression variability forming the inner cell mass (ICM). 
 Cells rearrange to form the epiblast and primitive endoderm at E4.5 while noise levels increase in the epiblast at E6.5 compared to the primitive streak.}
 \label{fig0:noise_development}
 \end{figure}
@@ -112,12 +117,15 @@ These distinct states show differences in promoter methylation patterns, introdu
 In-depth analysis of mESCs grown in different media (serum, \gls{2i} and \gls{a2i}) shows the presence of three distinct cell states in the serum grown cells. 
 mESCs grown in 2i media show less variability in pluripotency markers but higher heterogeneity in cell cycle related genes \citep{Kolodziejczyk2015cell}. 
 From the pluripotent ground state, mESCs can differentiate along somatic lineages via specific differentiation events or noise-induced transitions between attractor states. 
-Mathematical modelling has shown that mESCs differentiate stochastically through distinct hidden cell (micro-)states within a defined (macro-)state coupled to an increase in variability \cite{Stumpf2017}.\\
-
+Mathematical modelling has shown that mESCs differentiate stochastically through distinct hidden cell (micro-)states within a defined (macro-)state coupled to an increase in variability \cite{Stumpf2017}.
 In contrast to the beneficial features of noise in stem cell differentiation, stochastic events during \gls{iPSC} reprogramming limit the formation of single iPSCs \citep{Hanna2009, Yamanaka2009}. 
-It has been shown that probabilistic events dominate in an early phase of reprogramming while the transcription of \textit{Sox2} induces a later, more deterministic, phase \cite{Buganim2012}. 
-While heterogeneity in gene expression and protein abundance has been characterised to benefit cell commitment and differentiation, other reports propose alternative hypotheses for cell fate decisions where commitment is independent of random fluctuations of transcription factors \cite{Hoppe2016}. 
-Similarly, the increase in noise during development can be counteracted by temporal averaging across noisy transcription events to achieve coordinated tissue responses \citep{Stapel2017}. 
+It has been shown that probabilistic events dominate in an early phase of reprogramming while the transcription of \textit{Sox2} induces a later, more deterministic, phase \cite{Buganim2012}.\\
+
+\cor{These findings indicate an intrinsic heterogeneity of pluripotent cell populations. 
+Extrinsic cues, such as growth medium or signalling networks in the embryo, are needed to control this heterogeneity.
+However, it is not clear if this seemingly random expression of pluripotent marker genes is truely stochastic or driven by unobserved regulatory mechanisms.
+Hoppe \emph{et al.} challenged the idea of lineage choice by stochastic fluctuations of lineage-specific transcription factors and highlighted, using time-resolved measurements, that these transcription factors are solely reinforcing lineage choice \cite{Hoppe2016}.
+Therefore, lineage choice can be initiated by unobserved cues that induce variation in genes expression.} 
 
 \subsection{Stochasticity in immune responses}
 
