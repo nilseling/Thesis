@@ -5,14 +5,14 @@
 
 \section{Sources of expression noise} 
 
-Variability in expression across homogeneous populations of cells arises from intrinsic and extrinsic noise (see \textbf{Box 1} on page \pageref{box1}). 
+\cor{Molecular phenotypic variability} across homogeneous populations of cells \cor{can arise} from intrinsic and extrinsic noise, \cor{and deterministic components} (see \textbf{Box 1} on page \pageref{box1}). 
 While intrinsic noise is promoter-specific and therefore induces uncoordinated variation in RNA or protein expression between individual genes, extrinsic noise globally influences gene expression across multiple cells and therefore leads to co-variation across larger sets of genes. 
 Here, I give an overview on the different sources of intrinsic and extrinsic noise in a variety of biological systems.
 
 \subsection{Intrinsic noise}
 
 Intrinsic noise in cell populations arises from stochasticity in biochemical reactions that lead to the synthesis of mRNAs (transcription) and proteins (translation) within individual cells. 
-Regulatory features on the genomic, epigenetic, transcriptional and translational level influence the strength of intrinsic noise (for an overview see \textbf{Fig.~\ref{fig0:overview_intrinsic}}).
+Regulatory features on the genomic, epigenetic, transcriptional and translational level influence \cor{and control} the strength of intrinsic noise (for an overview see \textbf{Fig.~\ref{fig0:overview_intrinsic}}).
 
 \begin{figure}[!h]
 \centering
@@ -27,20 +27,25 @@ Promoter sequence, number of transcription factor (TF) binding sites (TFBS), num
 One of the key regulatory steps prior to RNA synthesis is the binding of \glspl{TF} to specific DNA sequences within the regulatory region (promoter) of a gene which then triggers the controlled production of primary RNA transcripts from the DNA of this gene \citep{Latchman1997}. 
 Mutations in the DNA sequence such as \glspl{SNV} can alter the binding affinity of TFs and therefore the rate at which a gene is expressed \textbf{(Fig.~\ref{fig0:DNA_features})}. 
 A systematic study of the \gls{TDH3} gene expression in yeast found that mutations in known \glspl{TFBS} decrease mean expression and increase expression noise. 
-Moreover, Metzger \textit{et al.}, 2015 showed that evolutionary selection removes mutations that increase expression noise and that SNVs with large effects on expression noise show the lowest frequency within sampled yeast strains \citep{Metzger2015}. \\
+Moreover, Metzger \textit{et al.}, 2015 \cor{proposed} that evolutionary selection removes mutations that increase expression noise and that SNVs with large effects on expression noise show the lowest frequency within sampled yeast strains \citep{Metzger2015}. 
+\cor{However, this examined one promoter in stable environmental conditions. 
+How selection on mutations that induce variability in expression works in more complex systems and across multiple promoters is still unexplored.}
 
 One of the most widely studied DNA motifs in relation to transcriptional noise is the TATA-box motif in promoters. 
 Generally, TATA-box containing promoters show high levels of transcriptional noise \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Faure2017}, possibly due to a simple activation cycle containing one or few inactive states \citep{Zoller2015}. 
-Stress response genes are enriched for the TATA-box motif and allow an early adjustment to changing environmental conditions \citep{Lopez-Maury2009}. 
 Moreover, TATA-box containing genes show an increased interspecies variability \citep{Tirosh2006} and higher spontaneous mutational variation \citep{Landry2007}, indicating an increased evolvability of these particular genes. 
 In an early study, Raser \textit{et al.}, 2004 studied the noisy expression controlled by the budding yeast \gls{PHO5} promoter. 
 This promoter contains the TATA-box motif and it has been shown that transcriptional noise is reduced when a mutational modification decreases the TATA-box strength \citep{Raser2004}. 
-A more recent study confirmed this result and found mutations in yeast promoters that eliminate the TATA-box motif which lead to reduced noise levels for these genes \citep{Hornung2012}. \\
+A more recent study confirmed this result and found mutations in yeast promoters that eliminate the TATA-box motif which lead to reduced noise levels for these genes \citep{Hornung2012}. 
+\cor{The TATA-box is therefore one genomic feature that can differentiate between genes with variable and stable expression. Gene expression instability can endow cells with the ability to rapidly respond to environmental changes. 
+TATA-box motifs are enriched amongst stress response genes, which support their role in early adjustment to changing environmental conditions\citep{Lopez-Maury2009}.}\\
 
-A possible confounding factor for the increased noise of TATA-box containing promoters is the number of TFBSs. 
+\cor{However, a} possible confounding factor for the increased noise of TATA-box containing promoters is the number of TFBSs. 
 Tirosh \textit{et al.}, 2006 detected a two-fold enrichment of TFBSs in TATA-box containing promoters \citep{Tirosh2006}. 
 A later study showed that transcriptional noise scales with increased numbers of TFBSs \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Sharon2014}. 
 Furthermore, TATA-box containing genes lack enhancing histone marks and their increased variability in expression can therefore be explained by repressed chromatin \citep{Choi2008} (see \textbf{Section \ref{sec0:epigenetic}}).  
+\cor{These findings highlight that multiple correlated genomic features are associated with modulating noise. 
+It therefore challenging to disentangle the individual underlying sources of transcriptional variability. }
 
 \newpage
 
