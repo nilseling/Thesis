@@ -10,18 +10,25 @@ Here, this problem is resolved by introducing a hierarchical Bayesian formulatio
 In this formulation, an additional set of residual over-dispersion parameters $\epsilon_i$ that are not confounded by changes in mean expression are introduced. 
 This extension ensures a broader applicability of the BASiCS software and allows statistical testing of changes in variability that are not confounded by mean expression.  \\ 
 
-Major, dataset-specific factors that affect the robustness of posterior parameter estimation include sequencing depth, number of cells and heterogeneity within the population. 
-Furthermore, the use of UMIs for quantifying transcript counts can also improve variability estimation \citep{Grun2014}. 
+\cor{The original implementation of BASiCS for testing changes in mean expression and expression variability was aimed at borrowing information across all cells, all genes and both conditions.
+However, this introduced an identifiability issue since the true scale differences in mean expression between the two conditions was unknown.
+Instead, BASiCS was implemented to be run on both conditions independently and to perform a post-hoc correction of scale differences in mean expression.
+This approach raises the question if parameter estimates are comparable between both conditions or if differences are cause due to over-fitting.
+We therefore validated the robustness of the model in multiple ways:\\
+1. We ran the model on down-sampled cell populations and found that (i) the majority of model parameters show similar estimates independent of the sample size and expression levels, and (ii) the regression stabilises variability estimates for lowly expressed genes. \\
+2. We simulated data and showed that (i) the false positive rate is less than 5\% for mean and variability estimates and that (ii) the true positive rate reaches 100\% for large sample size. \\
+3. we compared BASiCS parameter estimates to absolute transcript counts using smFISH and observed a near perfect estimation of mean expression but lower correlation for variability and residual variability measures.\\
+We are therefore confident that BASiCS correctly estimates mean expression and expression variability per condition and that this allows comparison of parameter estimates between conditions.}\\
+
+Other, dataset-specific factors that affect the robustness of posterior parameter estimation include sequencing depth, number of cells and heterogeneity within the population. 
 BASiCS has been designed to be run on homogeneous populations of cells to avoid variation introduced by correlated sub-structure within the data. 
-In comparison to the original implementation of BASiCS, we observe that the regression model leads to more stable inference that requires fewer cells to accurately estimate gene-specific parameters, particularly for lowly expressed genes. \\
+Furthermore, the use of UMIs for quantifying transcript counts can also improve variability estimation \citep{Grun2014}. \\
 
 Our method enables the characterisation of the extent and nature of variable gene expression in CD4\plus{} T cell activation and differentiation. 
 Firstly, we observe that during acute activation of naive T cells, genes of the biosynthetic machinery are homogeneously up-regulated, while specific immune-related genes are more heterogeneously up-regulated. In particular, increased variability in expression of the apoptosis-inducing Fas ligand \citep{Strasser2009} and the inhibitory ligand PD-L1 \citep{Chikuma2016} suggests a mechanism by which newly activated cells might suppress re-activation of effector cells, thereby dynamically modulating the population response to activation. 
 Likewise, more variable expression of \emph{Smad3}, which translates inhibitory \gls{Tgf}$\beta$ signals into transcriptional changes \citep{Delisle2013}, may indicate increased diversity in cellular responses to this signal. 
 Increased variability in \textit{Pou2f2} (Oct2) expression after activation suggests heterogeneous activities of the NF-$\kappa$B and/or \gls{NFAT} signalling cascades that control its expression \citep{Mueller2013}.
 Moreover, we detect up-regulated and more variable \textit{Il2} expression, suggesting heterogeneous Il2 protein expression, which is known to enable T cell population responses \citep{Fuhrmann2016}. 
-
-\newpage
 
 Additionally, we studied changes in gene expression variability during CD4\plus{} T cell differentiation towards a Th1 and Tfh cell state over a 7 day time course after \textit{in vivo} malaria infection \citep{Lonnberg2017}. 
 Our analysis provides several insights into this differentiation system. 
