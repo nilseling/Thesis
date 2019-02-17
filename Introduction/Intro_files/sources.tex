@@ -69,42 +69,53 @@ While most studies focused on linking individual genomic features to changes in 
 
 Epigenetic research is defined as "the study of changes in gene function that are mitotically and/or meiotically heritable and that do not entail a change in DNA sequence" \citep{Wu2001}. 
 Epigenetic factors are generally described as DNA methylation at \gls{CpG} dinucleotides, histone modifications and nucleosome positioning  \citep{Portela2010}. 
-\textbf{Table \ref{tab0:epigenetic}} summarises the relationship between epigenetic features and noisy gene expression. \\
+\textbf{Table \ref{tab0:epigenetic}} summarises the relationship between epigenetic features and \cor{variable} gene expression. \\
 
-\Gls{CGI} are genomic sites of more than 200 bases with a GC content of more than 50\% and are usually unmethylated. Methylation of CGIs in promoters is linked to gene silencing while DNA methylation in gene bodies facilitates transcription \citep{Portela2010}.  
-Recently, the presence of CGIs in gene bodies but also at the TSS and in promoter regions was linked to a reduction in transcriptional noise \citep{Faure2017}. 
-Similarly, previous findings showed that expression noise scales negatively with gene body methylation \cite{Huh2013}. 
-Morgan and Marioni, 2018 studied the effect of CGI size on transcriptional noise using scRNA-Seq data. Genes associated with short CGI promoters tend to be more noisily expressed than genes with long CGI promoters. 
-Furthermore, early response genes during \gls{LPS} stimulation of bone-marrow derived dendritic cells and heregulin stimulation of human breast cancer cells are enriched for those with short CGI promoters \citep{Morgan2018}. \\
+\Gls{CGI} are genomic sites of more than 200 bases with a GC content of more than 50\% and are usually unmethylated. 
+Methylation of CGIs in promoters is linked to gene silencing while DNA methylation in gene bodies facilitates transcription \citep{Portela2010}.  
+Recently, the presence of CGIs in gene bodies but also at the TSS and in promoter regions was linked to a reduction in transcriptional \cor{variability} \citep{Faure2017}. 
+\cor{Morgan and Marioni, 2018 further distinguished between genes promoters associated with short and long CGIs.  
+Similar to the presence of TATA-box motifs as described above, the length of CGIs in promoter regions controls how variably a gene is expressed. 
+Genes associated with short CGIs tend to be more variably expressed and allow an early response to stimulation, exemplified by observations in mouse bone-marrow derived dendritic cells and human breast cancer cells \citep{Morgan2018}.
+However, it is not clear whether the length of CGIs is the sole driver for variable gene expression or how multiple genomic features work together to induce transcriptional variability.} \\
 
-Modifications of histones induce the activation or repression of chromatin and  therefore indirectly modulate gene expression \citep{Suganuma2011}. 
-In an extensive study to link histone modifications to transcriptional noise, Faure \textit{et al.}, 2017 detected several histone modifications in promoter/core promoter motifs, at the TSS and in gene bodies that increase or decrease noise. 
-The repressive \gls{H3K27me3} mark is linked to higher noise levels when present at the TSS, in promoters and in gene bodies. 
-The enhancer related \gls{H3K4me1} mark only increases noise when present at the TSS and in the core promoter sequence while the repressive \gls{H3K9me3} mark increases noise when present in the promoter motif. 
-The activating marks \gls{H3K4me3}, \gls{H3K9ac} and \gls{H3K36me3} are linked to low levels of noise when present in gene bodies. 
-In addition to these single features, bivalent promoters that carry the repressive \gls{H3K27me3} and enhancing \gls{H3K4me3} marks show high levels of transcriptional noise \citep{Faure2017}.\\ 
+Modifications of histones induce the \cor{opening} or repression of chromatin and  therefore indirectly modulate gene expression \citep{Suganuma2011}. 
+In an extensive study to link histone modifications to transcriptional \cor{variability}, Faure \textit{et al.}, 2017 detected several histone modifications in promoter/core promoter motifs, at the TSS and in gene bodies that increase or decrease \cor{variability}. 
+The repressive \gls{H3K27me3} mark is linked to higher \cor{variability} when present at the TSS, in promoters and in gene bodies. 
+The enhancer related \gls{H3K4me1} mark only increases \cor{variability} when present at the TSS and in the core promoter sequence while the repressive \gls{H3K9me3} mark increases \cor{variability} when present in the promoter motif. 
+The activating marks \gls{H3K4me3}, \gls{H3K9ac} and \gls{H3K36me3} are linked to low levels of \cor{variability} when present in gene bodies. 
+In addition to these single features, bivalent promoters that carry the repressive \gls{H3K27me3} and enhancing \gls{H3K4me3} marks show high levels of transcriptional \cor{variability} \citep{Faure2017}.
+\cor{Here and in Morgan and Marioni, 2018, the authors profiled molecular phenotypic variability in "homogeneous" populations of glspl{mESC} as proxy for transcriptional noise.
+While the effect of fluctuation in cell-cycle stages was regressed out, unobserved variation in, for example, the differentiation potential of mESCs in serum grown medium\cite{Kolodziejczyk2015cell} could still exist.
+It is therefore difficult to use scRNA-Seq data to study the true underlying effect of transcriptional noise on the overall observable phenotypic variability.}\\ 
 
-\Glspl{PRC} are epigenetic modifiers of histones that repress transcription of developmental genes \citep{Chittock2017} and they can bind together with active \gls{RNAPII} to bivalent promoters. 
-Switching between the repressed and active states introduces gene expression variability across a population of cells \cite{Kar2017}. 
-Additionally, deletions of different histone deacetylation complexes (Set3C and Rpd3(L)), which both repress transcription by removing H3K9ac, showed different effects on transcriptional bursting \citep{Weinberger2012}.  
-Confirming this, a later study indicated that gene body and promoter histone modifications independently influence burst size and burst frequency and therefore regulate mean expression and noise in an uncoupled fashion \cite{Wu2017}. \\
+\cor{One suggestion why bivalent promoters show high transcriptional variability was brought forward by Kar \emph{et al.}, 2017.
+Here, the authors studied the function of \glspl{PRC} in mESCs.}
+PRCs are epigenetic modifiers of histones that repress transcription of developmental genes \citep{Chittock2017} and they can bind together with active \gls{RNAPII} to bivalent promoters. 
+Switching between the repressed and active states introduces gene expression variability across a population of cells \cite{Kar2017}.
+\cor{However, bulk measures were used to identify the bivalency of promoters.
+That leaves the possibility that in a fraction of cells the promoter resides in an open state while in other cells the promoter is repressed. 
+This highlights the fact that bulk measures are not suitable to obtain a correct measure of promoter states in cell populations that could contain unobserved cell state heterogeneity.} 
 
 Chromatin is the packaged state of DNA within the nucleus and its central elements are nucleosomes. 
 Nucleosomes are combinations of eight of the four histones (H3, H4, H2A, H2B) around which 147 bases of DNA twist. 
 An array of histone modifying enzymes exist that regulate the opening or closing of the chromatin; termed heterochromatin and euchromatin, respectively \citep{Kouzarides2007}. 
 Tirosh \textit{et al.}, 2008 showed that promoters with high nucleosome occupancy close to the TSS tend to display a high range of expression levels across varying conditions (transcriptional plasticity). 
-Distant nucleosome-rich regions are on the other hand associated with low transcriptional noise \citep{Tirosh2008}. 
-Nucleosome covered promoters display shorter transcriptional rates, which in turn explains increased transcriptional noise for these promoters \cite{Dey2015}. 
+Distant nucleosome-rich regions are on the other hand associated with low transcriptional \cor{variability} \citep{Tirosh2008}. 
+Nucleosome covered promoters display shorter transcriptional rates, which in turn explains increased transcriptional \cor{variability} for these promoters \cite{Dey2015}. 
 Single-cell measures indicate cell-to-cell variations in nucleosome positioning around the \textit{PHO5} promoter upon stress induction. 
-Even in the non-stressed state, a small fraction of cells exhibit nucleosome free regions at the promoter which explains low and possibly noisy expression of \textit{PHO5} \citep{Small2014}. 
-Deletion of chromatin remodelling complexes that remove nucleosomes upon transcription factor binding results in increased transcriptional noise compared to wild-type cells \citep{Raser2004}. 
-
+Even in the non-stressed state, a small fraction of cells exhibit nucleosome free regions at the promoter which explains low and possibly noisy expression of \textit{PHO5} \citep{Small2014}.
+\cor{This observation again highlights the lack of resolution when using bulk measures to profile the promoter architectures in cell populations.
+However, current single-cell technologies to profile epigenetic marks lack throughput and are influenced by high levels of technical noise.
+The observed variations in nucleosome occupancy could therefore be driven by technical variation.} 
+ 
 \newpage
 
 Boundaries between heterochromatin and euchromatin are controlled by boundary elements, such as the transcription factor \Gls{CTCF}, that recruit chromatin modifying factors \citep{Kouzarides2007}. 
 CTCF also regulates transcription by activating or repressing promoters and regulates distant chromatin interactions \citep{Kim2015a}. 
 Recent studies suggest that long-range enhancer-promoter interactions modulate transcriptional noise. 
 Interference of CTCF-mediated enhancer-promoter contact either by CTCF knock-out or CTCF-binding site deletion leads to increased expression variability in selected genes \citep{Ren2017}. 
+\cor{This study however only profiled protein abundance of few genes and did not correct for changes in mean expression that are highly correlated with changes in variance \cite{Brennecke2013}.}
 Enhancers are cis-regulatory elements of non-coding DNA containing TFBSs that regulate the expression of neighbouring genes \citep{Blackwood1998}. 
 Genes within super-enhancer loci, a region with multiple enhancers, control pluripotency master regulators and show high levels of variability in expression down-stream targets of these master regulators show similar co-variation across mESCs \citep{Faure2017}.
 
@@ -115,7 +126,7 @@ Genes within super-enhancer loci, a region with multiple enhancers, control plur
 \begin{tabular}{l l c c}
 \toprule
 \toprule
- & Feature & Noisy & Stable \\ 
+ & Feature & \cor{Variable} & Stable \\ 
 \midrule
 \midrule
 \multirow{3}{*}[-2pt]{DNA methylation} & CGIs &  & \checkmark{} \\
@@ -158,9 +169,11 @@ Genes within super-enhancer loci, a region with multiple enhancers, control plur
 
 \newpage
 
-Moreover, the positioning of genes on the genome controls expression noise with densely clustered genes being less noisily expressed in comparison to non-clustered genes \citep{Kustatscher2017}. 
+Moreover, the positioning of genes on the genome controls expression noise with densely clustered genes being less \cor{variably} expressed in comparison to non-clustered genes \citep{Kustatscher2017}. 
 Additionally, genes positioned next to “noisy” genes display higher levels of transcriptional variability compared to genes that are located in proximity to “stable” genes \citep{Kar2017}. 
-Expression noise is also increased for genes that are located in a repressed neighborhood, namely active genes in constitutive nuclear lamina-associated domains \citep{Faure2017}.
+Expression \cor{variability} is also increased for genes that are located in a repressed neighbourhood, namely active genes in constitutive nuclear lamina-associated domains \citep{Faure2017}.
+\cor{This finding again highlights that genes associated with repressed chromatin display higher transcriptional variability compared to genes associated with open chromatin.
+Single-cell measures are needed to provide an insight into whether this effect is driven by so called "leaky" expression from closed promoters of if heterogeneous promoter states can be observed.}
 
 \subsubsection{Transcriptional features}
 
