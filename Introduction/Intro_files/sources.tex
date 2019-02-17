@@ -177,23 +177,27 @@ Single-cell measures are needed to provide an insight into whether this effect i
 
 \subsubsection{Transcriptional features}
 
-Transcription is initiated by TFs binding to specific regulatory DNA sequences followed by recruitment of RNAPII, RNA synthesis and RNA degradation. 
-As discussed above, promoter architecture, namely the location and accessibility of TFBS and RNAPII binding sites, dictates mean expression and transcriptional noise. \\
+Transcription is initiated by TFs binding to specific regulatory DNA sequences followed by recruitment of RNAPII and RNA synthesis. 
+As discussed above, promoter architecture, namely the location and accessibility of TFBS and RNAPII binding sites, dictates mean expression and transcriptional \cor{variability}. \\
 
 In bacteria, the intracellular physical distance between TF source and the promoter sequence influences expression variability. 
-TF expression proximal to their target genes results in less noisy expression compared to TF expression which occurs distant to the promoter sequence \citep{Goni-Moreno2017}. 
-Once TFs bind to their target sequence, Carey \emph{et al.}, 2013 showed that the mean expression to noise ratio is promoter dependent while in the majority of cases, noise negatively scales with mean expression \citep{Carey2013}. \\
+TF expression proximal to their target genes results in less \cor{variable} expression compared to TF expression which occurs distant to the promoter sequence \citep{Goni-Moreno2017}. 
+Once TFs bind to their target sequence, Carey \emph{et al.}, 2013 showed that the mean expression to \cor{expression variability} ratio is promoter dependent while in the majority of cases, \cor{variability} negatively scales with mean expression \citep{Carey2013}. \\
 
 Similar to TF binding dynamics, the assembly of RNAPII complexes modulates transcriptional noise. 
 An early study identified the connection between paused RNAPII and synchronous expression of target genes. 
 Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. 
-This finding has later been confirmed using scRNA-Seq data where increased variability was detected for genes with actively transcribing RNAPII across the full range of expression levels \textbf{(Fig.~\ref{fig0:RNAPII})} \citep{Day2016}.\\
+This finding has later been confirmed using scRNA-Seq data where increased variability was detected for genes with actively transcribing RNAPII across the full range of expression levels \textbf{(Fig.~\ref{fig0:RNAPII})} \citep{Day2016}.
+\cor{However, genes with pre-loaded RNAPII also have a higher CpG content and are depleted for TATA-box elements\cite{Day2016}. 
+Once again, the correlation between genomic factors and their individual associations with variation creates a challenge for disentangling their specific effects on molecular phenotypic variation.
+Alternatively, this may also represent multiple regulatory layers that combine to modulate noise. }\\
 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.7\textwidth]{Fig_8.png}
 \caption[RNAPII pausing reduces transcriptional noise]{\textbf{RNAPII pausing reduces transcriptional noise.}\\
-Left: Pre-loaded RNA polymerase II (RNAPII) allows direct transcription upon transcription factor (TF) binding. Right: RNAPII recruitment induces gene expression variability.}
+Left: Pre-loaded RNA polymerase II (RNAPII) allows direct transcription upon transcription factor (TF) binding. 
+Right: RNAPII recruitment induces gene expression variability.}
 \label{fig0:RNAPII}
 \end{figure} 
 
