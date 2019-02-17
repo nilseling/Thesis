@@ -211,7 +211,15 @@ On the post-transcriptional and translational level, mRNA location, structure, d
 Upon transcriptional activation, RNAs are produced in burst-like patterns where burst frequency modulates mean expression and noise, and burst size influences solely mean expression \citep{Hornung2012}. 
 While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Battich2015a}. 
 Reduced cytoplasmic noise has also been shown for two nuclear-retained genes in the mammalian liver. 
-Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.\\
+Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.
+\cor{Conversely, a recent study by Hansen \emph{et al.}, 2018 proposed an amplification of transcriptional variability due to nuclear export \cite{Hansen2018}. 
+However, the authors computed the Fano factor (variance divided by mean expression) as measure of variability and assumed that its values is not correlated with mean expression. 
+This assumption arises from an underlying Poissonian (Fano factor is equal to 1) or over-dispersed Poissonian (Fanor factor is larger than 1) distribution of transcript counts.
+In reality, the Fano factor is not constant across the range of mean expression. 
+This has been discussed by Gr\"un \emph{et al.}, 2014, who showed scale differences in the coefficient of variation (CV) versus mean expression dependency for lowly and highly expressed genes \cite{Grun2014}.
+Hansen \emph{et al.} also showed this effect when plotting the Fano factor versus mean expression.
+Across all genes, the cytoplasmic transcript abundance as well as the Fano factor were larger compared to nuclear measures, which is to be expected by the model proposed by Gr\"un \emph{et al.}.
+It is therefore recommended to fit a non-parametric curve to variability measure versus mean expression and compare the regression residuals as explained in Chapter 3.}\\
 
 \begin{figure}[!h]
 \centering
@@ -225,15 +233,19 @@ Arrows indicate either increased (red) or decreased noise (green) depending on t
 
 \newpage
 
-Within the cytoplasm, mRNAs are subject to translation or degradation. At this stage, stochasticity from bursty gene expression is propagated to form variation in protein abundance. 
-The availability of mRNAs for translation is not only dictated by their synthesis but also their degradation rate. mRNA degradation is accelerated by recognition of \glspl{miRNA}. 
+Within the cytoplasm, mRNAs are subject to translation or degradation. 
+At this stage, \cor{variability induced by} bursty gene expression is propagated to form variation in protein abundance. 
+The availability of mRNAs for translation is not only dictated by their synthesis but also their degradation rate. 
+mRNA degradation is accelerated by recognition of \glspl{miRNA}. 
 This process has been shown to preferentially reduce noise levels for lowly expressed genes in mESCs, possibly to retain cellular identity \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Schmiedel2015}. 
-Similarly, temporal averaging of long-lived transcripts reduces noise in mRNA abundance. 
-In this way, increased transcript stability compensates for noise introduced by the single-allele expression of genes on chromosome X \citep{Faure2017}.  \\
+\\
 
 In addition to noise introduced by stochastic processes on the transcriptional level, the recognition and binding of ribosomes to mRNAs for translation initiation is a source for variation in protein abundance. 
-Modulating translational efficiency by mutating the ribosome binding site and initiation codon showed an interaction between translation and variation in protein abundance \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Ozbudak2002}. 
-Additionally, mRNA secondary structure formed by stem loops and poly(G) motifs affects translation initiation and increases noise in protein levels \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Dacheux2017a}.
+Modulating translational efficiency by mutating the ribosome binding site and initiation codon showed an association between translation and variation in protein abundance \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Ozbudak2002}. 
+Additionally, mRNA secondary structure formed by stem loops and poly(G) motifs affects translation initiation and increases variation in protein levels \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Dacheux2017a}.\\
+
+\cor{Together, these studies again highlight a multitude of factors that can modulate the observable variation in transcript and protein abundance. 
+Moving forward, models that correct or account for variations introduced by different factors need to be developed to disentangle the individual sources of molecular variation.}
 
 \subsection{Extrinsic noise}
 
