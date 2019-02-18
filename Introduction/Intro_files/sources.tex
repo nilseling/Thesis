@@ -28,7 +28,7 @@ One of the key regulatory steps prior to RNA synthesis is the binding of \glspl{
 Mutations in the DNA sequence such as \glspl{SNV} can alter the binding affinity of TFs and therefore the rate at which a gene is expressed \textbf{(Fig.~\ref{fig0:DNA_features})}. 
 A systematic study of the \gls{TDH3} gene expression in yeast found that mutations in known \glspl{TFBS} decrease mean expression and increase expression noise. 
 Moreover, Metzger \textit{et al.}, 2015 \cor{proposed} that evolutionary selection removes mutations that increase expression noise and that SNVs with large effects on expression noise show the lowest frequency within sampled yeast strains \citep{Metzger2015}. 
-\cor{However, this examined one promoter in stable environmental conditions. 
+\cor{However, the authors examined one promoter in stable environmental conditions. 
 How selection on mutations that induce variability in expression works in more complex systems and across multiple promoters is still unexplored.}\\
 
 One of the most widely studied DNA motifs in relation to transcriptional noise is the TATA-box motif in promoters. 
@@ -37,8 +37,7 @@ Moreover, TATA-box containing genes show an increased interspecies variability \
 In an early study, Raser \textit{et al.}, 2004 studied the noisy expression controlled by the budding yeast \gls{PHO5} promoter. 
 This promoter contains the TATA-box motif and it has been shown that transcriptional noise is reduced when a mutational modification decreases the TATA-box strength \citep{Raser2004}. 
 A more recent study confirmed this result and found mutations in yeast promoters that eliminate the TATA-box motif which lead to reduced noise levels for these genes \citep{Hornung2012}. 
-\cor{The TATA-box is therefore one genomic feature that can differentiate between genes with variable and stable expression. Gene expression instability can endow cells with the ability to rapidly respond to environmental changes. 
-TATA-box motifs are enriched amongst stress response genes, which support their role in early adjustment to changing environmental conditions\citep{Lopez-Maury2009}.}\\
+\cor{The TATA-box is therefore one genomic feature that can differentiate between genes with variable and stable expression and are enriched amongst stress response genes, which support their role in early adjustment to changing environmental conditions \citep{Lopez-Maury2009}.}\\
 
 \cor{However, a} possible confounding factor for the increased noise of TATA-box containing promoters is the number of TFBSs. 
 Tirosh \textit{et al.}, 2006 detected a two-fold enrichment of TFBSs in TATA-box containing promoters \citep{Tirosh2006}. 
@@ -64,7 +63,7 @@ Combined analysis of DNA and RNA has shown that genes with low copy number tend 
 In the context of monoallelic expression, genes located on the X chromosome show increased mRNA half-life which in turn increases transcript stability and reduces noise to levels of autosomal genes \citep{Faure2017}.\\
 
 \cor{In sum, these findings highlight that multiple correlated genomic features are associated with modulating noise. 
-While most studies focused on linking individual genomic features to changes in expression variability, it is not possible to disentangle the individual underlying sources of transcriptional variability. }
+It is therefore challenging to disentangle the individual underlying sources of transcriptional variability. }
 
 \subsubsection{Epigenetic factors}
 \label{sec0:epigenetic}
@@ -76,7 +75,7 @@ Epigenetic factors are generally described as DNA methylation at \gls{CpG} dinuc
 \Gls{CGI} are genomic sites of more than 200 bases with a GC content of more than 50\% and are usually unmethylated. 
 Methylation of CGIs in promoters is linked to gene silencing while DNA methylation in gene bodies facilitates transcription \citep{Portela2010}.  
 Recently, the presence of CGIs in gene bodies but also at the TSS and in promoter regions was linked to a reduction in transcriptional \cor{variability} \citep{Faure2017}. 
-\cor{Morgan and Marioni, 2018 further distinguished between genes promoters associated with short and long CGIs.  
+\cor{Morgan and Marioni, 2018 further distinguished between gene promoters associated with short and long CGIs.  
 Similar to the presence of TATA-box motifs as described above, the length of CGIs in promoter regions controls how variably a gene is expressed. 
 Genes associated with short CGIs tend to be more variably expressed and allow an early response to stimulation, exemplified by observations in mouse bone-marrow derived dendritic cells and human breast cancer cells \citep{Morgan2018}.
 However, it is not clear whether the length of CGIs is the sole driver for variable gene expression or how multiple genomic features work together to induce transcriptional variability.} \\
@@ -87,8 +86,8 @@ The repressive \gls{H3K27me3} mark is linked to higher \cor{variability} when pr
 The enhancer related \gls{H3K4me1} mark only increases \cor{variability} when present at the TSS and in the core promoter sequence while the repressive \gls{H3K9me3} mark increases \cor{variability} when present in the promoter motif. 
 The activating marks \gls{H3K4me3}, \gls{H3K9ac} and \gls{H3K36me3} are linked to low levels of \cor{variability} when present in gene bodies. 
 In addition to these single features, bivalent promoters that carry the repressive \gls{H3K27me3} and enhancing \gls{H3K4me3} marks show high levels of transcriptional \cor{variability} \citep{Faure2017}.
-\cor{Here and in Morgan and Marioni, 2018, the authors profiled molecular phenotypic variability in "homogeneous" populations of glspl{mESC} as proxy for transcriptional noise.
-While the effect of fluctuation in cell-cycle stages was regressed out, unobserved variation in, for example, the differentiation potential of mESCs in serum grown medium\cite{Kolodziejczyk2015cell} could still exist.
+\cor{Here and in Morgan and Marioni, 2018, the authors profiled molecular phenotypic variability in "homogeneous" populations of \glspl{mESC} as proxy for transcriptional noise.
+While the effect of fluctuation in cell-cycle stages was regressed out, unobserved variation in, for example, the differentiation potential of mESCs in serum grown medium \cite{Kolodziejczyk2015cell} could still exist.
 It is therefore difficult to use scRNA-Seq data to study the true underlying effect of transcriptional noise on the overall observable phenotypic variability.}\\ 
 
 \cor{One suggestion why bivalent promoters show high transcriptional variability was brought forward by Kar \emph{et al.}, 2017.
@@ -97,7 +96,7 @@ PRCs are epigenetic modifiers of histones that repress transcription of developm
 Switching between the repressed and active states introduces gene expression variability across a population of cells \cite{Kar2017}.
 \cor{However, bulk measures were used to identify the bivalency of promoters.
 That leaves the possibility that in a fraction of cells the promoter resides in an open state while in other cells the promoter is repressed. 
-This highlights the fact that bulk measures are not suitable to obtain a correct measure of promoter states in cell populations that could contain unobserved cell state heterogeneity.} 
+This highlights the fact that bulk measures might not be suitable to obtain a correct measure of promoter states in cell populations that could contain unobserved cell state heterogeneity.} \\
 
 Chromatin is the packaged state of DNA within the nucleus and its central elements are nucleosomes. 
 Nucleosomes are combinations of eight of the four histones (H3, H4, H2A, H2B) around which 147 bases of DNA twist. 
@@ -188,7 +187,7 @@ Similar to TF binding dynamics, the assembly of RNAPII complexes modulates trans
 An early study identified the connection between paused RNAPII and synchronous expression of target genes. 
 Genes without pre-loaded RNAPII show more stochastic activation patterns \citep{Boettiger2009}. 
 This finding has later been confirmed using scRNA-Seq data where increased variability was detected for genes with actively transcribing RNAPII across the full range of expression levels \textbf{(Fig.~\ref{fig0:RNAPII})} \citep{Day2016}.
-\cor{However, genes with pre-loaded RNAPII also have a higher CpG content and are depleted for TATA-box elements\cite{Day2016}. 
+\cor{However, genes with pre-loaded RNAPII also have a higher CpG content and are depleted for TATA-box elements \cite{Day2016}. 
 Once again, the correlation between genomic factors and their individual associations with variation creates a challenge for disentangling their specific effects on molecular phenotypic variation.
 Alternatively, this may also represent multiple regulatory layers that combine to modulate noise. }\\
 
@@ -224,12 +223,12 @@ Arrows indicate either increased (red) or decreased noise (green) depending on t
 \end{figure} 
 
 \cor{Conversely, a recent study by Hansen \emph{et al.}, 2018 proposed an amplification of transcriptional variability due to nuclear export \cite{Hansen2018}. 
-However, the authors computed the Fano factor (variance divided by mean expression) as measure of variability and assumed that its values is not correlated with mean expression. 
+However, the authors computed the Fano factor (variance divided by mean expression) as measure of variability and assumed that its value is not correlated with mean expression. 
 This assumption arises from an underlying Poissonian (Fano factor is equal to 1) or over-dispersed Poissonian (Fanor factor is larger than 1) distribution of transcript counts.
 In reality, the Fano factor is not constant across the range of mean expression. 
 This has been discussed by Gr\"un \emph{et al.}, 2014, who showed scale differences in the coefficient of variation (CV) versus mean expression dependency for lowly and highly expressed genes \cite{Grun2014}.
 Hansen \emph{et al.} also showed this effect when plotting the Fano factor versus mean expression.
-Across all genes, the cytoplasmic transcript abundance as well as the Fano factor were larger compared to nuclear measures, which is to be expected by the model proposed by Gr\"un \emph{et al.}.
+Across all genes, the cytoplasmic transcript abundance as well as the Fano factor were larger compared to nuclear measures, which is to be expected by the model proposed by Gr\"un \emph{et al.}, 2014.
 It is therefore recommended to fit a non-parametric curve to variability measure versus mean expression and compare the regression residuals as explained in Chapter 3.}\\
 
 Within the cytoplasm, mRNAs are subject to translation or degradation. 
@@ -250,8 +249,8 @@ Moving forward, models that correct or account for variations introduced by diff
 
 \subsection{Extrinsic noise}
 
-\cor{Classically, extrinsic noise was described to arise from fluctuations in molecules that affect the global gene expression landscape of the cell\cite{Elowitz2002}.
-Measuring extrinsic noise is only possible in bacterial populations that so not show fluctuations in cell states.
+\cor{Classically, extrinsic noise has been described to arise from fluctuations in molecules that affect the global gene expression landscape of the cell \cite{Elowitz2002}.
+Measuring extrinsic noise is only possible in bacterial populations that do not show fluctuations in cell states.
 Nowadays, extrinsic noise is often described to arises from cells being in different regulatory states.}
 Here, differences in cellular components introduce variation in mRNA and protein abundance. 
 The presence of cell states in otherwise homogeneous populations is characterised by differences in metabolism, cell cycle, cellular volume, cell-to-cell and environmental signalling as well as cell density. 
@@ -272,7 +271,7 @@ Cell cycle has been widely discussed to form a \cor{major} source of extrinsic n
 In yeast populations, differences in transcriptional activities between the G1 and S/G2/M phases of the cell cycle lead to large-scale transcriptional heterogeneity across cell populations \textbf{(Fig.~\ref{fig0:extrinsic})} \citep{Zopf2013}. 
 Under nutrient-poor conditions, growth rate is reduced and \cor{transcriptional variability} is elevated due to cells being in different cell cycle stages \citep{Keren2015}. 
 Even under optimal growth conditions for mESCs (2i media), cell cycle related genes show strong heterogeneity in expression across the cell population \citep{Kolodziejczyk2015cell}. 
-\cor{However, it is possible that unobserved regulatory mechanisms are in place to induce proliferation, which otherwise appears to occur random across a population of cells.}
+\cor{However, it is possible that unobserved regulatory mechanisms are in place to induce proliferation, which otherwise appears to occur randomly across a population of cells.}
 When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. 
 Computational methods have been developed to correct for this confounding effect to enhance the underlying signal \citep{Buettner2015, Buettner2017}. 
 
