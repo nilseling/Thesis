@@ -16,7 +16,7 @@ Regulatory features on the genomic, epigenetic, transcriptional and translationa
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_6.png}
+\includegraphics[width=0.9\textwidth]{Fig_6.png}
 \caption[Regulatory features that modulate expression noise]{\textbf{Regulatory features that modulate expression noise.}\\
 Promoter sequence, number of transcription factor (TF) binding sites (TFBS), number of transcriptional start sites (TSS), enhancer elements, RNA polymerase II (RNAPII) loading, DNA methylation, nucleosome positioning, histone modifications, polycomb repressive complex binding, \glspl{miRNA}, nuclear export of mRNA, ribosome binding and blockage via stem loop formation are features that induce gene-specific intrinsic noise.}
 \label{fig0:overview_intrinsic}
@@ -47,7 +47,7 @@ Furthermore, TATA-box containing genes lack enhancing histone marks and their in
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\textwidth]{Fig_7.png}
+\includegraphics[width=0.9\textwidth]{Fig_7.png}
 \caption[Features of the DNA sequence induce expression noise]{\textbf{Features of the DNA sequence induce expression noise.}\\
 Mutations of the transcription factor (TF) binding site (TFBS), the presence of a TATA box, increase number of TFBSs, reduced number of transcriptional start sites (TSSs) and reduced copy number of genes can induce transcriptional noise.}
 \label{fig0:DNA_features}
@@ -55,11 +55,13 @@ Mutations of the transcription factor (TF) binding site (TFBS), the presence of 
 
 Promoters can be classified based on their shape as narrow, with few \glspl{TSS} that predominantly control tissue-specific gene expression, and broad promoters with larger numbers of TSSs that control the expression of house keeping genes. 
 Mutations that alter the shape of promoters increase transcriptional \cor{variability} \citep{Schor2017a}. 
-Furthermore, promoters with one or few TSS show higher levels of expression variability \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Faure2017}.\\
+Furthermore, promoters with one or few TSS show higher levels of expression variability \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Faure2017}.
+
+\newpage
 
 In addition to \glspl{SNV}, \glspl{CNV} (usually defined as copy number variability of regions $\geq$ 1kb in comparison to a reference genome) in parts of the genome influence gene expression and contribute to, for example, schizophrenia and autism \citep{Gamazon2015}. 
 Combined analysis of DNA and RNA has shown that genes with low copy number tend to be more noisily expressed compared to genes encoded by multiple copies \textbf{(Fig.~\ref{fig0:DNA_features})} \citep{Dey2015}. 
-In the context of monoallelic expression, genes located on the X chromosome show increased mRNA half-life which in turn increases transcript stability and reduces noise to levels of autosomal genes \citep{Faure2017}.
+In the context of monoallelic expression, genes located on the X chromosome show increased mRNA half-life which in turn increases transcript stability and reduces noise to levels of autosomal genes \citep{Faure2017}.\\
 
 \cor{In sum, these findings highlight that multiple correlated genomic features are associated with modulating noise. 
 While most studies focused on linking individual genomic features to changes in expression variability, it is not possible to disentangle the individual underlying sources of transcriptional variability. }
@@ -107,9 +109,7 @@ Single-cell measures indicate cell-to-cell variations in nucleosome positioning 
 Even in the non-stressed state, a small fraction of cells exhibit nucleosome free regions at the promoter which explains low and possibly noisy expression of \textit{PHO5} \citep{Small2014}.
 \cor{This observation again highlights the lack of resolution when using bulk measures to profile the promoter architectures in cell populations.
 However, current single-cell technologies to profile epigenetic marks lack throughput and are influenced by high levels of technical noise.
-The observed variations in nucleosome occupancy could therefore be driven by technical variation.} 
- 
-\newpage
+The observed variations in nucleosome occupancy could therefore be driven by technical variation.} \\
 
 Boundaries between heterochromatin and euchromatin are controlled by boundary elements, such as the transcription factor \Gls{CTCF}, that recruit chromatin modifying factors \citep{Kouzarides2007}. 
 CTCF also regulates transcription by activating or repressing promoters and regulates distant chromatin interactions \citep{Kim2015a}. 
@@ -118,6 +118,8 @@ Interference of CTCF-mediated enhancer-promoter contact either by CTCF knock-out
 \cor{This study however only profiled protein abundance of few genes and did not correct for changes in mean expression that are highly correlated with changes in variance \cite{Brennecke2013}.}
 Enhancers are cis-regulatory elements of non-coding DNA containing TFBSs that regulate the expression of neighbouring genes \citep{Blackwood1998}. 
 Genes within super-enhancer loci, a region with multiple enhancers, control pluripotency master regulators and show high levels of variability in expression down-stream targets of these master regulators show similar co-variation across mESCs \citep{Faure2017}.
+
+\newpage
 
 \begin{table}[hb	]
 \centering
@@ -167,8 +169,6 @@ Genes within super-enhancer loci, a region with multiple enhancers, control plur
 \end{tabular}
 \end{table} 
 
-\newpage
-
 Moreover, the positioning of genes on the genome controls expression noise with densely clustered genes being less \cor{variably} expressed in comparison to non-clustered genes \citep{Kustatscher2017}. 
 Additionally, genes positioned next to “noisy” genes display higher levels of transcriptional variability compared to genes that are located in proximity to “stable” genes \citep{Kar2017}. 
 Expression \cor{variability} is also increased for genes that are located in a repressed neighbourhood, namely active genes in constitutive nuclear lamina-associated domains \citep{Faure2017}.
@@ -212,14 +212,6 @@ Upon transcriptional activation, RNAs are produced in burst-like patterns where 
 While bursty transcript synthesis introduces stochastic fluctuations in nuclei between cells, active export of mRNAs into the cytoplasm can dampen this source of variability \textbf{(Fig.~\ref{fig0:posttranscriptional})} \citep{Battich2015a}. 
 Reduced cytoplasmic noise has also been shown for two nuclear-retained genes in the mammalian liver. 
 Furthermore, this mode of noise control was proposed to be active across a range of metabolic tissues \cite{BaharHalpern2015a}.
-\cor{Conversely, a recent study by Hansen \emph{et al.}, 2018 proposed an amplification of transcriptional variability due to nuclear export \cite{Hansen2018}. 
-However, the authors computed the Fano factor (variance divided by mean expression) as measure of variability and assumed that its values is not correlated with mean expression. 
-This assumption arises from an underlying Poissonian (Fano factor is equal to 1) or over-dispersed Poissonian (Fanor factor is larger than 1) distribution of transcript counts.
-In reality, the Fano factor is not constant across the range of mean expression. 
-This has been discussed by Gr\"un \emph{et al.}, 2014, who showed scale differences in the coefficient of variation (CV) versus mean expression dependency for lowly and highly expressed genes \cite{Grun2014}.
-Hansen \emph{et al.} also showed this effect when plotting the Fano factor versus mean expression.
-Across all genes, the cytoplasmic transcript abundance as well as the Fano factor were larger compared to nuclear measures, which is to be expected by the model proposed by Gr\"un \emph{et al.}.
-It is therefore recommended to fit a non-parametric curve to variability measure versus mean expression and compare the regression residuals as explained in Chapter 3.}\\
 
 \begin{figure}[!h]
 \centering
@@ -231,7 +223,14 @@ Arrows indicate either increased (red) or decreased noise (green) depending on t
 \label{fig0:posttranscriptional}
 \end{figure} 
 
-\newpage
+\cor{Conversely, a recent study by Hansen \emph{et al.}, 2018 proposed an amplification of transcriptional variability due to nuclear export \cite{Hansen2018}. 
+However, the authors computed the Fano factor (variance divided by mean expression) as measure of variability and assumed that its values is not correlated with mean expression. 
+This assumption arises from an underlying Poissonian (Fano factor is equal to 1) or over-dispersed Poissonian (Fanor factor is larger than 1) distribution of transcript counts.
+In reality, the Fano factor is not constant across the range of mean expression. 
+This has been discussed by Gr\"un \emph{et al.}, 2014, who showed scale differences in the coefficient of variation (CV) versus mean expression dependency for lowly and highly expressed genes \cite{Grun2014}.
+Hansen \emph{et al.} also showed this effect when plotting the Fano factor versus mean expression.
+Across all genes, the cytoplasmic transcript abundance as well as the Fano factor were larger compared to nuclear measures, which is to be expected by the model proposed by Gr\"un \emph{et al.}.
+It is therefore recommended to fit a non-parametric curve to variability measure versus mean expression and compare the regression residuals as explained in Chapter 3.}\\
 
 Within the cytoplasm, mRNAs are subject to translation or degradation. 
 At this stage, \cor{variability induced by} bursty gene expression is propagated to form variation in protein abundance. 
@@ -247,6 +246,8 @@ Additionally, mRNA secondary structure formed by stem loops and poly(G) motifs a
 \cor{Together, these studies again highlight a multitude of factors that can modulate the observable variation in transcript and protein abundance. 
 Moving forward, models that correct or account for variations introduced by different factors need to be developed to disentangle the individual sources of molecular variation.}
 
+\newpage
+
 \subsection{Extrinsic noise}
 
 \cor{Classically, extrinsic noise was described to arise from fluctuations in molecules that affect the global gene expression landscape of the cell\cite{Elowitz2002}.
@@ -257,6 +258,14 @@ The presence of cell states in otherwise homogeneous populations is characterise
 It has been shown that extrinsic noise forms a major contribution to variation in gene expression and that transcript distributions can be predicted from the cellular state, population context and microenvironment \citep{Battich2015a}.
 \cor{Being able to predict transcript abundance however indicates that extrinsic noise is not purely stochastic but might also contain deterministic components.}
 
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.7\textwidth]{Fig_10.png}
+\caption[Differences in cell states induce extrinsic noise]{\textbf{Differences in cell states induce extrinsic noise.}\\
+Within a homogeneous population of cells (left), individual cells reside in different cellular states (e.g.~cell cycle, cell signalling, metabolism) and show differences in cellular volume.}
+\label{fig0:extrinsic}
+\end{figure} 
+
 \subsubsection{Cell cycle}
 
 Cell cycle has been widely discussed to form a \cor{major} source of extrinsic noise \citep{Colman-Lerner2005, Newman2006}. 
@@ -266,16 +275,6 @@ Even under optimal growth conditions for mESCs (2i media), cell cycle related ge
 \cor{However, it is possible that unobserved regulatory mechanisms are in place to induce proliferation, which otherwise appears to occur random across a population of cells.}
 When quantifying cell-to-cell variation, cell cycle induced extrinsic noise is often seen as unwanted variation and can mask more subtle transcriptional heterogeneity. 
 Computational methods have been developed to correct for this confounding effect to enhance the underlying signal \citep{Buettner2015, Buettner2017}. 
-
-\begin{figure}[!h]
-\centering
-\includegraphics[width=0.7\textwidth]{Fig_10.png}
-\caption[Differences in cell states induce extrinsic noise]{\textbf{Differences in cell states induce extrinsic noise.}\\
-Within a homogeneous population of cells (left), individual cells reside in different cellular states (e.g.~cell cycle, cell signalling, metabolism) and show differences in cellular volume.}
-\label{fig0:extrinsic}
-\end{figure} 
-
-\vspace{-5mm}
 
 \subsubsection{Cell volume}
 
@@ -296,6 +295,8 @@ Changes in metabolism are then coupled to varying growth rates of individual cel
 
 Expression capacity is defined as the ability of a cell to express proteins from a gene by utilising the transcriptional and translational machinery. 
 Fluctuations in the expression capacity of cells due to quantitative differences in RNAPII or ribosomes can induce global variability among the majority of proteins \citep{Colman-Lerner2005}.
+
+\newpage
 
 \subsubsection{Cell signalling}
 
