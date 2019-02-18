@@ -16,9 +16,13 @@ This issue did not arise in most differential expression methods for bulk RNA-se
 Instead, BASiCS resolves the unidentifiability issue by performing inference on both conditions independently, performing a post-hoc offset correction.\\
 This approach raises the question if parameter estimates are comparable between both conditions or if differences are cause due to over-fitting.
 We therefore validated the robustness of the model in multiple ways:\\
+
 1. We ran the model on down-sampled cell populations and found that (i) the majority of model parameters show similar estimates independent of the sample size and expression levels, and (ii) the regression stabilises variability estimates for lowly expressed genes. \\
 2. We simulated data and showed that (i) the false positive rate is less than 5\% for mean and variability estimates and that (ii) the true positive rate reaches 100\% for large sample size. \\
-3. we compared BASiCS parameter estimates to absolute transcript counts using smFISH and observed a near perfect estimation of mean expression but lower correlation for variability and residual variability measures.\\
+3. we compared BASiCS parameter estimates to absolute transcript counts using smFISH and observed a near perfect estimation of mean expression but lower correlation for variability and residual variability measures.
+
+\newpage
+
 We are therefore confident that BASiCS correctly estimates mean expression and expression variability per condition and that this allows comparison of parameter estimates between conditions.}\\
 
 Other, dataset-specific factors that affect the robustness of posterior parameter estimation include sequencing depth, number of cells and heterogeneity within the population. 
