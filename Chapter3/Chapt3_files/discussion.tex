@@ -10,9 +10,10 @@ Here, this problem is resolved by introducing a hierarchical Bayesian formulatio
 In this formulation, an additional set of residual over-dispersion parameters $\epsilon_i$ that are not confounded by changes in mean expression are introduced. 
 This extension ensures a broader applicability of the BASiCS software and allows statistical testing of changes in variability that are not confounded by mean expression.  \\ 
 
-\cor{The original implementation of BASiCS for testing changes in mean expression and expression variability was aimed at borrowing information across all cells, all genes and both conditions.
-However, this introduced an identifiability issue since the true scale differences in mean expression between the two conditions was unknown.
-Instead, BASiCS was implemented to be run on both conditions independently and to perform a post-hoc correction of scale differences in mean expression.
+\cor{The original implementation of BASiCS for testing changes in mean expression and expression variability aimed at borrowing information across all cells, all genes and both conditions.
+However, as cell-specific scaling factors and gene-specific mean expression parameters are jointly inferred by BASiCS, this led to an unidentifibility problem: a global offset (associated to global differences in mRNA content) between the two conditions is unknown a priori. 
+This issue did not arise in most differential expression methods for bulk RNA-seq data (such as DESeq2 \cite{Love2014} and edgeR \cite{Robinson2009}), because they typically adopted a sequential approach: they first estimate cell-specific scaling factors that are subsequently used as fixed offsets in the downstream model for differential expression. 
+Instead, BASiCS resolves the unidentifiability issue by performing inference on both conditions independently, performing a post-hoc offset correction.\\
 This approach raises the question if parameter estimates are comparable between both conditions or if differences are cause due to over-fitting.
 We therefore validated the robustness of the model in multiple ways:\\
 1. We ran the model on down-sampled cell populations and found that (i) the majority of model parameters show similar estimates independent of the sample size and expression levels, and (ii) the regression stabilises variability estimates for lowly expressed genes. \\
