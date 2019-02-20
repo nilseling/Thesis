@@ -3,11 +3,11 @@
 %	 Quantification of biological noise
 %*****************************
 
-\section{Quantification of \cor{molecular variability}}
+\section{Quantification of molecular variability}
 
-\cor{In the last ten years, the scale of single-cell assays increased from measuring few to hundreds and thousands of genomic, epigenetic, transcriptomic or proteomic features. 
+In the last ten years, the scale of single-cell assays increased from measuring few to hundreds and thousands of genomic, epigenetic, transcriptomic or proteomic features. 
 These technologies can be used to measure molecular phenotypic variability, as well as gain an understanding of the regulatory features that modulate it. 
-The ability to study noise using technologies that destroys the cell is formulated on the basis that a cross-section over a population of cells is representative of the time-resolve noise profile of any given cell \cite{Ozbudak2002}.} 
+The ability to study noise using technologies that destroys the cell is formulated on the basis that a cross-section over a population of cells is representative of the time-resolve noise profile of any given cell \cite{Ozbudak2002}.
 In this section, I will discuss the applicability of single-cell sequencing and imaging technologies as a potential read-out for cell population heterogeneity induced by transcriptional noise.
 
 \subsection{Single-cell sequencing}
@@ -26,7 +26,7 @@ While the detection of SNVs requires deep sequencing of individual cells, CNVs c
 Recently, Vitak \emph{et al.}, 2017 introduced \gls{sci-Seq} which allows the generation of thousands of single-cell genomes for sequencing. 
 In the first step, multiple nuclei are sorted into each well of a 96 well plate and the genomic DNA is labelled with barcodes by transposase tagging. 
 In the second step, 15-25 tagged cells are sorted into individual wells of a PCR plate where the second round of barcoding is performed during amplification. In that way, CNVs of over 15,000 cells can be assessed \citep{Vitak2017}.
-\cor{While previously only bulk measures have been used to link mutations to changes in transcriptional variations \cite{Metzger2015}, scDNA-Seq with high read-depth can be used to solve the question of whether the same mutation in each cell (germ line mutation) or a heterogeneous mutational pattern (somatic mutation) causes the observed increase/decrease in phenotypic variability.}
+While previously only bulk measures have been used to link mutations to changes in transcriptional variations \cite{Metzger2015}, scDNA-Seq with high read-depth can be used to solve the question of whether the same mutation in each cell (germ line mutation) or a heterogeneous mutational pattern (somatic mutation) causes the observed increase/decrease in phenotypic variability.
 
 \begin{figure}[!h]
 \centering
@@ -284,7 +284,7 @@ Moreover, heterogeneous expression can be captured by computing the Shannon entr
 Binning across the expression counts can be done by choosing a fixed width \citep{Richard2016} or an adaptive width \citep{Stumpf2017}. 
 Additionally, average pairwise distances between cells can capture increasing or decreasing heterogeneity in cell populations \citep{Mohammed2017}. \\
 
-\cor{In general, theoretical work has been done to model the transcription and translation process to predict the distribution of transcripts and proteins across a population of homogeneous cells.
+In general, theoretical work has been done to model the transcription and translation process to predict the distribution of transcripts and proteins across a population of homogeneous cells.
 However, in reality, the measured point estimates do not perfectly fit the predicted distributions \cite{Grun2014}. 
 It is therefore crucial to use non-parametric regression approaches to correct for unobserved confounding factors \cite{Buettner2015} or the mean-variance trend \cite{Faure2017}. 
-This is further discussed in Chapter 3. } 
+This is further discussed in Chapter 3. 

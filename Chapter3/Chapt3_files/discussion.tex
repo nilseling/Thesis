@@ -10,7 +10,7 @@ Here, this problem is resolved by introducing a hierarchical Bayesian formulatio
 In this formulation, an additional set of residual over-dispersion parameters $\epsilon_i$ that are not confounded by changes in mean expression are introduced. 
 This extension ensures a broader applicability of the BASiCS software and allows statistical testing of changes in variability that are not confounded by mean expression.  \\ 
 
-\cor{The original implementation of BASiCS for testing changes in mean expression and expression variability aimed at borrowing information across all cells, all genes and both conditions.
+The original implementation of BASiCS for testing changes in mean expression and expression variability aimed at borrowing information across all cells, all genes and both conditions.
 However, as cell-specific scaling factors and gene-specific mean expression parameters are jointly inferred by BASiCS, this led to an unidentifibility problem: a global offset (associated to global differences in mRNA content) between the two conditions is unknown a priori. 
 This issue did not arise in most differential expression methods for bulk RNA-seq data (such as DESeq2 \cite{Love2014} and edgeR \cite{Robinson2009}), because they typically adopted a sequential approach: they first estimate cell-specific scaling factors that are subsequently used as fixed offsets in the downstream model for differential expression. 
 Instead, BASiCS resolves the unidentifiability issue by performing inference on both conditions independently, performing a post-hoc offset correction.\\
@@ -23,7 +23,7 @@ We therefore validated the robustness of the model in multiple ways:\\
 
 \newpage
 
-We are therefore confident that BASiCS correctly estimates mean expression and expression variability per condition and that this allows comparison of parameter estimates between conditions.}\\
+We are therefore confident that BASiCS correctly estimates mean expression and expression variability per condition and that this allows comparison of parameter estimates between conditions.\\
 
 Other, dataset-specific factors that affect the robustness of posterior parameter estimation include sequencing depth, number of cells and heterogeneity within the population. 
 BASiCS has been designed to be run on homogeneous populations of cells to avoid variation introduced by correlated sub-structure within the data. 
