@@ -31,6 +31,10 @@ latexmk -pdf main.tex
 The work presented in this thesis has been done by me in collaboration with the persons listed in each section. 
 When using to information of this thesis, please cite the associated papers:
 
+**Introduction:** [Challenges in measuring and understanding biological noise.](https://www.nature.com/articles/s41576-019-0130-6)
+
+Nils Eling\*, Michael D. Morgan\*, John C. Marioni\*, _Challenges in measuring and understanding biological noise._, Nature Reviews Genetics, 2019
+
 **Chapter 2:** [Aging increases cell-to-cell transcriptional variability upon immune stimulation](http://science.sciencemag.org/content/355/6332/1433)
 
 Celia P. Martinez-Jimenez\*, Nils  Eling\*, Hung-Chang Chen, Catalina A. Vallejos, Aleksandra Kolodziejczyk, Frances Connor, Lovorka Stojic, Tim F. Rayner, Michael J. T. Stubbington, Sarah A. Teichmann, Maike de la Roche, John C. Marioni, Duncan T. Odom.
