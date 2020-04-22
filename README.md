@@ -26,6 +26,10 @@ cd Thesis
 latexmk -pdf main.tex
 ```
 
+## Where to access this thesis
+
+The pdf version of this thesis can be accessed here: [https://www.repository.cam.ac.uk/handle/1810/291806](https://www.repository.cam.ac.uk/handle/1810/291806)
+
 ## How to cite this thesis
 
 The work presented in this thesis has been done by me in collaboration with the persons listed in each section. 
